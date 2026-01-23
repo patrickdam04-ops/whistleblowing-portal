@@ -3,8 +3,21 @@
 import { useFormState, useFormStatus } from 'react-dom'
 import { useState, useEffect, useRef } from 'react'
 import { submitReport, type ActionResult } from './actions'
+import { transcribeAudio } from '@/app/(public)/actions/transcribe-audio'
 import { Button } from '@/components/ui/button'
-import { Shield, AlertTriangle, Lock, Mail, CheckCircle, Copy, Home, Paperclip } from 'lucide-react'
+import {
+  Shield,
+  AlertTriangle,
+  Lock,
+  Mail,
+  CheckCircle,
+  Copy,
+  Home,
+  Paperclip,
+  Mic,
+  Square,
+  Loader2,
+} from 'lucide-react'
 import Link from 'next/link'
 
 const initialState: ActionResult = {
@@ -30,7 +43,13 @@ export default function SubmitReportPage() {
   const [state, formAction] = useFormState(submitReport, initialState)
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [descriptionText, setDescriptionText] = useState('')
+  const [isRecording, setIsRecording] = useState(false)
+  const [isTranscribing, setIsTranscribing] = useState(false)
+  const [transcriptionError, setTranscriptionError] = useState<string | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioChunksRef = useRef<Blob[]>([])
 
   // Funzione per copiare il codice nella clipboard
   const handleCopyCode = async () => {
@@ -42,6 +61,84 @@ export default function SubmitReportPage() {
       } catch (err) {
         console.error('Errore durante la copia:', err)
       }
+    }
+  }
+
+  const startRecording = async () => {
+    setTranscriptionError(null)
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setTranscriptionError('Il tuo browser non supporta la registrazione audio.')
+      return
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mediaRecorder = new MediaRecorder(stream)
+      mediaRecorderRef.current = mediaRecorder
+      audioChunksRef.current = []
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data)
+        }
+      }
+
+      mediaRecorder.onstop = async () => {
+        setIsRecording(false)
+        stream.getTracks().forEach((track) => track.stop())
+
+        const blob = new Blob(audioChunksRef.current, {
+          type: mediaRecorder.mimeType || 'audio/webm',
+        })
+        audioChunksRef.current = []
+
+        if (blob.size === 0) {
+          setTranscriptionError('Nessun audio registrato.')
+          return
+        }
+
+        setIsTranscribing(true)
+        try {
+          const formData = new FormData()
+          const audioFile = new File([blob], `recording-${Date.now()}.webm`, {
+            type: blob.type || 'audio/webm',
+          })
+          formData.append('audio', audioFile)
+
+          const result = await transcribeAudio(formData)
+          if (!result.success || !result.text) {
+            setTranscriptionError(result.error || 'Errore durante la trascrizione.')
+          } else {
+            setDescriptionText((prev) => (prev ? `${prev}\n${result.text}` : result.text))
+          }
+        } catch (error) {
+          console.error('Errore trascrizione:', error)
+          setTranscriptionError('Errore durante la trascrizione.')
+        } finally {
+          setIsTranscribing(false)
+        }
+      }
+
+      mediaRecorder.start()
+      setIsRecording(true)
+    } catch (error) {
+      console.error('Errore accesso microfono:', error)
+      setTranscriptionError('Impossibile accedere al microfono.')
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+    }
+  }
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording()
+    } else {
+      startRecording()
     }
   }
 
@@ -144,12 +241,34 @@ export default function SubmitReportPage() {
             <form ref={formRef} action={formAction} className="space-y-6">
             {/* Descrizione */}
             <div>
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Descrivi la violazione <span className="text-red-500">*</span>
-              </label>
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Descrivi la violazione <span className="text-red-500">*</span>
+                </label>
+                <Button
+                  type="button"
+                  variant={isRecording ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={toggleRecording}
+                  disabled={isTranscribing}
+                  className="flex items-center gap-2"
+                >
+                  {isRecording ? (
+                    <>
+                      <Square className="w-4 h-4" />
+                      Stop
+                    </>
+                  ) : (
+                    <>
+                      <Mic className="w-4 h-4" />
+                      Registra
+                    </>
+                  )}
+                </Button>
+              </div>
               <textarea
                 id="description"
                 name="description"
@@ -157,9 +276,26 @@ export default function SubmitReportPage() {
                 required
                 minLength={10}
                 maxLength={5000}
+                value={descriptionText}
+                onChange={(e) => setDescriptionText(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
                 placeholder="Descrivi in dettaglio la violazione o il comportamento inappropriato che hai osservato..."
               />
+              {isRecording && (
+                <p className="mt-2 text-sm text-red-600 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                  Registrazione in corso...
+                </p>
+              )}
+              {isTranscribing && (
+                <p className="mt-2 text-sm text-blue-600 flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Trascrizione in corso...
+                </p>
+              )}
+              {transcriptionError && (
+                <p className="mt-2 text-sm text-red-600">{transcriptionError}</p>
+              )}
               {state.errors?.description && (
                 <p className="mt-1 text-sm text-red-600">
                   {state.errors.description[0]}
