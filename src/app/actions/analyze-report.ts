@@ -30,6 +30,10 @@ export async function analyzeReport(
       'CHIAVE USATA:',
       process.env.GOOGLE_GENERATIVE_AI_API_KEY?.slice(0, 5) + '...'
     )
+    console.log(
+      'DEBUG CHIAVE:',
+      process.env.GOOGLE_GENERATIVE_AI_API_KEY?.substring(0, 10)
+    )
     console.log('Tentativo analisi con modello:', MODEL)
 
     const genAI = new GoogleGenerativeAI(API_KEY)

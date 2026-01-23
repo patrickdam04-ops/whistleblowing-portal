@@ -1,6 +1,6 @@
 'use server'
 
-const API_KEY = 'AIzaSyBPMHmpVwxqCc-FjOm1Y65hMyiBhtum9_o'
+const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
 // Usiamo il modello sperimentale che funziona
 const MODEL = 'gemini-2.0-flash-exp'
 const URL =
@@ -121,6 +121,9 @@ export async function generateInvestigationPlan(description: string): Promise<st
 `
 
   try {
+    if (!API_KEY) {
+      throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
+    }
     console.log('🕵️ Generazione piano investigativo per admin...')
 
     const prompt = `Agisci come un esperto di audit interno e sicurezza aziendale. 
