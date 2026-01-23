@@ -15,6 +15,7 @@ import { AdminResponseForm } from '@/components/AdminResponseForm'
 import { InvestigationPlanPanel } from '@/components/InvestigationPlanPanel'
 import { ReportAttachments } from '@/components/ReportAttachments'
 import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
+import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import { SeverityBadge } from '@/components/ui/badges'
 
@@ -175,6 +176,9 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
               {/* Legal Analysis Card */}
               <LegalAnalysisCard description={reportData.description} />
+
+              {/* Sherlock AI Consistency */}
+              <SherlockConsistencyCard description={reportData.description} />
 
               {/* Investigation Plan Panel (Privato Admin) */}
               <InvestigationPlanPanel reportDescription={reportData.description} />
