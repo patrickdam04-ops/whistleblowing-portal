@@ -26,6 +26,10 @@ export async function analyzeReport(
     if (!API_KEY) {
       throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
     }
+    console.log(
+      'CHIAVE USATA:',
+      process.env.GOOGLE_GENERATIVE_AI_API_KEY?.slice(0, 5) + '...'
+    )
     console.log('Tentativo analisi con modello:', MODEL)
 
     const genAI = new GoogleGenerativeAI(API_KEY)
@@ -77,15 +81,7 @@ Rispondi SOLO con un JSON valido (senza markdown) con:
       recommended_actions: analysis.recommended_actions,
     }
   } catch (error: any) {
-    console.error('ERRORE GEMINI:', error?.message || error)
-    // Anche in caso di crash totale, salviamo la giornata
-    return {
-      summary: 'Errore di connessione AI. Impossibile analizzare al momento.',
-      risk_level: 'LOW',
-      recommended_actions: [
-        'Controllare la connessione internet',
-        'Verificare lo stato dei servizi Google',
-      ],
-    }
+    console.error('ERRORE GEMINI:', error)
+    throw error
   }
 }
