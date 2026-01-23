@@ -51,27 +51,9 @@ Rispondi SOLO con un JSON valido (senza markdown) con:
 
     const rawText = await response.text()
 
-    // --- GESTIONE FALLBACK INTELLIGENTE ---
-    // Se Google è intasato (429) o rotto, non blocchiamo l'utente.
     if (!response.ok) {
-      console.warn('AI API Error (using fallback):', response.status, rawText)
-
-      // Se è un problema di quota o server, restituiamo un dato simulato per permettere alla UI di funzionare
-      if (response.status === 429 || response.status >= 500) {
-        return {
-          summary:
-            "⚠️ Nota: I server AI gratuiti sono occupati. Questa è una risposta di esempio per visualizzare l'interfaccia.",
-          risk_level: 'MEDIUM',
-          recommended_actions: [
-            'Verifica manuale richiesta (Quota AI momentaneamente esaurita)',
-            'Riprovare l\'analisi tra qualche minuto',
-          ],
-        }
-      }
-
       throw new Error(`Google Error ${response.status}: ${rawText}`)
     }
-    // --------------------------------------
 
     // Se arriviamo qui, l'AI ha risposto! Puliamo e restituiamo.
     const cleanJson = rawText.replace(/```json|```/g, '').trim()
@@ -111,7 +93,7 @@ Rispondi SOLO con un JSON valido (senza markdown) con:
       recommended_actions: analysis.recommended_actions,
     }
   } catch (error: any) {
-    console.error('DETTAGLIO ERRORE GEMINI:', error)
+    console.error('ERRORE GEMINI:', error?.message || error)
     // Anche in caso di crash totale, salviamo la giornata
     return {
       summary: 'Errore di connessione AI. Impossibile analizzare al momento.',
