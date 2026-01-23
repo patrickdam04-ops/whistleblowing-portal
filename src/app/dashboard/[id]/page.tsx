@@ -29,7 +29,6 @@ interface Report {
   admin_response: string | null
   ticket_code: string | null
   attachments: string | string[] | null // Array di path (PostgreSQL array) o stringa JSON
-  is_archived: boolean | null
 }
 
 interface PageProps {
@@ -87,9 +86,9 @@ export default async function ReportDetailPage({ params }: PageProps) {
         </div>
 
         {/* Layout a due colonne */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Colonna SX: Metadata + Smart Reply */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="md:col-span-1 space-y-6">
             {/* Card Metadata */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -155,7 +154,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
           </div>
 
           {/* Colonna DX: Descrizione */}
-          <div className="lg:col-span-2">
+          <div className="md:col-span-2">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />

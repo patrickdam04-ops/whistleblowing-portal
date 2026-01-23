@@ -3,7 +3,7 @@
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateStatus } from '@/app/dashboard/[id]/actions'
-import { Clock, AlertCircle, CheckCircle, XCircle } from 'lucide-react'
+import { Clock, AlertCircle, CheckCircle } from 'lucide-react'
 
 interface StatusSelectorProps {
   id: string
@@ -14,17 +14,18 @@ const statusOptions = [
   { value: 'PENDING', label: 'In Attesa', icon: Clock },
   { value: 'IN_PROGRESS', label: 'In Lavorazione', icon: AlertCircle },
   { value: 'RESOLVED', label: 'Risolto', icon: CheckCircle },
-  { value: 'DISMISSED', label: 'Archiviato', icon: XCircle },
 ] as const
 
 export function StatusSelector({ id, initialStatus }: StatusSelectorProps) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+  const normalizedStatus =
+    initialStatus === 'DISMISSED' ? 'RESOLVED' : initialStatus
 
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newStatus = e.target.value as StatusSelectorProps['initialStatus']
+    const newStatus = e.target.value as Exclude<StatusSelectorProps['initialStatus'], 'DISMISSED'>
 
-    if (newStatus === initialStatus) return
+    if (newStatus === normalizedStatus) return
 
     startTransition(async () => {
       try {
@@ -34,7 +35,7 @@ export function StatusSelector({ id, initialStatus }: StatusSelectorProps) {
       } catch (error) {
         console.error('Errore durante l\'aggiornamento dello stato:', error)
         // Ripristina il valore precedente in caso di errore
-        e.target.value = initialStatus
+        e.target.value = normalizedStatus
         alert('Errore durante l\'aggiornamento dello stato. Riprova.')
       }
     })
@@ -43,7 +44,7 @@ export function StatusSelector({ id, initialStatus }: StatusSelectorProps) {
   return (
     <div>
       <select
-        value={initialStatus}
+        value={normalizedStatus}
         onChange={handleStatusChange}
         disabled={isPending}
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed"

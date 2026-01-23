@@ -176,7 +176,6 @@ export async function submitReport(
       is_anonymous: validatedData.is_anonymous,
       encrypted_contact_info: encryptedContactInfo,
       status: 'PENDING',
-      is_archived: false,
       ticket_code: ticketCode, // <--- QUESTO DEVE ESSERE PRESENTE!
     }
 

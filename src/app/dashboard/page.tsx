@@ -12,7 +12,6 @@ interface Report {
   status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
   encrypted_contact_info: string | null
-  is_archived: boolean | null
 }
 
 interface PageProps {
@@ -51,7 +50,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const currentSort = searchParams?.sort === 'severity' ? 'severity' : 'recent'
 
   const filteredReports = reportsData.filter((report) =>
-    currentView === 'archived' ? report.is_archived : !report.is_archived
+    currentView === 'archived' ? report.status === 'RESOLVED' : report.status !== 'RESOLVED'
   )
 
   const severityRank: Record<NonNullable<Report['severity']>, number> = {

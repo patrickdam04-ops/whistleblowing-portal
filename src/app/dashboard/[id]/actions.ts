@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 export async function updateStatus(
   id: string,
-  newStatus: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
+  newStatus: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED'
 ) {
   const supabase = createClient()
 
@@ -19,11 +19,10 @@ export async function updateStatus(
     throw new Error('Non autorizzato')
   }
 
-  // Aggiorna lo stato nel database
-  const shouldArchive = newStatus === 'RESOLVED' || newStatus === 'DISMISSED'
+  // Aggiorna solo lo stato nel database
   const { error, data } = await supabase
     .from('reports')
-    .update({ status: newStatus, is_archived: shouldArchive })
+    .update({ status: newStatus })
     .eq('id', id)
     .select()
 
