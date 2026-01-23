@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Loader2, AlertCircle, CheckCircle } from 'lucide-react'
-import { STORAGE_BUCKET_NAME } from '@/lib/constants'
 
 export default function TestStoragePage() {
   const [loading, setLoading] = useState(false)
@@ -16,12 +15,9 @@ export default function TestStoragePage() {
 
     try {
       const supabase = createClient()
-      let BUCKET_NAME = STORAGE_BUCKET_NAME.trim().replace(/^\/+/, '')
+      const BUCKET_NAME = 'report-attachments'
 
-      console.log('🧪 Test Storage - Bucket RAW:', JSON.stringify(STORAGE_BUCKET_NAME))
-      console.log('🧪 Test Storage - Bucket CLEANED:', JSON.stringify(BUCKET_NAME))
-      console.log('🧪 Test Storage - Bucket length:', BUCKET_NAME.length)
-      console.log('🧪 Test Storage - Bucket charCodes:', BUCKET_NAME.split('').map(c => c.charCodeAt(0)))
+      console.log('🧪 Test Storage - Bucket:', BUCKET_NAME)
       console.log('🧪 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
 
       // Prova a listare i file nel bucket

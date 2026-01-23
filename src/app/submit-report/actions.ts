@@ -4,7 +4,6 @@ import { createClient } from '@/utils/supabase/server'
 import { reportSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { Resend } from 'resend'
-import { STORAGE_BUCKET_NAME } from '@/lib/constants'
 
 export interface ActionResult {
   success: boolean
@@ -92,18 +91,7 @@ export async function submitReport(
     // Crea il client Supabase
     const supabase = createClient()
 
-    // Usa la costante centralizzata e assicurati che sia pulita
-    const BUCKET_NAME = STORAGE_BUCKET_NAME.trim()
-    
-    // Debug: verifica che il bucket name sia corretto
-    console.log('🔍 DEBUG BUCKET NAME:', {
-      raw: STORAGE_BUCKET_NAME,
-      trimmed: BUCKET_NAME,
-      length: BUCKET_NAME.length,
-      hasLeadingSlash: BUCKET_NAME.startsWith('/'),
-      hasTrailingSlash: BUCKET_NAME.endsWith('/'),
-      charCodes: BUCKET_NAME.split('').map(c => c.charCodeAt(0)),
-    })
+    const BUCKET_NAME = 'report-attachments'
     
     // Gestione upload allegati
     const attachmentPaths: string[] = []
@@ -127,15 +115,12 @@ export async function submitReport(
         const filePath = `${ticketCode}/${fileName}`
 
         try {
+          console.log('Tentativo upload su bucket: report-attachments')
           console.log(`📤 Upload file "${file.name}" (${(file.size / 1024).toFixed(2)} KB) nel bucket "${BUCKET_NAME}" al path: ${filePath}`)
           
           // Upload del file nel bucket privato
-          // Assicurati che il bucket name non abbia slash all'inizio
-          const cleanBucketName = BUCKET_NAME.replace(/^\/+/, '').trim()
-          console.log(`🔍 Upload - Bucket name pulito: "${cleanBucketName}" (lunghezza: ${cleanBucketName.length})`)
-          
           const { error: uploadError, data: uploadData } = await supabase.storage
-            .from(cleanBucketName)
+            .from(BUCKET_NAME)
             .upload(filePath, file, {
               contentType: file.type,
               upsert: false,
