@@ -13,7 +13,8 @@ const URL =
 export async function generateAIResponse(
   description: string,
   ticketCode?: string,
-  sherlockAnalysis?: ConsistencyAnalysisResult | null
+  sherlockAnalysis?: ConsistencyAnalysisResult | null,
+  mode: 'SHERLOCK' | 'STANDARD' = 'STANDARD'
 ): Promise<string> {
   if (!description) {
     throw new Error('Descrizione mancante')
@@ -30,6 +31,11 @@ export async function generateAIResponse(
       ? `La segnalazione è stata registrata con il codice ${ticketCode}.`
       : 'La segnalazione è stata registrata.'
 
+    const hasSherlockData =
+      !!sherlockAnalysis &&
+      ((sherlockAnalysis.incoerenze_rilevate?.length ?? 0) > 0 ||
+        (sherlockAnalysis.buchi_narrativi?.length ?? 0) > 0)
+
     const sherlockContext = sherlockAnalysis
       ? `SherlockAnalysis:
 - incoerenze_rilevate: ${JSON.stringify(sherlockAnalysis.incoerenze_rilevate || [])}
@@ -37,7 +43,10 @@ export async function generateAIResponse(
 - consiglio_investigativo: ${sherlockAnalysis.consiglio_investigativo || ''}`
       : 'SherlockAnalysis: nessun dato disponibile'
 
+    const intent = mode === 'SHERLOCK' && hasSherlockData ? 'ASK_PROOF' : 'STANDARD'
+
     const prompt = `Sei un assistente legale specializzato in Whistleblowing (D.Lgs 24/2023).
+Intent: ${intent}
 Se nel parametro 'sherlockAnalysis' sono presenti buchi narrativi o dati mancanti (es. date, luoghi), e l'intent è 'ASK_PROOF', devi generare una risposta che chieda SPECIFICAMENTE quei dati mancanti. Sii preciso e gentile.
 
 Analizza questa segnalazione: "${description}".
@@ -58,7 +67,7 @@ Genera una bozza di risposta professionale che:
 
 NON includere placeholder come [Nome] o [Azienda]. Scrivi una bozza pronta all'uso, completa e professionale.
 
-SherlockAnalysis: ${sherlockContext}
+SherlockAnalysis: ${mode === 'SHERLOCK' ? sherlockContext : 'IGNORARE'}
 
 Rispondi SOLO con il testo della lettera, senza aggiungere commenti, note aggiuntive o formattazioni markdown.`
 

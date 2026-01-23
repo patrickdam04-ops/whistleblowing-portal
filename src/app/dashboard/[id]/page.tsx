@@ -11,9 +11,10 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { StatusSelector } from '@/components/StatusSelector'
-import { InvestigationPlanPanel } from '@/components/InvestigationPlanPanel'
+import { AdminResponseForm } from '@/components/AdminResponseForm'
 import { ReportAttachments } from '@/components/ReportAttachments'
-import { AdminAIInsightsPanel } from '@/components/AdminAIInsightsPanel'
+import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
+import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import { SeverityBadge } from '@/components/ui/badges'
 
@@ -86,7 +87,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
         {/* Layout a due colonne */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Colonna SX: Metadata */}
+          {/* Colonna SX: Metadata + Smart Reply */}
           <div className="lg:col-span-1 space-y-6">
             {/* Card Metadata */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -141,6 +142,14 @@ export default async function ReportDetailPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
+
+            {/* Smart Reply - Risposta al Segnalante */}
+            <AdminResponseForm
+              reportId={reportData.id}
+              reportDescription={reportData.description}
+              ticketCode={reportData.ticket_code}
+              initialResponse={reportData.admin_response}
+            />
           </div>
 
           {/* Colonna DX: Descrizione */}
@@ -172,16 +181,11 @@ export default async function ReportDetailPage({ params }: PageProps) {
               {/* Allegati */}
               <ReportAttachments attachments={reportData.attachments} reportId={reportData.id} />
 
-              {/* AI Insights + Smart Reply */}
-              <AdminAIInsightsPanel
-                description={reportData.description}
-                ticketCode={reportData.ticket_code}
-                reportId={reportData.id}
-                initialResponse={reportData.admin_response}
-              />
-
-              {/* Investigation Plan Panel (Privato Admin) */}
-              <InvestigationPlanPanel reportDescription={reportData.description} />
+              {/* AI Cards */}
+              <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <SherlockConsistencyCard description={reportData.description} compact />
+                <LegalAnalysisCard description={reportData.description} compact />
+              </div>
             </div>
           </div>
         </div>

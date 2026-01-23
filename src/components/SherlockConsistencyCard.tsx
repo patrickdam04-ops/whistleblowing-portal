@@ -23,6 +23,9 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
         const result = await analyzeConsistency(description)
         setAnalysis(result)
         onAnalysis?.(result)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('sherlock:analysis', { detail: result }))
+        }
       } catch (err: any) {
         console.error('Errore analisi coerenza:', err)
         setError(err?.message || 'Errore durante l\'analisi di coerenza.')

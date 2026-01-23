@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { generateAIResponse } from '@/app/actions/generate-ai-response'
 import type { ConsistencyAnalysisResult } from '@/app/(public)/actions/analyze-consistency'
 import { saveAdminResponse } from '@/app/dashboard/[id]/actions'
@@ -23,21 +23,44 @@ export function AdminResponseForm({
   sherlockAnalysis,
 }: AdminResponseFormProps) {
   const [response, setResponse] = useState(initialResponse || '')
+  const [localSherlock, setLocalSherlock] = useState<ConsistencyAnalysisResult | null>(
+    sherlockAnalysis || null
+  )
   const [isGenerating, setIsGenerating] = useState(false)
   const [isSaving, startSaving] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  const handleGenerate = async () => {
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<ConsistencyAnalysisResult>).detail
+      if (detail) {
+        setLocalSherlock(detail)
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('sherlock:analysis', handler)
+      return () => window.removeEventListener('sherlock:analysis', handler)
+    }
+    return undefined
+  }, [])
+
+  const handleGenerate = async (mode: 'SHERLOCK' | 'STANDARD') => {
     setIsGenerating(true)
     setError(null)
     setSuccess(false)
 
     try {
+      if (mode === 'SHERLOCK' && !localSherlock) {
+        setError('Avvia prima l’analisi Sherlock per usare questa modalità.')
+        setIsGenerating(false)
+        return
+      }
       const aiResponse = await generateAIResponse(
         reportDescription,
         ticketCode || undefined,
-        sherlockAnalysis || null
+        localSherlock || null,
+        mode
       )
       setResponse(aiResponse)
     } catch (err: any) {
@@ -87,14 +110,14 @@ export function AdminResponseForm({
           </div>
         </div>
 
-        {/* Bottone Genera Bozza */}
-        <div className="mb-4">
+        {/* Bottoni Genera Bozza */}
+        <div className="mb-4 flex flex-col gap-3">
           <Button
             type="button"
-            onClick={handleGenerate}
+            onClick={() => handleGenerate('SHERLOCK')}
             disabled={isGenerating}
             variant="outline"
-            className="w-full sm:w-auto"
+            className="w-full"
           >
             {isGenerating ? (
               <>
@@ -104,7 +127,26 @@ export function AdminResponseForm({
             ) : (
               <>
                 <Sparkles className="w-4 h-4 mr-2" />
-                ✨ Genera Bozza con AI
+                Genera con Sherlock
+              </>
+            )}
+          </Button>
+          <Button
+            type="button"
+            onClick={() => handleGenerate('STANDARD')}
+            disabled={isGenerating}
+            variant="outline"
+            className="w-full"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Generazione in corso...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Genera Standard
               </>
             )}
           </Button>
