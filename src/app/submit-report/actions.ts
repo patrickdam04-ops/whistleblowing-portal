@@ -193,34 +193,42 @@ export async function submitReport(
 
     // Invia notifica email all'amministratore
     try {
-      const resend = new Resend('re_bKNWtpSS_Ff5oKVo4wZ5xGPLSawkQ83Be')
+      // Usa variabile d'ambiente se disponibile, altrimenti fallback alla chiave hardcoded
+      const resendApiKey = process.env.RESEND_API_KEY || 're_bKNWtpSS_Ff5oKVo4wZ5xGPLSawkQ83Be'
+      
+      if (!resendApiKey) {
+        console.warn('⚠️ RESEND_API_KEY non configurata, email non inviata')
+        // Non blocchiamo il flusso se l'email non può essere inviata
+      } else {
+        const resend = new Resend(resendApiKey)
 
-      // Crea un titolo dalla descrizione (primi 50 caratteri)
-      const title = validatedData.description.length > 50
-        ? validatedData.description.substring(0, 50) + '...'
-        : validatedData.description
+        // Crea un titolo dalla descrizione (primi 50 caratteri)
+        const title = validatedData.description.length > 50
+          ? validatedData.description.substring(0, 50) + '...'
+          : validatedData.description
 
-      await resend.emails.send({
-        from: 'Whistleblowing AI <onboarding@resend.dev>',
-        to: 'patrickdam04@gmail.com', // <-- Indirizzo corretto
-        subject: `🔴 Nuova Segnalazione: ${title}`,
-        html: `
-          <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
-            <h2 style="color: #d32f2f;">Nuova Segnalazione Ricevuta</h2>
-            <p><strong>Titolo:</strong> ${title}</p>
-            <p><strong>Codice di Tracciamento:</strong> ${ticketCode}</p>
-            <p><strong>Descrizione:</strong> ${validatedData.description}</p>
-            <hr />
-            <p>Accedi alla Dashboard per l'analisi AI completa e il piano investigativo.</p>
-            <br />
-            <p style="font-size: 11px; color: #666;">
-              ⚠️ AVVISO LEGALE: Questa notifica è generata automaticamente. Le analisi AI sono a scopo informativo e non sostituiscono il parere di un legale.
-            </p>
-          </div>
-        `,
-      })
+        await resend.emails.send({
+          from: 'Whistleblowing AI <onboarding@resend.dev>',
+          to: 'patrickdam04@gmail.com', // <-- Indirizzo corretto
+          subject: `🔴 Nuova Segnalazione: ${title}`,
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
+              <h2 style="color: #d32f2f;">Nuova Segnalazione Ricevuta</h2>
+              <p><strong>Titolo:</strong> ${title}</p>
+              <p><strong>Codice di Tracciamento:</strong> ${ticketCode}</p>
+              <p><strong>Descrizione:</strong> ${validatedData.description}</p>
+              <hr />
+              <p>Accedi alla Dashboard per l'analisi AI completa e il piano investigativo.</p>
+              <br />
+              <p style="font-size: 11px; color: #666;">
+                ⚠️ AVVISO LEGALE: Questa notifica è generata automaticamente. Le analisi AI sono a scopo informativo e non sostituiscono il parere di un legale.
+              </p>
+            </div>
+          `,
+        })
 
-      console.log('Tentativo di invio mail a patrickdam04@gmail.com effettuato.')
+        console.log('Tentativo di invio mail a patrickdam04@gmail.com effettuato.')
+      }
     } catch (emailError: any) {
       // Non blocchiamo il flusso se l'email fallisce - loggiamo solo l'errore
       console.error('❌ Errore durante l\'invio dell\'email di notifica:', emailError)
