@@ -96,16 +96,14 @@ export async function submitReport(
     // Gestione upload allegati
     const attachmentPaths: string[] = []
     
-    if (attachments && attachments.length > 0) {
-      console.log(`📦 Tentativo upload di ${attachments.length} file(s) nel bucket: "${BUCKET_NAME}"`)
-      
-      for (const file of attachments) {
-        // Skip se il file non esiste o è vuoto
-        if (!file || !(file instanceof File) || file.size === 0 || !file.name) {
-          console.log('⏭️ Nessun file valido selezionato, skip upload.')
-          continue
-        }
+    const validAttachments = (attachments || []).filter(
+      (file) => file && file instanceof File && file.size > 0 && file.name
+    )
 
+    if (validAttachments.length > 0) {
+      console.log(`📦 Tentativo upload di ${validAttachments.length} file(s) nel bucket: "${BUCKET_NAME}"`)
+      
+      for (const file of validAttachments) {
         // Verifica dimensione file (5MB = 5 * 1024 * 1024 bytes)
         const maxSize = 5 * 1024 * 1024 // 5MB
         if (file.size > maxSize) {
