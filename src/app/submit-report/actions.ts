@@ -113,10 +113,14 @@ export async function submitReport(
           }
         }
 
-        // Genera un nome file univoco per evitare collisioni
+        // Genera un nome file univoco e sicuro per evitare collisioni
         const fileExt = file.name.split('.').pop()
-        const fileName = `${ticketCode}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`
-        const filePath = `${ticketCode}/${fileName}`
+        const rawFileName = `${ticketCode}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`
+        const safeFileName = rawFileName
+          .trim()
+          .replace(/\s+/g, '_')
+          .replace(/[^a-zA-Z0-9._-]/g, '_')
+        const filePath = `${ticketCode}/${safeFileName}`.replace(/^[-\s./]+/, '')
 
         try {
           console.log('Tentativo upload su bucket: report-attachments')
@@ -131,6 +135,7 @@ export async function submitReport(
             })
 
           if (uploadError) {
+            console.error(uploadError)
             console.error('Errore Storage: ' + uploadError.message)
             console.error('📋 Dettagli errore:', {
               message: uploadError.message,
