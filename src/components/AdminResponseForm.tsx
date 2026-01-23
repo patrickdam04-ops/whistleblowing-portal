@@ -151,6 +151,10 @@ export function AdminResponseForm({
             )}
           </Button>
         </div>
+        <p className="text-xs text-gray-500 mb-4">
+          ℹ️ Standard: Risposta generica formale. 🕵️ Sherlock: Include domande specifiche sui dati
+          mancanti rilevati dall&apos;IA.
+        </p>
 
         {/* Area di testo */}
         <div className="mb-4">

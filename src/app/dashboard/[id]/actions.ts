@@ -42,6 +42,39 @@ export async function updateStatus(
   return { success: true }
 }
 
+export async function archiveReport(id: string) {
+  const supabase = createClient()
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    throw new Error('Non autorizzato')
+  }
+
+  const { error, data } = await supabase
+    .from('reports')
+    .update({ is_archived: true })
+    .eq('id', id)
+    .select()
+
+  if (error) {
+    console.error('Errore durante l\'archiviazione:', error)
+    throw new Error(`Errore durante l'archiviazione: ${error.message}`)
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error('Segnalazione non trovata')
+  }
+
+  revalidatePath('/dashboard')
+  revalidatePath(`/dashboard/${id}`)
+
+  return { success: true }
+}
+
 export async function saveAdminResponse(id: string, response: string) {
   const supabase = createClient()
 

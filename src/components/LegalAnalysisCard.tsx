@@ -62,7 +62,7 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
               Analisi in corso...
             </>
           ) : (
-            'Avvia Analisi Legale IA (Gemini 2.0)'
+              'Avvia Analisi Legale'
           )}
         </Button>
 

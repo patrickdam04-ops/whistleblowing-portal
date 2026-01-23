@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { Shield, AlertCircle } from 'lucide-react'
 import { ReportRow } from './report-row'
+import { DashboardFilters } from '@/components/DashboardFilters'
 
 interface Report {
   id: string
@@ -11,9 +12,17 @@ interface Report {
   status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
   encrypted_contact_info: string | null
+  is_archived: boolean | null
 }
 
-export default async function DashboardPage() {
+interface PageProps {
+  searchParams?: {
+    view?: 'active' | 'archived'
+    sort?: 'recent' | 'severity'
+  }
+}
+
+export default async function DashboardPage({ searchParams }: PageProps) {
   const supabase = createClient()
 
   // Verifica autenticazione
@@ -38,6 +47,31 @@ export default async function DashboardPage() {
 
   const reportsData = (reports || []) as Report[]
 
+  const currentView = searchParams?.view === 'archived' ? 'archived' : 'active'
+  const currentSort = searchParams?.sort === 'severity' ? 'severity' : 'recent'
+
+  const filteredReports = reportsData.filter((report) =>
+    currentView === 'archived' ? report.is_archived : !report.is_archived
+  )
+
+  const severityRank: Record<NonNullable<Report['severity']>, number> = {
+    CRITICAL: 4,
+    HIGH: 3,
+    MEDIUM: 2,
+    LOW: 1,
+  }
+
+  const sortedReports = [...filteredReports].sort((a, b) => {
+    if (currentSort === 'severity') {
+      const rankA = a.severity ? severityRank[a.severity] : 0
+      const rankB = b.severity ? severityRank[b.severity] : 0
+      if (rankA !== rankB) {
+        return rankB - rankA
+      }
+    }
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  })
+
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -52,13 +86,17 @@ export default async function DashboardPage() {
           </p>
         </div>
 
+        <DashboardFilters currentView={currentView} currentSort={currentSort} />
+
         {/* Tabella */}
-        {reportsData.length === 0 ? (
+        {sortedReports.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-900 mb-2">Nessuna segnalazione ricevuta</p>
+            <p className="text-lg font-medium text-gray-900 mb-2">
+              Nessuna segnalazione trovata
+            </p>
             <p className="text-sm text-gray-500">
-              Le segnalazioni inviate dagli utenti appariranno qui.
+              Le segnalazioni corrispondenti ai filtri appariranno qui.
             </p>
           </div>
         ) : (
@@ -85,7 +123,7 @@ export default async function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {reportsData.map((report) => (
+                  {sortedReports.map((report) => (
                     <ReportRow key={report.id} report={report} />
                   ))}
                 </tbody>
@@ -95,9 +133,9 @@ export default async function DashboardPage() {
         )}
 
         {/* Footer con conteggio */}
-        {reportsData.length > 0 && (
+        {sortedReports.length > 0 && (
           <div className="mt-4 text-sm text-gray-600">
-            Totale segnalazioni: <span className="font-medium">{reportsData.length}</span>
+            Totale segnalazioni: <span className="font-medium">{sortedReports.length}</span>
           </div>
         )}
       </div>
