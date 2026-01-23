@@ -1,7 +1,6 @@
 'use server'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-// Usiamo il modello sperimentale che funziona
 const MODEL = 'gemini-2.0-flash-exp'
 const URL =
   'https://generativelanguage.googleapis.com/v1beta/models/' +

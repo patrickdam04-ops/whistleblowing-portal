@@ -24,7 +24,15 @@ export async function analyzeReport(
 
   try {
     if (!API_KEY) {
-      throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
+      console.error('ERRORE GEMINI: GOOGLE_GENERATIVE_AI_API_KEY non configurata')
+      return {
+        summary: 'Analisi AI non disponibile al momento.',
+        risk_level: 'LOW',
+        recommended_actions: [
+          'Verifica la configurazione della chiave API',
+          'Riprova più tardi',
+        ],
+      }
     }
     console.log(
       'CHIAVE USATA:',
@@ -34,12 +42,14 @@ export async function analyzeReport(
       'DEBUG CHIAVE:',
       process.env.GOOGLE_GENERATIVE_AI_API_KEY?.substring(0, 10)
     )
+    const textOnlyDescription = description.trim()
+    console.log('Analisi IA: solo testo, nessun allegato inviato')
     console.log('Tentativo analisi con modello:', MODEL)
 
     const genAI = new GoogleGenerativeAI(API_KEY)
     const model = genAI.getGenerativeModel({ model: MODEL })
 
-    const prompt = `Sei un esperto legale. Analizza questa segnalazione: "${description}".
+    const prompt = `Sei un esperto legale. Analizza questa segnalazione: "${textOnlyDescription}".
 Rispondi SOLO con un JSON valido (senza markdown) con:
 { "summary": "riassunto breve", "risk_level": "LOW/MEDIUM/HIGH", "recommended_actions": ["azione1", "azione2"] }`
 
@@ -86,6 +96,13 @@ Rispondi SOLO con un JSON valido (senza markdown) con:
     }
   } catch (error: any) {
     console.error('ERRORE GEMINI:', error)
-    throw error
+    return {
+      summary: 'Analisi AI non disponibile al momento.',
+      risk_level: 'LOW',
+      recommended_actions: [
+        'Riprova tra qualche minuto',
+        'Se il problema persiste, verifica i log su Vercel',
+      ],
+    }
   }
 }
