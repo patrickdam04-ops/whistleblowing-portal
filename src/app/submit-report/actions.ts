@@ -128,7 +128,7 @@ export async function submitReport(
           
           // Upload del file nel bucket privato
           const { error: uploadError, data: uploadData } = await supabase.storage
-            .from(BUCKET_NAME)
+            .from('report-attachments')
             .upload(filePath, file, {
               contentType: file.type,
               upsert: false,
