@@ -11,11 +11,9 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { StatusSelector } from '@/components/StatusSelector'
-import { AdminResponseForm } from '@/components/AdminResponseForm'
 import { InvestigationPlanPanel } from '@/components/InvestigationPlanPanel'
 import { ReportAttachments } from '@/components/ReportAttachments'
-import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
-import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
+import { AdminAIInsightsPanel } from '@/components/AdminAIInsightsPanel'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import { SeverityBadge } from '@/components/ui/badges'
 
@@ -174,22 +172,16 @@ export default async function ReportDetailPage({ params }: PageProps) {
               {/* Allegati */}
               <ReportAttachments attachments={reportData.attachments} reportId={reportData.id} />
 
-              {/* Legal Analysis Card */}
-              <LegalAnalysisCard description={reportData.description} />
-
-              {/* Sherlock AI Consistency */}
-              <SherlockConsistencyCard description={reportData.description} />
+              {/* AI Insights + Smart Reply */}
+              <AdminAIInsightsPanel
+                description={reportData.description}
+                ticketCode={reportData.ticket_code}
+                reportId={reportData.id}
+                initialResponse={reportData.admin_response}
+              />
 
               {/* Investigation Plan Panel (Privato Admin) */}
               <InvestigationPlanPanel reportDescription={reportData.description} />
-
-              {/* Admin Response Form */}
-              <AdminResponseForm
-                reportId={reportData.id}
-                reportDescription={reportData.description}
-                ticketCode={reportData.ticket_code}
-                initialResponse={reportData.admin_response}
-              />
             </div>
           </div>
         </div>

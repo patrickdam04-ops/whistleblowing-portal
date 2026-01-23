@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { generateAIResponse } from '@/app/actions/generate-ai-response'
+import type { ConsistencyAnalysisResult } from '@/app/(public)/actions/analyze-consistency'
 import { saveAdminResponse } from '@/app/dashboard/[id]/actions'
 import { Button } from '@/components/ui/button'
 import { Sparkles, Loader2, Save, AlertTriangle } from 'lucide-react'
@@ -11,6 +12,7 @@ interface AdminResponseFormProps {
   reportDescription: string
   ticketCode?: string | null
   initialResponse?: string | null
+  sherlockAnalysis?: ConsistencyAnalysisResult | null
 }
 
 export function AdminResponseForm({
@@ -18,6 +20,7 @@ export function AdminResponseForm({
   reportDescription,
   ticketCode,
   initialResponse,
+  sherlockAnalysis,
 }: AdminResponseFormProps) {
   const [response, setResponse] = useState(initialResponse || '')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -31,7 +34,11 @@ export function AdminResponseForm({
     setSuccess(false)
 
     try {
-      const aiResponse = await generateAIResponse(reportDescription, ticketCode || undefined)
+      const aiResponse = await generateAIResponse(
+        reportDescription,
+        ticketCode || undefined,
+        sherlockAnalysis || null
+      )
       setResponse(aiResponse)
     } catch (err: any) {
       console.error('Errore generazione AI:', err)
@@ -116,7 +123,7 @@ export function AdminResponseForm({
             value={response}
             onChange={(e) => setResponse(e.target.value)}
             rows={12}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y font-mono text-sm"
+            className="w-full min-h-[300px] px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y font-mono text-sm"
             placeholder="Scrivi qui la risposta al segnalante oppure usa il bottone 'Genera Bozza con AI' per creare una bozza automatica..."
           />
         </div>

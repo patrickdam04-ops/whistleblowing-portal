@@ -7,9 +7,11 @@ import { Search, Loader2, AlertTriangle } from 'lucide-react'
 
 interface SherlockConsistencyCardProps {
   description: string
+  compact?: boolean
+  onAnalysis?: (analysis: ConsistencyAnalysisResult) => void
 }
 
-export function SherlockConsistencyCard({ description }: SherlockConsistencyCardProps) {
+export function SherlockConsistencyCard({ description, compact, onAnalysis }: SherlockConsistencyCardProps) {
   const [analysis, setAnalysis] = useState<ConsistencyAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -20,6 +22,7 @@ export function SherlockConsistencyCard({ description }: SherlockConsistencyCard
       try {
         const result = await analyzeConsistency(description)
         setAnalysis(result)
+        onAnalysis?.(result)
       } catch (err: any) {
         console.error('Errore analisi coerenza:', err)
         setError(err?.message || 'Errore durante l\'analisi di coerenza.')
@@ -34,7 +37,7 @@ export function SherlockConsistencyCard({ description }: SherlockConsistencyCard
   }
 
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200">
+    <div className={compact ? '' : 'mt-8 pt-8 border-t border-gray-200'}>
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-700" />

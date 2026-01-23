@@ -1,5 +1,7 @@
 'use server'
 
+import type { ConsistencyAnalysisResult } from '@/app/(public)/actions/analyze-consistency'
+
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
 const MODEL = 'gemini-2.0-flash-exp'
 const URL =
@@ -10,7 +12,8 @@ const URL =
 
 export async function generateAIResponse(
   description: string,
-  ticketCode?: string
+  ticketCode?: string,
+  sherlockAnalysis?: ConsistencyAnalysisResult | null
 ): Promise<string> {
   if (!description) {
     throw new Error('Descrizione mancante')
@@ -27,7 +30,16 @@ export async function generateAIResponse(
       ? `La segnalazione è stata registrata con il codice ${ticketCode}.`
       : 'La segnalazione è stata registrata.'
 
-    const prompt = `Sei un assistente legale specializzato in Whistleblowing (D.Lgs 24/2023). 
+    const sherlockContext = sherlockAnalysis
+      ? `SherlockAnalysis:
+- incoerenze_rilevate: ${JSON.stringify(sherlockAnalysis.incoerenze_rilevate || [])}
+- buchi_narrativi: ${JSON.stringify(sherlockAnalysis.buchi_narrativi || [])}
+- consiglio_investigativo: ${sherlockAnalysis.consiglio_investigativo || ''}`
+      : 'SherlockAnalysis: nessun dato disponibile'
+
+    const prompt = `Sei un assistente legale specializzato in Whistleblowing (D.Lgs 24/2023).
+Se nel parametro 'sherlockAnalysis' sono presenti buchi narrativi o dati mancanti (es. date, luoghi), e l'intent è 'ASK_PROOF', devi generare una risposta che chieda SPECIFICAMENTE quei dati mancanti. Sii preciso e gentile.
+
 Analizza questa segnalazione: "${description}".
 
 Genera una bozza di risposta professionale che:
@@ -45,6 +57,8 @@ Genera una bozza di risposta professionale che:
 - Sia lunga circa 200-250 parole.
 
 NON includere placeholder come [Nome] o [Azienda]. Scrivi una bozza pronta all'uso, completa e professionale.
+
+SherlockAnalysis: ${sherlockContext}
 
 Rispondi SOLO con il testo della lettera, senza aggiungere commenti, note aggiuntive o formattazioni markdown.`
 

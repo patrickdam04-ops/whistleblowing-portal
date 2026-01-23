@@ -7,9 +7,10 @@ import { Scale, Loader2, AlertTriangle } from 'lucide-react'
 
 interface LegalAnalysisCardProps {
   description: string
+  compact?: boolean
 }
 
-export function LegalAnalysisCard({ description }: LegalAnalysisCardProps) {
+export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardProps) {
   const [analysis, setAnalysis] = useState<LegalAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -41,7 +42,7 @@ export function LegalAnalysisCard({ description }: LegalAnalysisCardProps) {
   }
 
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200">
+    <div className={compact ? '' : 'mt-8 pt-8 border-t border-gray-200'}>
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Scale className="w-5 h-5 text-gray-700" />
