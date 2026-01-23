@@ -3,7 +3,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-1.5-flash-latest'
+const MODEL = 'gemini-1.5-flash'
 
 export interface AIAnalysisResult {
   summary: string
