@@ -1,6 +1,6 @@
 'use server'
 
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
 const MODEL = 'gemini-1.5-flash'
@@ -36,8 +36,27 @@ export async function analyzeReport(
     )
     console.log('Tentativo analisi con modello:', MODEL)
 
+    const safetySettings = [
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+      },
+    ]
+
     const genAI = new GoogleGenerativeAI(API_KEY)
-    const model = genAI.getGenerativeModel({ model: MODEL })
+    const model = genAI.getGenerativeModel({ model: MODEL, safetySettings })
 
     const prompt = `Sei un esperto legale. Analizza questa segnalazione: "${description}".
 Rispondi SOLO con un JSON valido (senza markdown) con:
