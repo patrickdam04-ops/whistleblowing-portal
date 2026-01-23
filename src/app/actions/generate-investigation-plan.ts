@@ -1,7 +1,8 @@
 'use server'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-1.5-flash'
+// Usiamo il modello sperimentale che funziona
+const MODEL = 'gemini-2.0-flash-exp'
 const URL =
   'https://generativelanguage.googleapis.com/v1beta/models/' +
   MODEL +
@@ -142,18 +143,10 @@ Sii molto schematico e pratico. Usa un tono confidenziale rivolto al datore di l
 
 Rispondi SOLO con il testo del piano investigativo, senza aggiungere commenti o note aggiuntive.`
 
-    const safetySettings = [
-      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
-    ]
-
     const response = await fetch(URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        safetySettings,
         contents: [
           {
             parts: [
