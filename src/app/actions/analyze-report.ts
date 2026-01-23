@@ -1,8 +1,7 @@
 'use server'
 
-const API_KEY = 'AIzaSyBPMHmpVwxqCc-FjOm1Y65hMyiBhtum9_o'
-// Usiamo la versione Lite Preview trovata nei log dell'utente
-const MODEL = 'gemini-2.0-flash-lite-preview-02-05'
+const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+const MODEL = 'gemini-1.5-pro'
 const URL =
   'https://generativelanguage.googleapis.com/v1beta/models/' +
   MODEL +
@@ -27,6 +26,9 @@ export async function analyzeReport(
   }
 
   try {
+    if (!API_KEY) {
+      throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
+    }
     console.log('Tentativo analisi con modello:', MODEL)
 
     const response = await fetch(URL, {
@@ -109,7 +111,7 @@ Rispondi SOLO con un JSON valido (senza markdown) con:
       recommended_actions: analysis.recommended_actions,
     }
   } catch (error: any) {
-    console.error('Critical AI Error:', error)
+    console.error('DETTAGLIO ERRORE GEMINI:', error)
     // Anche in caso di crash totale, salviamo la giornata
     return {
       summary: 'Errore di connessione AI. Impossibile analizzare al momento.',
