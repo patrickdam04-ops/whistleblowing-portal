@@ -3,7 +3,13 @@ import { Button } from '@/components/ui/button'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="absolute top-5 right-5">
+        <Button asChild variant="outline" size="sm">
+          <Link href="/login">Accesso Admin</Link>
+        </Button>
+      </div>
+
       <div className="text-center space-y-8 px-4">
         <h1 className="text-5xl font-bold text-gray-900">
           Whistleblowing Sicuro
@@ -11,26 +17,20 @@ export default function HomePage() {
         <p className="text-xl text-gray-600 max-w-2xl">
           Piattaforma sicura e anonima per segnalazioni whistleblowing
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button asChild size="lg">
-            <Link href="/submit-report">
-              Invia Segnalazione
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="/login">
-              Accedi Azienda
-            </Link>
-          </Button>
-        </div>
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600 mb-2">Hai già inviato una segnalazione?</p>
-          <a
-            href="/track"
-            className="inline-block px-6 py-3 border-2 border-blue-600 text-blue-600 font-bold rounded-full hover:bg-blue-50 transition-colors"
+        <div className="flex flex-col items-center gap-4">
+          <Button
+            asChild
+            className="text-xl px-10 py-6 shadow-lg hover:shadow-xl transition-shadow"
           >
-            🔍 Clicca qui per seguire la tua pratica
-          </a>
+            <Link href="/submit-report">Invia Segnalazione</Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            className="text-sm px-6 py-3"
+          >
+            <Link href="/track">Segui la tua pratica</Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -12,7 +12,6 @@ interface ReportRowProps {
     is_anonymous: boolean
     status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
     severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
-    is_archived?: boolean | null
   }
 }
 

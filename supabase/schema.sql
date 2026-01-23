@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS reports (
   status TEXT DEFAULT 'PENDING' NOT NULL,
   severity TEXT,
   encrypted_contact_info TEXT,
-  is_archived BOOLEAN DEFAULT false NOT NULL,
   
   -- Vincoli CHECK per status
   CONSTRAINT reports_status_check CHECK (
