@@ -6,8 +6,8 @@ import { FileText, Download, Loader2, AlertCircle, Image, File, FileType } from 
 import { Button } from '@/components/ui/button'
 import { STORAGE_BUCKET_NAME } from '@/lib/constants'
 
-// Usa la costante centralizzata
-const BUCKET_NAME = STORAGE_BUCKET_NAME
+// Usa la costante centralizzata e assicurati che sia pulita
+const BUCKET_NAME = STORAGE_BUCKET_NAME.trim().replace(/^\/+/, '')
 
 interface ReportAttachmentsProps {
   attachments: string | string[] | null // Array di path (PostgreSQL array) o stringa JSON
@@ -87,9 +87,13 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
 
           console.log(`🔗 Generazione signed URL per: ${path} dal bucket "${BUCKET_NAME}"`)
 
+          // Assicurati che il bucket name non abbia slash all'inizio
+          const cleanBucketName = BUCKET_NAME.replace(/^\/+/, '').trim()
+          console.log(`🔍 Signed URL - Bucket name pulito: "${cleanBucketName}"`)
+
           // Crea signed URL valido per 1 ora (3600 secondi)
           const { data, error } = await supabase.storage
-            .from(BUCKET_NAME)
+            .from(cleanBucketName)
             .createSignedUrl(path, 3600)
 
           if (error) {

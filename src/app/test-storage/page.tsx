@@ -16,9 +16,12 @@ export default function TestStoragePage() {
 
     try {
       const supabase = createClient()
-      const BUCKET_NAME = STORAGE_BUCKET_NAME
+      let BUCKET_NAME = STORAGE_BUCKET_NAME.trim().replace(/^\/+/, '')
 
-      console.log('🧪 Test Storage - Bucket:', BUCKET_NAME)
+      console.log('🧪 Test Storage - Bucket RAW:', JSON.stringify(STORAGE_BUCKET_NAME))
+      console.log('🧪 Test Storage - Bucket CLEANED:', JSON.stringify(BUCKET_NAME))
+      console.log('🧪 Test Storage - Bucket length:', BUCKET_NAME.length)
+      console.log('🧪 Test Storage - Bucket charCodes:', BUCKET_NAME.split('').map(c => c.charCodeAt(0)))
       console.log('🧪 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
 
       // Prova a listare i file nel bucket
@@ -29,11 +32,12 @@ export default function TestStoragePage() {
 
       if (error) {
         console.error('❌ Errore Storage:', error)
+        const errorCode = (error as any).statusCode || (error as any).status || 'N/A'
         setResult({
           success: false,
-          message: `Errore: ${error.message}\nCodice: ${error.statusCode || 'N/A'}\nBucket: ${BUCKET_NAME}`,
+          message: `Errore: ${error.message}\nCodice: ${errorCode}\nBucket: ${BUCKET_NAME}`,
         })
-        alert(`❌ ERRORE:\n\n${error.message}\n\nCodice: ${error.statusCode || 'N/A'}\nBucket testato: ${BUCKET_NAME}`)
+        alert(`❌ ERRORE:\n\n${error.message}\n\nCodice: ${errorCode}\nBucket testato: ${BUCKET_NAME}`)
       } else {
         console.log('✅ Successo! File trovati:', data)
         setResult({
