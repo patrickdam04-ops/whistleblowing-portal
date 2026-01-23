@@ -100,6 +100,12 @@ export async function submitReport(
       console.log(`📦 Tentativo upload di ${attachments.length} file(s) nel bucket: "${BUCKET_NAME}"`)
       
       for (const file of attachments) {
+        // Skip se il file non esiste o è vuoto
+        if (!file || !(file instanceof File) || file.size === 0 || !file.name) {
+          console.log('⏭️ Nessun file valido selezionato, skip upload.')
+          continue
+        }
+
         // Verifica dimensione file (5MB = 5 * 1024 * 1024 bytes)
         const maxSize = 5 * 1024 * 1024 // 5MB
         if (file.size > maxSize) {
@@ -127,7 +133,7 @@ export async function submitReport(
             })
 
           if (uploadError) {
-            console.error('❌ Errore durante l\'upload del file:', uploadError)
+            console.error('Errore Storage: ' + uploadError.message)
             console.error('📋 Dettagli errore:', {
               message: uploadError.message,
               statusCode: uploadError.statusCode,
