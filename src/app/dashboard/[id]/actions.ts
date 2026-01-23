@@ -20,9 +20,10 @@ export async function updateStatus(
   }
 
   // Aggiorna lo stato nel database
+  const shouldArchive = newStatus === 'RESOLVED' || newStatus === 'DISMISSED'
   const { error, data } = await supabase
     .from('reports')
-    .update({ status: newStatus })
+    .update({ status: newStatus, is_archived: shouldArchive })
     .eq('id', id)
     .select()
 
@@ -39,39 +40,6 @@ export async function updateStatus(
   revalidatePath('/dashboard')
   revalidatePath(`/dashboard/${id}`)
   
-  return { success: true }
-}
-
-export async function archiveReport(id: string) {
-  const supabase = createClient()
-
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser()
-
-  if (authError || !user) {
-    throw new Error('Non autorizzato')
-  }
-
-  const { error, data } = await supabase
-    .from('reports')
-    .update({ is_archived: true })
-    .eq('id', id)
-    .select()
-
-  if (error) {
-    console.error('Errore durante l\'archiviazione:', error)
-    throw new Error(`Errore durante l'archiviazione: ${error.message}`)
-  }
-
-  if (!data || data.length === 0) {
-    throw new Error('Segnalazione non trovata')
-  }
-
-  revalidatePath('/dashboard')
-  revalidatePath(`/dashboard/${id}`)
-
   return { success: true }
 }
 

@@ -12,7 +12,6 @@ import {
 import Link from 'next/link'
 import { StatusSelector } from '@/components/StatusSelector'
 import { AdminResponseForm } from '@/components/AdminResponseForm'
-import { ArchiveButton } from '@/components/ArchiveButton'
 import { ReportAttachments } from '@/components/ReportAttachments'
 import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
 import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
@@ -89,7 +88,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
         {/* Layout a due colonne */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Colonna SX: Metadata */}
+          {/* Colonna SX: Metadata + Smart Reply */}
           <div className="lg:col-span-1 space-y-6">
             {/* Card Metadata */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -143,12 +142,16 @@ export default async function ReportDetailPage({ params }: PageProps) {
                   <StatusSelector id={reportData.id} initialStatus={reportData.status} />
                 </div>
 
-                {/* Archiviazione */}
-                <div>
-                  <ArchiveButton reportId={reportData.id} isArchived={reportData.is_archived} />
-                </div>
               </div>
             </div>
+
+            {/* Smart Reply - Risposta al Segnalante */}
+            <AdminResponseForm
+              reportId={reportData.id}
+              reportDescription={reportData.description}
+              ticketCode={reportData.ticket_code}
+              initialResponse={reportData.admin_response}
+            />
           </div>
 
           {/* Colonna DX: Descrizione */}
@@ -185,14 +188,6 @@ export default async function ReportDetailPage({ params }: PageProps) {
                 <SherlockConsistencyCard description={reportData.description} compact />
                 <LegalAnalysisCard description={reportData.description} compact />
               </div>
-
-              {/* Smart Reply - Risposta al Segnalante */}
-              <AdminResponseForm
-                reportId={reportData.id}
-                reportDescription={reportData.description}
-                ticketCode={reportData.ticket_code}
-                initialResponse={reportData.admin_response}
-              />
             </div>
           </div>
         </div>
