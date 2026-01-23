@@ -1,12 +1,9 @@
 'use server'
 
+import { GoogleGenerativeAI } from '@google/generative-ai'
+
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-1.5-flash'
-const URL =
-  'https://generativelanguage.googleapis.com/v1/models/' +
-  MODEL +
-  ':generateContent?key=' +
-  API_KEY
+const MODEL = 'gemini-1.5-flash-latest'
 
 export interface AIAnalysisResult {
   summary: string
@@ -31,29 +28,16 @@ export async function analyzeReport(
     }
     console.log('Tentativo analisi con modello:', MODEL)
 
-    const response = await fetch(URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `Sei un esperto legale. Analizza questa segnalazione: "${description}".
+    const genAI = new GoogleGenerativeAI(API_KEY)
+    const model = genAI.getGenerativeModel({ model: MODEL })
+
+    const prompt = `Sei un esperto legale. Analizza questa segnalazione: "${description}".
 Rispondi SOLO con un JSON valido (senza markdown) con:
-{ "summary": "riassunto breve", "risk_level": "LOW/MEDIUM/HIGH", "recommended_actions": ["azione1", "azione2"] }`,
-              },
-            ],
-          },
-        ],
-      }),
-    })
+{ "summary": "riassunto breve", "risk_level": "LOW/MEDIUM/HIGH", "recommended_actions": ["azione1", "azione2"] }`
 
-    const rawText = await response.text()
-
-    if (!response.ok) {
-      throw new Error(`Google Error ${response.status}: ${rawText}`)
-    }
+    const result = await model.generateContent(prompt)
+    const response = result.response
+    const rawText = response.text()
 
     // Se arriviamo qui, l'AI ha risposto! Puliamo e restituiamo.
     const cleanJson = rawText.replace(/```json|```/g, '').trim()
