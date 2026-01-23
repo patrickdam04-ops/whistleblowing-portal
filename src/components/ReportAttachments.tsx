@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { FileText, Download, Loader2, AlertCircle, Image, File, FileType } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { STORAGE_BUCKET_NAME } from '@/lib/constants'
 
-// Costante per il nome del bucket - MODIFICA QUI SE IL BUCKET HA UN NOME DIVERSO SU SUPABASE
-const BUCKET_NAME = 'report-attachments'
+// Usa la costante centralizzata
+const BUCKET_NAME = STORAGE_BUCKET_NAME
 
 interface ReportAttachmentsProps {
   attachments: string | string[] | null // Array di path (PostgreSQL array) o stringa JSON

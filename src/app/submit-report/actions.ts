@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server'
 import { reportSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { Resend } from 'resend'
+import { STORAGE_BUCKET_NAME } from '@/lib/constants'
 
 export interface ActionResult {
   success: boolean
@@ -91,8 +92,8 @@ export async function submitReport(
     // Crea il client Supabase
     const supabase = createClient()
 
-    // Costante per il nome del bucket - MODIFICA QUI SE IL BUCKET HA UN NOME DIVERSO SU SUPABASE
-    const BUCKET_NAME = 'report-attachments'
+    // Usa la costante centralizzata
+    const BUCKET_NAME = STORAGE_BUCKET_NAME
     
     // Gestione upload allegati
     const attachmentPaths: string[] = []
