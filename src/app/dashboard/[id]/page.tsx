@@ -14,6 +14,7 @@ import { StatusSelector } from '@/components/StatusSelector'
 import { AdminResponseForm } from '@/components/AdminResponseForm'
 import { InvestigationPlanPanel } from '@/components/InvestigationPlanPanel'
 import { ReportAttachments } from '@/components/ReportAttachments'
+import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import { SeverityBadge } from '@/components/ui/badges'
 
@@ -171,6 +172,9 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
               {/* Allegati */}
               <ReportAttachments attachments={reportData.attachments} reportId={reportData.id} />
+
+              {/* Legal Analysis Card */}
+              <LegalAnalysisCard description={reportData.description} />
 
               {/* Investigation Plan Panel (Privato Admin) */}
               <InvestigationPlanPanel reportDescription={reportData.description} />
