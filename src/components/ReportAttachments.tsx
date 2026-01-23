@@ -133,8 +133,8 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
 
   if (loading) {
     return (
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+      <div className="mt-6 pt-6 border-t border-slate-200">
+        <div className="flex items-center gap-2 text-sm text-slate-600">
           <Loader2 className="w-4 h-4 animate-spin" />
           Caricamento allegati...
         </div>
@@ -144,7 +144,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
 
   if (error) {
     return (
-      <div className="mt-6 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-6 border-t border-slate-200">
         <div className="flex items-center gap-2 text-sm text-red-600">
           <AlertCircle className="w-4 h-4" />
           {error}
@@ -156,13 +156,13 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
   // Se non ci sono allegati, mostra un messaggio
   if (!attachments || signedUrls.length === 0) {
     return (
-      <div className="mt-6 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-6 border-t border-slate-200">
         <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
           <FileText className="w-4 h-4" />
           📁 Allegati e Prove
         </h3>
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <p className="text-sm text-gray-500 text-center">
+        <div className="bg-gray-50 rounded-lg p-4 border border-slate-200">
+          <p className="text-sm text-slate-500 text-center">
             Nessun allegato presente
           </p>
         </div>
@@ -171,7 +171,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
   }
 
   return (
-    <div className="mt-6 pt-6 border-t border-gray-200">
+    <div className="mt-6 pt-6 border-t border-slate-200">
       <h3 className="text-sm font-medium text-gray-700 mb-4 flex items-center gap-2">
         <FileText className="w-4 h-4" />
         📁 Allegati e Prove ({signedUrls.length})
@@ -184,7 +184,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
           return (
             <div
               key={index}
-              className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-gray-50 rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
             >
               {isImage ? (
                 // Miniatura per immagini
@@ -215,15 +215,15 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
                   </div>
                   <div className="p-3">
                     <p className="text-sm font-medium text-gray-700 truncate">{item.name}</p>
-                    <p className="text-xs text-gray-500 mt-1">Clicca per visualizzare</p>
+                    <p className="text-xs text-slate-500 mt-1">Clicca per visualizzare</p>
                   </div>
                 </a>
               ) : (
                 // Icona e download per altri file
                 <div className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 p-3 bg-white rounded-lg border border-gray-200">
-                      <FileIcon className="w-6 h-6 text-gray-600" />
+                    <div className="flex-shrink-0 p-3 bg-white rounded-lg border border-slate-200">
+                      <FileIcon className="w-6 h-6 text-slate-600" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-700 truncate mb-2">
@@ -253,7 +253,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
           )
         })}
       </div>
-      <p className="mt-4 text-xs text-gray-500">
+      <p className="mt-4 text-xs text-slate-500">
         ⚠️ I link di download scadono dopo 1 ora per motivi di sicurezza.
       </p>
     </div>

@@ -69,7 +69,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
         <div className="mb-6">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Torna alla lista
@@ -80,9 +80,9 @@ export default async function ReportDetailPage({ params }: PageProps) {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Dettaglio Segnalazione</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Dettaglio Segnalazione</h1>
           </div>
-          <p className="text-sm text-gray-600">ID: {reportData.id}</p>
+          <p className="text-sm text-slate-600">ID: {reportData.id}</p>
         </div>
 
         {/* Layout a due colonne */}
@@ -90,25 +90,25 @@ export default async function ReportDetailPage({ params }: PageProps) {
           {/* Colonna SX: Metadata + Smart Reply */}
           <div className="md:col-span-1 space-y-6">
             {/* Card Metadata */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Informazioni
               </h2>
               <div className="space-y-4">
                 {/* Data */}
                 <div>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
                     <Calendar className="w-4 h-4" />
                     Data di ricezione
                   </div>
-                  <p className="text-sm font-medium text-gray-900">{formatFullDate(reportData.created_at)}</p>
-                  <p className="text-xs text-gray-500 mt-1">{formatDate(reportData.created_at)}</p>
+                  <p className="text-sm font-medium text-slate-900">{formatFullDate(reportData.created_at)}</p>
+                  <p className="text-xs text-slate-500 mt-1">{formatDate(reportData.created_at)}</p>
                 </div>
 
                 {/* Gravità */}
                 <div>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
                     <AlertTriangle className="w-4 h-4" />
                     Gravità
                   </div>
@@ -117,7 +117,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
                 {/* Anonimo */}
                 <div>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
                     <User className="w-4 h-4" />
                     Anonimato
                   </div>
@@ -126,7 +126,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
                       Sì - Segnalazione anonima
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 border border-slate-200">
                       No - Contatto disponibile
                     </span>
                   )}
@@ -134,7 +134,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
                 {/* Stato - Form per aggiornare */}
                 <div>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-2">
                     <Clock className="w-4 h-4" />
                     Stato
                   </div>
@@ -155,14 +155,14 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
           {/* Colonna DX: Descrizione */}
           <div className="md:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Descrizione della Segnalazione
               </h2>
               <div className="prose max-w-none">
-                <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                  <p className="text-gray-900 whitespace-pre-wrap leading-relaxed">
+                <div className="bg-gray-50 rounded-lg p-6 border border-slate-200">
+                  <p className="text-slate-900 whitespace-pre-wrap leading-relaxed">
                     {reportData.description}
                   </p>
                 </div>
@@ -170,12 +170,12 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
               {/* Contatto (se disponibile) */}
               {!reportData.is_anonymous && reportData.encrypted_contact_info && (
-                <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="mt-6 pt-6 border-t border-slate-200">
                   <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <User className="w-4 h-4" />
                     Contatto Segnalante
                   </h3>
-                  <p className="text-sm text-gray-600">{reportData.encrypted_contact_info}</p>
+                  <p className="text-sm text-slate-600">{reportData.encrypted_contact_info}</p>
                 </div>
               )}
 

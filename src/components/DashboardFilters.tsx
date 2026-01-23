@@ -33,14 +33,14 @@ export function DashboardFilters({ currentView, currentSort }: DashboardFiltersP
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
+      <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1">
         <button
           type="button"
           onClick={() => updateParams({ view: 'active' })}
           className={`px-4 py-2 text-sm font-medium rounded-md ${
             currentView === 'active'
               ? 'bg-blue-600 text-white'
-              : 'text-gray-600 hover:text-gray-900'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           Attive
@@ -51,7 +51,7 @@ export function DashboardFilters({ currentView, currentSort }: DashboardFiltersP
           className={`px-4 py-2 text-sm font-medium rounded-md ${
             currentView === 'archived'
               ? 'bg-blue-600 text-white'
-              : 'text-gray-600 hover:text-gray-900'
+              : 'text-slate-600 hover:text-slate-900'
           }`}
         >
           Archivio
@@ -59,14 +59,14 @@ export function DashboardFilters({ currentView, currentSort }: DashboardFiltersP
       </div>
 
       <div className="flex items-center gap-3">
-        <label htmlFor="sort" className="text-sm text-gray-600">
+        <label htmlFor="sort" className="text-sm text-slate-600">
           Ordina per
         </label>
         <select
           id="sort"
           value={currentSort}
           onChange={(e) => updateParams({ sort: e.target.value as SortMode })}
-          className="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="border border-slate-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="recent">Più Recenti</option>
           <option value="severity">Priorità/Rischio</option>

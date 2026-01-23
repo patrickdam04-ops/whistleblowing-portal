@@ -78,9 +78,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Gestione Segnalazioni</h1>
+            <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-slate-600">
             Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
           </p>
         </div>
@@ -89,34 +89,34 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Tabella */}
         {sortedReports.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-12 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-900 mb-2">
+            <p className="text-lg font-medium text-slate-900 mb-2">
               Nessuna segnalazione trovata
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-500">
               Le segnalazioni corrispondenti ai filtri appariranno qui.
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Data
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Gravità
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Stato
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Descrizione
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Anonimo
                     </th>
                   </tr>
@@ -133,7 +133,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Footer con conteggio */}
         {sortedReports.length > 0 && (
-          <div className="mt-4 text-sm text-gray-600">
+          <div className="mt-4 text-sm text-slate-600">
             Totale segnalazioni: <span className="font-medium">{sortedReports.length}</span>
           </div>
         )}

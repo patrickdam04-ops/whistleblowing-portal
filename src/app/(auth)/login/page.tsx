@@ -43,10 +43,10 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
             <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
             Accesso Amministratore
           </h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-slate-600">
             Inserisci le tue credenziali per accedere alla dashboard
           </p>
         </div>
@@ -77,7 +77,7 @@ export default function LoginPage() {
               type="email"
               required
               autoComplete="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="amministratore@azienda.com"
             />
           </div>
@@ -99,7 +99,7 @@ export default function LoginPage() {
               type="password"
               required
               autoComplete="current-password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               placeholder="••••••••"
             />
           </div>
@@ -111,8 +111,8 @@ export default function LoginPage() {
         </form>
 
         {/* Footer Info */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-center text-gray-500">
+        <div className="mt-6 pt-6 border-t border-slate-200">
+          <p className="text-xs text-center text-slate-500">
             Accesso riservato al personale autorizzato
           </p>
         </div>

@@ -40,11 +40,11 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
   }
 
   return (
-    <div className={compact ? '' : 'mt-8 pt-8 border-t border-gray-200'}>
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className={compact ? '' : 'mt-8 pt-8 border-t border-slate-200'}>
+      <div className="bg-white rounded-lg border border-slate-200 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-700" />
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-slate-900">
             🕵️‍♂️ Sherlock AI - Analisi Coerenza
           </h3>
         </div>
@@ -85,13 +85,13 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
                   style={{ width: `${analysis.score_solidita}%` }}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">{analysis.score_solidita}/100</p>
+              <p className="text-xs text-slate-500 mt-1">{analysis.score_solidita}/100</p>
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Incoerenze rilevate</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Incoerenze rilevate</h4>
               {analysis.incoerenze_rilevate.length === 0 ? (
-                <p className="text-sm text-gray-500">Nessuna incoerenza evidente</p>
+                <p className="text-sm text-slate-500">Nessuna incoerenza evidente</p>
               ) : (
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   {analysis.incoerenze_rilevate.map((item, idx) => (
@@ -102,9 +102,9 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Dati mancanti</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Dati mancanti</h4>
               {analysis.buchi_narrativi.length === 0 ? (
-                <p className="text-sm text-gray-500">Nessun buco narrativo evidente</p>
+                <p className="text-sm text-slate-500">Nessun buco narrativo evidente</p>
               ) : (
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   {analysis.buchi_narrativi.map((item, idx) => (
@@ -115,7 +115,7 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Consiglio investigativo</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Consiglio investigativo</h4>
               <p className="text-sm text-gray-700">{analysis.consiglio_investigativo}</p>
             </div>
           </div>

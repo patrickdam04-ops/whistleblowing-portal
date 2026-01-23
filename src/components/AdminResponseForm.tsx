@@ -93,9 +93,9 @@ export function AdminResponseForm({
   }
 
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="mt-8 pt-8 border-t border-slate-200">
+      <div className="bg-white rounded-lg border border-slate-200 p-6">
+        <h3 className="text-lg font-semibold text-slate-900 mb-4">
           Risposta al Segnalante
         </h3>
 
@@ -151,7 +151,7 @@ export function AdminResponseForm({
             )}
           </Button>
         </div>
-        <p className="text-xs text-gray-500 mb-4">
+        <p className="text-xs text-slate-500 mb-4">
           ℹ️ Standard: Risposta generica formale. 🕵️ Sherlock: Include domande specifiche sui dati
           mancanti rilevati dall&apos;IA.
         </p>
@@ -169,7 +169,7 @@ export function AdminResponseForm({
             value={response}
             onChange={(e) => setResponse(e.target.value)}
             rows={12}
-            className="w-full min-h-[300px] px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y font-mono text-sm"
+            className="w-full min-h-[300px] px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y font-mono text-sm"
             placeholder="Scrivi qui la risposta al segnalante oppure usa il bottone 'Genera Bozza con AI' per creare una bozza automatica..."
           />
         </div>

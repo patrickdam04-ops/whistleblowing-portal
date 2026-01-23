@@ -40,7 +40,7 @@ export function AIAnalysisPanel({ description }: AIAnalysisPanelProps) {
       case 'LOW':
         return 'bg-green-100 text-green-800 border-green-300'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300'
+        return 'bg-gray-100 text-gray-800 border-slate-300'
     }
   }
 
@@ -120,7 +120,7 @@ export function AIAnalysisPanel({ description }: AIAnalysisPanelProps) {
         <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-purple-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Analisi AI</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Analisi AI</h3>
           </div>
 
           {/* Risk Level */}
@@ -144,10 +144,10 @@ export function AIAnalysisPanel({ description }: AIAnalysisPanelProps) {
           {/* Summary */}
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
-              <FileText className="w-4 h-4 text-gray-600" />
+              <FileText className="w-4 h-4 text-slate-600" />
               <span className="text-sm font-medium text-gray-700">Riassunto:</span>
             </div>
-            <p className="text-sm text-gray-800 bg-white rounded-lg p-3 border border-gray-200">
+            <p className="text-sm text-gray-800 bg-white rounded-lg p-3 border border-slate-200">
               {analysis.summary}
             </p>
           </div>
@@ -155,14 +155,14 @@ export function AIAnalysisPanel({ description }: AIAnalysisPanelProps) {
           {/* Recommended Actions */}
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="w-4 h-4 text-gray-600" />
+              <Lightbulb className="w-4 h-4 text-slate-600" />
               <span className="text-sm font-medium text-gray-700">Azioni Consigliate:</span>
             </div>
             <ul className="space-y-2">
               {analysis.recommended_actions.map((action, index) => (
                 <li
                   key={index}
-                  className="flex items-start gap-2 text-sm text-gray-800 bg-white rounded-lg p-3 border border-gray-200"
+                  className="flex items-start gap-2 text-sm text-gray-800 bg-white rounded-lg p-3 border border-slate-200"
                 >
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-medium mt-0.5">
                     {index + 1}

@@ -37,16 +37,16 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
       case 'BASSO':
         return 'bg-green-100 text-green-800 border-green-300'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300'
+        return 'bg-gray-100 text-gray-800 border-slate-300'
     }
   }
 
   return (
-    <div className={compact ? '' : 'mt-8 pt-8 border-t border-gray-200'}>
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className={compact ? '' : 'mt-8 pt-8 border-t border-slate-200'}>
+      <div className="bg-white rounded-lg border border-slate-200 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Scale className="w-5 h-5 text-gray-700" />
-          <h3 className="text-lg font-semibold text-gray-900">Categorizzazione Legale Automatica</h3>
+          <h3 className="text-lg font-semibold text-slate-900">Categorizzazione Legale Automatica</h3>
         </div>
 
         <Button
@@ -93,9 +93,9 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Reati ipotizzati</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Reati ipotizzati</h4>
               {analysis.reati_ipotizzati.length === 0 ? (
-                <p className="text-sm text-gray-500">Nessuna voce rilevata</p>
+                <p className="text-sm text-slate-500">Nessuna voce rilevata</p>
               ) : (
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   {analysis.reati_ipotizzati.map((item, idx) => (
@@ -106,9 +106,9 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Riferimenti normativi</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Riferimenti normativi</h4>
               {analysis.riferimenti_normativi.length === 0 ? (
-                <p className="text-sm text-gray-500">Nessuna voce rilevata</p>
+                <p className="text-sm text-slate-500">Nessuna voce rilevata</p>
               ) : (
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   {analysis.riferimenti_normativi.map((item, idx) => (
@@ -119,9 +119,9 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-900 mb-2">Suggerimenti azione</h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Suggerimenti azione</h4>
               {analysis.suggerimenti_azione.length === 0 ? (
-                <p className="text-sm text-gray-500">Nessuna voce rilevata</p>
+                <p className="text-sm text-slate-500">Nessuna voce rilevata</p>
               ) : (
                 <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                   {analysis.suggerimenti_azione.map((item, idx) => (

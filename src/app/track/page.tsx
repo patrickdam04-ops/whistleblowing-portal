@@ -62,10 +62,10 @@ export default function TrackPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
             <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">
             Segui la tua Segnalazione
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-slate-600">
             Inserisci il tuo codice di tracciamento per verificare lo stato della pratica
           </p>
         </div>
@@ -89,10 +89,10 @@ export default function TrackPage() {
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
                 placeholder="WB-XXXX-XXXX"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-mono text-center text-lg tracking-wider uppercase"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-mono text-center text-lg tracking-wider uppercase"
                 maxLength={15}
               />
-              <p className="mt-2 text-xs text-gray-500 text-center">
+              <p className="mt-2 text-xs text-slate-500 text-center">
                 Inserisci il codice che hai ricevuto dopo l'invio della segnalazione
               </p>
             </div>
@@ -140,17 +140,17 @@ export default function TrackPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">
                 Segnalazione Trovata
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-600">
                 Codice: <span className="font-mono font-semibold">{result.ticket_code}</span>
               </p>
             </div>
 
             <div className="space-y-6">
               {/* Stato */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-gray-50 rounded-lg p-4 border border-slate-200">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Stato della Pratica</span>
                 </div>
@@ -160,13 +160,13 @@ export default function TrackPage() {
               </div>
 
               {/* Data */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="bg-gray-50 rounded-lg p-4 border border-slate-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-gray-600" />
+                  <Calendar className="w-4 h-4 text-slate-600" />
                   <span className="text-sm font-medium text-gray-700">Data di Ricezione</span>
                 </div>
-                <p className="text-sm text-gray-900 mt-1">{formatFullDate(result.created_at)}</p>
-                <p className="text-xs text-gray-500 mt-1">{formatDate(result.created_at)}</p>
+                <p className="text-sm text-slate-900 mt-1">{formatFullDate(result.created_at)}</p>
+                <p className="text-xs text-slate-500 mt-1">{formatDate(result.created_at)}</p>
               </div>
 
               {/* Risposta Admin (se presente) */}
@@ -203,7 +203,7 @@ export default function TrackPage() {
             </div>
 
             {/* Bottone per tornare alla home */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-slate-200">
               <Button asChild variant="outline" className="w-full">
                 <Link href="/">
                   Torna alla Home
@@ -216,7 +216,7 @@ export default function TrackPage() {
         {/* Link per inviare nuova segnalazione */}
         {!result && (
           <div className="text-center mt-6">
-            <p className="text-sm text-gray-600 mb-2">
+            <p className="text-sm text-slate-600 mb-2">
               Non hai ancora inviato una segnalazione?
             </p>
             <Button asChild variant="outline">

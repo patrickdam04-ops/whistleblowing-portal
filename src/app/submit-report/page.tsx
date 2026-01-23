@@ -150,10 +150,10 @@ export default function SubmitReportPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
             <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">
             Invia una Segnalazione
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-slate-600">
             La tua segnalazione è importante. Tutti i dati sono protetti e trattati con la massima riservatezza.
           </p>
         </div>
@@ -168,24 +168,24 @@ export default function SubmitReportPage() {
               </div>
 
               {/* Titolo */}
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">
                 Segnalazione Inviata
               </h2>
 
               {/* Testo informativo */}
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
                 È fondamentale salvare il tuo codice di tracciamento. Ti servirà per
                 controllare lo stato della pratica e leggere le risposte mantenendo
                 l'anonimato.
               </p>
 
               {/* Box con il codice */}
-              <div className="bg-gray-50 border-2 border-gray-200 rounded-lg p-6 mb-6">
+              <div className="bg-gray-50 border-2 border-slate-200 rounded-lg p-6 mb-6">
                 <p className="text-sm font-medium text-gray-700 mb-2">
                   Il tuo codice di tracciamento:
                 </p>
                 <div className="flex items-center justify-center gap-3">
-                  <code className="text-3xl font-bold text-gray-900 tracking-wider font-mono">
+                  <code className="text-3xl font-bold text-slate-900 tracking-wider font-mono">
                     {state.ticket_code}
                   </code>
                   <Button
@@ -278,7 +278,7 @@ export default function SubmitReportPage() {
                 maxLength={5000}
                 value={descriptionText}
                 onChange={(e) => setDescriptionText(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
                 placeholder="Descrivi in dettaglio la violazione o il comportamento inappropriato che hai osservato..."
               />
               {isRecording && (
@@ -301,7 +301,7 @@ export default function SubmitReportPage() {
                   {state.errors.description[0]}
                 </p>
               )}
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-slate-500">
                 Minimo 10 caratteri, massimo 5000 caratteri
               </p>
             </div>
@@ -318,7 +318,7 @@ export default function SubmitReportPage() {
                 id="severity"
                 name="severity"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
                 defaultValue=""
               >
                 <option value="" disabled>
@@ -344,7 +344,7 @@ export default function SubmitReportPage() {
                   type="checkbox"
                   checked={isAnonymous}
                   onChange={(e) => setIsAnonymous(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
                 />
               </div>
               <div className="ml-3 text-sm">
@@ -355,7 +355,7 @@ export default function SubmitReportPage() {
                   <Lock className="w-4 h-4" />
                   Voglio restare anonimo
                 </label>
-                <p className="text-gray-500 mt-1">
+                <p className="text-slate-500 mt-1">
                   Se selezioni questa opzione, la tua identità sarà completamente protetta.
                 </p>
               </div>
@@ -380,7 +380,7 @@ export default function SubmitReportPage() {
                   type="email"
                   id="contact_info"
                   name="contact_info"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   placeholder="tua.email@esempio.com"
                 />
                 {state.errors?.contact_info && (
@@ -388,7 +388,7 @@ export default function SubmitReportPage() {
                     {state.errors.contact_info[0]}
                   </p>
                 )}
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-slate-500">
                   Fornisci un contatto se desideri ricevere aggiornamenti sulla tua segnalazione
                 </p>
               </div>
@@ -409,7 +409,7 @@ export default function SubmitReportPage() {
                 name="attachments"
                 multiple
                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 onChange={(e) => {
                   // Validazione lato client per dimensione file
                   const files = Array.from(e.target.files || [])
@@ -422,7 +422,7 @@ export default function SubmitReportPage() {
                   }
                 }}
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-slate-500">
                 Puoi caricare più file. Dimensione massima per file: <strong>5MB</strong>. Formati supportati: PDF, DOC, DOCX, JPG, PNG, GIF, TXT
               </p>
             </div>

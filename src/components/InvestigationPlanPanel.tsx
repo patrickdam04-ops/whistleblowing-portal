@@ -31,11 +31,11 @@ export function InvestigationPlanPanel({ reportDescription }: InvestigationPlanP
   }
 
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="mt-8 pt-8 border-t border-slate-200">
+      <div className="bg-white rounded-lg border border-slate-200 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-700" />
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-slate-900">
             🕵️ Suggerimenti Investigativi (Privato)
           </h3>
         </div>
@@ -84,9 +84,9 @@ export function InvestigationPlanPanel({ reportDescription }: InvestigationPlanP
         {/* Piano Investigativo Generato */}
         {plan && (
           <div className="mt-4">
-            <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-6 border border-slate-200">
               <div className="prose max-w-none">
-                <pre className="whitespace-pre-wrap text-sm text-gray-900 font-sans leading-relaxed">
+                <pre className="whitespace-pre-wrap text-sm text-slate-900 font-sans leading-relaxed">
                   {plan}
                 </pre>
               </div>

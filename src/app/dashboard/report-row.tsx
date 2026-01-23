@@ -27,7 +27,7 @@ export function ReportRow({ report }: ReportRowProps) {
       onClick={handleClick}
       className="hover:bg-gray-50 transition-colors cursor-pointer"
     >
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
         {formatDate(report.created_at)}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -36,7 +36,7 @@ export function ReportRow({ report }: ReportRowProps) {
       <td className="px-6 py-4 whitespace-nowrap">
         <StatusBadge status={report.status} />
       </td>
-      <td className="px-6 py-4 text-sm text-gray-900 max-w-md">
+      <td className="px-6 py-4 text-sm text-slate-900 max-w-md">
         <p className="truncate" title={report.description}>
           {truncateDescription(report.description)}
         </p>
@@ -47,7 +47,7 @@ export function ReportRow({ report }: ReportRowProps) {
             Sì
           </span>
         ) : (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-slate-200">
             No
           </span>
         )}
