@@ -115,16 +115,13 @@ export async function submitReport(
 
         // Genera un nome file univoco e sicuro per evitare collisioni
         const fileExt = file.name.split('.').pop()
-        const rawFileName = `${ticketCode}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`
-        const safeFileName = rawFileName
-          .trim()
-          .replace(/\s+/g, '_')
-          .replace(/[^a-zA-Z0-9._-]/g, '_')
-        const filePath = `${ticketCode}/${safeFileName}`.replace(/^[-\s./]+/, '')
+        const cleanExt = fileExt && fileExt.trim() !== '' ? fileExt : 'jpg'
+        const cleanFileName = `file-${Date.now()}.${cleanExt}`
+        const filePath = `${ticketCode}/${cleanFileName}`
 
         try {
           console.log('Tentativo upload su bucket: report-attachments')
-          console.log(`📤 Upload file "${file.name}" (${(file.size / 1024).toFixed(2)} KB) nel bucket "${BUCKET_NAME}" al path: ${filePath}`)
+          console.log(`📤 Upload file "${file.name}" (${(file.size / 1024).toFixed(2)} KB) come "${cleanFileName}" nel bucket "${BUCKET_NAME}" al path: ${filePath}`)
           
           // Upload del file nel bucket privato
           const { error: uploadError, data: uploadData } = await supabase.storage
