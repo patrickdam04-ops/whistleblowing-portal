@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Lock } from 'lucide-react'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,7 +17,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-1">{children}</div>
+          <footer className="w-full text-center py-6 text-xs uppercase tracking-widest text-slate-600">
+            <span className="inline-flex items-center justify-center gap-2">
+              <Lock className="w-3 h-3 text-slate-500" />
+              Powered by AI Secure Engine™
+            </span>
+          </footer>
+        </div>
+      </body>
     </html>
   )
 }
