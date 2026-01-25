@@ -63,7 +63,9 @@ export const redactSensitiveText = (input: string, names?: string[]): RedactionR
 const restoreTokensInValue = (value: string, tokenMap: Record<string, string>) => {
   let restored = value
   Object.entries(tokenMap).forEach(([token, original]) => {
-    restored = restored.replace(new RegExp(escapeRegExp(token), 'g'), original)
+    const escapedToken = escapeRegExp(token)
+    const regex = new RegExp(escapedToken, 'gi')
+    restored = restored.replace(regex, original)
   })
   return restored
 }
