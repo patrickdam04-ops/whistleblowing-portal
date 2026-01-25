@@ -3,18 +3,18 @@ import { Button } from '@/components/ui/button'
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-slate-100">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-slate-950">
       <div className="absolute top-6 right-6">
-        <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900">
+        <Link href="/login" className="text-sm font-medium text-slate-400 hover:text-slate-200">
           Accesso Admin
         </Link>
       </div>
 
       <div className="text-center space-y-8 px-4">
-        <h1 className="text-5xl font-bold text-slate-900">
+        <h1 className="text-5xl font-bold text-slate-100">
           Whistleblowing Sicuro
         </h1>
-        <p className="text-xl text-slate-600 max-w-2xl">
+        <p className="text-xl text-slate-400 max-w-2xl">
           Piattaforma sicura e anonima per segnalazioni whistleblowing
         </p>
         <div className="flex flex-col items-center gap-4">
