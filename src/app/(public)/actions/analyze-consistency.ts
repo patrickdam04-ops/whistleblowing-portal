@@ -110,6 +110,9 @@ export async function analyzeConsistency(description: string): Promise<Consisten
   const prompt = `Sei un detective esperto in analisi testuale e interrogatori. Analizza questa segnalazione cercando ERRORI LOGICI e DATI MANCANTI.
 Non devi giudicare se è vero o falso, ma se il racconto è COERENTE.
 Analizza il testo mantenendo rigorosamente i placeholder originali (es. [NOME_1], [EMAIL_1], [CF_1], [DATE_1], [ORG_1]) quando ti riferisci alle persone o entità. Non provare a indovinare i nomi reali.
+Regola sui DATI MANCANTI: il nome del segnalante è OPZIONALE. Se la segnalazione è anonima o il nome non è presente, NON inserirlo mai nella lista "buchi_narrativi". Considera la segnalazione completa se ci sono i fatti, anche senza firma. Elenca solo mancanze fattuali (es. data, luogo, prove/testimoni, descrizione dettagliata).
+Valutazione solidità: NON abbassare il punteggio di solidità solo perché la segnalazione è anonima. Valuta basandoti su coerenza interna, dettagli forniti e presenza di prove.
+Contesto legale: nel whistleblowing (D.Lgs 24/2023) l'anonimato è un diritto protetto e una condizione standard, non un errore.
 
 Restituisci un JSON rigoroso:
 {
