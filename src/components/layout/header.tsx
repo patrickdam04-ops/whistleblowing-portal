@@ -27,7 +27,7 @@ export function Header() {
               Segui la tua Segnalazione
             </Link>
           </Button>
-          <Link href="/login" className="text-slate-200 hover:text-white">
+          <Link href="/gestione" className="text-slate-200 hover:text-white">
             Accedi
           </Link>
         </nav>

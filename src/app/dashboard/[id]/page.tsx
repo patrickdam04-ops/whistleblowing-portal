@@ -46,7 +46,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
   } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    redirect('/login')
+    redirect('/gestione')
   }
 
   // Recupera la segnalazione

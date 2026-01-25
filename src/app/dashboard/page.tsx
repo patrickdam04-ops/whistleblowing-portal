@@ -31,7 +31,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    redirect('/login')
+    redirect('/gestione')
   }
 
   // Query delle segnalazioni
