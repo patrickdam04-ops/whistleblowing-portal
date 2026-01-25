@@ -1,5 +1,7 @@
 'use server'
 
+import { redactSensitiveText, restoreTokensInObject } from '@/lib/privacy-redaction'
+
 export type LegalRiskLevel = 'ALTO' | 'MEDIO' | 'BASSO'
 
 export interface LegalAnalysisResult {
@@ -29,6 +31,7 @@ function buildPrompt(description: string): string {
   "riferimenti_normativi": ["Art. X", "D.Lgs Y"],
   "suggerimenti_azione": ["Azione 1", "Azione 2"]
 }
+Analizza il testo mantenendo rigorosamente i placeholder originali (es. [NOME_1], [EMAIL_1], [CF_1], [DATE_1], [ORG_1]) quando ti riferisci alle persone o entità. Non provare a indovinare i nomi reali.
 
 Testo da analizzare: "${description}"`
 }
@@ -54,6 +57,8 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
     throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
   }
 
+  const { redactedText, tokenMap } = redactSensitiveText(description.trim())
+
   const response = await fetch(`${API_BASE}${model}:generateContent?key=${API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -61,7 +66,7 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
       safetySettings,
       contents: [
         {
-          parts: [{ text: buildPrompt(description) }],
+          parts: [{ text: buildPrompt(redactedText) }],
         },
       ],
     }),
@@ -97,7 +102,8 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
     throw new Error(`JSON Gemini non valido: ${cleaned}`)
   }
 
-  return normalizeResult(parsed)
+  const normalized = normalizeResult(parsed)
+  return restoreTokensInObject(normalized, tokenMap) as LegalAnalysisResult
 }
 
 export async function generateLegalAnalysis(description: string): Promise<LegalAnalysisResult> {

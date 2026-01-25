@@ -1,5 +1,7 @@
 'use server'
 
+import { redactSensitiveText, restoreTokensInObject } from '@/lib/privacy-redaction'
+
 export interface ConsistencyAnalysisResult {
   score_solidita: number
   incoerenze_rilevate: string[]
@@ -49,8 +51,11 @@ export async function analyzeConsistency(description: string): Promise<Consisten
     throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
   }
 
+  const { redactedText, tokenMap } = redactSensitiveText(description.trim())
+
   const prompt = `Sei un detective esperto in analisi testuale e interrogatori. Analizza questa segnalazione cercando ERRORI LOGICI e DATI MANCANTI.
 Non devi giudicare se è vero o falso, ma se il racconto è COERENTE.
+Analizza il testo mantenendo rigorosamente i placeholder originali (es. [NOME_1], [EMAIL_1], [CF_1], [DATE_1], [ORG_1]) quando ti riferisci alle persone o entità. Non provare a indovinare i nomi reali.
 
 Restituisci un JSON rigoroso:
 {
@@ -60,7 +65,7 @@ Restituisci un JSON rigoroso:
   "consiglio_investigativo": "Frase sintetica su cosa verificare subito"
 }
 
-Testo da analizzare: "${description}"`
+Testo da analizzare: "${redactedText}"`
 
   const response = await fetch(`${API_BASE}${MODEL}:generateContent?key=${API_KEY}`, {
     method: 'POST',
@@ -104,5 +109,6 @@ Testo da analizzare: "${description}"`
     throw new Error(`JSON Gemini non valido: ${cleaned}`)
   }
 
-  return normalizeResult(parsed)
+  const normalized = normalizeResult(parsed)
+  return restoreTokensInObject(normalized, tokenMap) as ConsistencyAnalysisResult
 }
