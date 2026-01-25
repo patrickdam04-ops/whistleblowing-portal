@@ -184,11 +184,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
               {/* AI Cards */}
               <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <SherlockConsistencyCard
-                  description={reportData.description}
-                  compact
-                  reportId={reportData.id}
-                />
+                <SherlockConsistencyCard description={reportData.description} compact />
                 <LegalAnalysisCard description={reportData.description} compact />
               </div>
             </div>
