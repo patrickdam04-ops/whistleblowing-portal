@@ -8,10 +8,16 @@ import { Search, Loader2, AlertTriangle } from 'lucide-react'
 interface SherlockConsistencyCardProps {
   description: string
   compact?: boolean
+  reportId?: string
   onAnalysis?: (analysis: ConsistencyAnalysisResult) => void
 }
 
-export function SherlockConsistencyCard({ description, compact, onAnalysis }: SherlockConsistencyCardProps) {
+export function SherlockConsistencyCard({
+  description,
+  compact,
+  reportId,
+  onAnalysis,
+}: SherlockConsistencyCardProps) {
   const [analysis, setAnalysis] = useState<ConsistencyAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -20,7 +26,7 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
     setError(null)
     startTransition(async () => {
       try {
-        const result = await analyzeConsistency(description)
+        const result = await analyzeConsistency(description, reportId)
         setAnalysis(result)
         onAnalysis?.(result)
         if (typeof window !== 'undefined') {
