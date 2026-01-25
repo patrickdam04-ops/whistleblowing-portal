@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS reports (
   status TEXT DEFAULT 'PENDING' NOT NULL,
   severity TEXT,
   encrypted_contact_info TEXT,
+  ai_analysis JSONB,
   
   -- Vincoli CHECK per status
   CONSTRAINT reports_status_check CHECK (
