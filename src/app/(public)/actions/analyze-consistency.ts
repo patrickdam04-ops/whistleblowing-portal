@@ -111,6 +111,8 @@ export async function analyzeConsistency(description: string): Promise<Consisten
 Non devi giudicare se è vero o falso, ma se il racconto è COERENTE.
 Analizza il testo mantenendo rigorosamente i placeholder originali (es. [NOME_1], [EMAIL_1], [CF_1], [DATE_1], [ORG_1]) quando ti riferisci alle persone o entità. Non provare a indovinare i nomi reali.
 Regola sui DATI MANCANTI: il nome del segnalante è OPZIONALE. Se la segnalazione è anonima o il nome non è presente, NON inserirlo mai nella lista "buchi_narrativi". Considera la segnalazione completa se ci sono i fatti, anche senza firma. Elenca solo mancanze fattuali (es. data, luogo, prove/testimoni, descrizione dettagliata).
+CONTESTO AZIENDALE IMPLICITO: Non inserire mai "Nome Azienda", "Luogo di Lavoro" o "Ente di appartenenza" nella lista dei dati mancanti. Dai per scontato che i fatti siano avvenuti all'interno dell'azienda che riceve la segnalazione, a meno che il testo non specifichi chiaramente che sono avvenuti presso terzi (es. presso un fornitore).
+Esempio negativo: se l'utente scrive "Il direttore ha rubato", NON dire "Manca il nome dell'azienda". Dì: "Dati mancanti: Nessuno" (se il resto c'è).
 Valutazione solidità: NON abbassare il punteggio di solidità solo perché la segnalazione è anonima. Valuta basandoti su coerenza interna, dettagli forniti e presenza di prove.
 Contesto legale: nel whistleblowing (D.Lgs 24/2023) l'anonimato è un diritto protetto e una condizione standard, non un errore.
 
