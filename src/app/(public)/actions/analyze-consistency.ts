@@ -7,8 +7,6 @@ export interface ConsistencyAnalysisResult {
   incoerenze_rilevate: string[]
   buchi_narrativi: string[]
   consiglio_investigativo: string
-  is_futile_or_spam: boolean
-  category_label: 'FRODE' | 'HR' | 'SICUREZZA' | 'FUTILITÀ/SPAM'
   emotional_profile: {
     dominant_emotion: 'PAURA' | 'RABBIA' | 'FRUSTRAZIONE' | 'VENDETTA' | 'CALMA/OGGETTIVA'
     intensity: 'BASSA' | 'MEDIA' | 'ALTA'
@@ -41,15 +39,6 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
   const toArray = (value: unknown): string[] =>
     Array.isArray(value) ? value.map((item) => String(item)) : []
 
-  const category = String(raw?.category_label || '').toUpperCase()
-  const category_label: ConsistencyAnalysisResult['category_label'] =
-    category === 'FRODE' ||
-    category === 'HR' ||
-    category === 'SICUREZZA' ||
-    category === 'FUTILITÀ/SPAM'
-      ? (category as ConsistencyAnalysisResult['category_label'])
-      : 'FRODE'
-
   const emotion = String(raw?.emotional_profile?.dominant_emotion || '').toUpperCase()
   const dominant_emotion: ConsistencyAnalysisResult['emotional_profile']['dominant_emotion'] =
     emotion === 'PAURA' ||
@@ -79,8 +68,6 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
     incoerenze_rilevate: toArray(raw?.incoerenze_rilevate),
     buchi_narrativi: toArray(raw?.buchi_narrativi),
     consiglio_investigativo: String(raw?.consiglio_investigativo || '').trim(),
-    is_futile_or_spam: Boolean(raw?.is_futile_or_spam),
-    category_label,
     emotional_profile: {
       dominant_emotion,
       intensity: normalized_intensity,
@@ -101,8 +88,6 @@ export async function analyzeConsistency(description: string): Promise<Consisten
       incoerenze_rilevate: [],
       buchi_narrativi: [],
       consiglio_investigativo: 'Descrizione mancante: raccogliere dettagli aggiuntivi.',
-      is_futile_or_spam: false,
-      category_label: 'FRODE',
       emotional_profile: {
         dominant_emotion: 'CALMA/OGGETTIVA',
         intensity: 'BASSA',
@@ -137,8 +122,6 @@ Restituisci un JSON rigoroso:
   "incoerenze_rilevate": ["Es: Dice lunedì ma cita una data che era domenica", "Es: Dice di essere solo ma poi parla di un collega"],
   "buchi_narrativi": ["Es: Manca la data dell'evento", "Es: Non specifica chi era presente"],
   "consiglio_investigativo": "Frase sintetica su cosa verificare subito",
-  "is_futile_or_spam": true | false,
-  "category_label": "FRODE" | "HR" | "SICUREZZA" | "FUTILITÀ/SPAM",
   "emotional_profile": {
     "dominant_emotion": "PAURA" | "RABBIA" | "FRUSTRAZIONE" | "VENDETTA" | "CALMA/OGGETTIVA",
     "intensity": "BASSA" | "MEDIA" | "ALTA",
