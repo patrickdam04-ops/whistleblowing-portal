@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS reports (
   status TEXT DEFAULT 'PENDING' NOT NULL,
   severity TEXT,
   encrypted_contact_info TEXT,
-  is_spam BOOLEAN DEFAULT false NOT NULL,
   ai_analysis JSONB,
   
   -- Vincoli CHECK per status

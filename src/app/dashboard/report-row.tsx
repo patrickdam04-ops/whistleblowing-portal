@@ -12,13 +12,11 @@ interface ReportRowProps {
     is_anonymous: boolean
     status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
     severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
-    is_spam?: boolean | null
   }
 }
 
 export function ReportRow({ report }: ReportRowProps) {
   const router = useRouter()
-  const isSpam = Boolean(report.is_spam)
 
   const handleClick = () => {
     router.push(`/dashboard/${report.id}`)
@@ -27,27 +25,13 @@ export function ReportRow({ report }: ReportRowProps) {
   return (
     <tr
       onClick={handleClick}
-      className={`transition-colors cursor-pointer ${
-        isSpam
-          ? 'opacity-60 grayscale bg-gray-100 dark:bg-slate-900 border-gray-200'
-          : 'hover:bg-gray-50'
-      }`}
+      className="hover:bg-gray-50 transition-colors cursor-pointer"
     >
-      <td
-        className={`px-6 py-4 whitespace-nowrap text-sm text-slate-900 border-l-4 ${
-          isSpam ? 'border-l-gray-400' : 'border-l-transparent'
-        }`}
-      >
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
         {formatDate(report.created_at)}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        {isSpam ? (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-700 border border-gray-300">
-            🗑️ RILEVATA FUTILITÀ
-          </span>
-        ) : (
-          <SeverityBadge severity={report.severity} />
-        )}
+        <SeverityBadge severity={report.severity} />
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <StatusBadge status={report.status} />
