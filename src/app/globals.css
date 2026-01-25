@@ -1,16 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --font-courier: 'Courier Prime', 'Courier New', ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-
   body {
-    @apply bg-slate-950 text-slate-300;
+    @apply bg-slate-100 text-slate-600;
   }
 
   h1,
@@ -19,57 +13,10 @@
   h4,
   h5,
   h6 {
-    @apply text-slate-100;
+    @apply text-slate-900;
   }
 
   a {
-    @apply text-blue-600 hover:text-blue-500;
-  }
-}
-
-@layer utilities {
-  .font-courier {
-    font-family: var(--font-courier);
-  }
-
-  .bg-white {
-    @apply bg-slate-900/50 shadow-xl shadow-black/20;
-  }
-
-  .bg-gray-50,
-  .bg-gray-100 {
-    @apply bg-slate-900/50;
-  }
-
-  .bg-slate-50,
-  .bg-slate-100 {
-    @apply bg-slate-950;
-  }
-
-  .border-gray-200,
-  .border-gray-300,
-  .border-slate-200 {
-    @apply border-slate-700;
-  }
-
-  .shadow-sm {
-    @apply shadow-xl shadow-black/20;
-  }
-
-  .text-gray-900,
-  .text-slate-900 {
-    @apply text-slate-100;
-  }
-
-  .text-gray-700 {
-    @apply text-slate-300;
-  }
-
-  .text-gray-600 {
-    @apply text-slate-400;
-  }
-
-  .text-gray-500 {
-    @apply text-slate-500;
+    @apply text-blue-600 hover:text-blue-700;
   }
 }

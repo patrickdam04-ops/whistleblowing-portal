@@ -34,9 +34,9 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
   }
 
   const getScoreColor = (score: number) => {
-    if (score < 40) return 'bg-red-900'
-    if (score < 70) return 'bg-amber-800'
-    return 'bg-emerald-900'
+    if (score < 40) return 'bg-red-500'
+    if (score < 70) return 'bg-yellow-500'
+    return 'bg-green-500'
   }
 
   return (
@@ -78,10 +78,8 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
         {analysis && (
           <div className="space-y-4">
             <div>
-              <p className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                Punteggio di solidità
-              </p>
-              <div className="w-full bg-slate-800 rounded-full h-3 overflow-hidden">
+              <p className="text-sm font-medium text-gray-700 mb-2">Punteggio di Solidità</p>
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                 <div
                   className={`h-3 ${getScoreColor(analysis.score_solidita)}`}
                   style={{ width: `${analysis.score_solidita}%` }}
@@ -91,9 +89,7 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                Incoerenze rilevate
-              </h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Incoerenze rilevate</h4>
               {analysis.incoerenze_rilevate.length === 0 ? (
                 <p className="text-sm text-slate-500">Nessuna incoerenza evidente</p>
               ) : (
@@ -106,9 +102,7 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                Dati mancanti
-              </h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Dati mancanti</h4>
               {analysis.buchi_narrativi.length === 0 ? (
                 <p className="text-sm text-slate-500">Nessun buco narrativo evidente</p>
               ) : (
@@ -121,16 +115,12 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                Consiglio investigativo
-              </h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Consiglio investigativo</h4>
               <p className="text-sm text-gray-700">{analysis.consiglio_investigativo}</p>
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                Analisi emotiva
-              </h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Analisi emotiva</h4>
               <p className="text-sm text-gray-700">
                 Emozione dominante:{' '}
                 <span className="font-medium">{analysis.emotional_profile.dominant_emotion}</span>
@@ -153,9 +143,7 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
-                Rilevamento futilità
-              </h4>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Rilevamento futilità</h4>
               <p className="text-sm text-gray-700">
                 Probabile futilità:{' '}
                 <span className="font-medium">

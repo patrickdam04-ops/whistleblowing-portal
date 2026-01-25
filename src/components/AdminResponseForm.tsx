@@ -95,7 +95,7 @@ export function AdminResponseForm({
   return (
     <div className="mt-8 pt-8 border-t border-slate-200">
       <div className="bg-white rounded-lg border border-slate-200 p-6">
-        <h3 className="text-lg font-semibold text-slate-100 mb-4">
+        <h3 className="text-lg font-semibold text-slate-900 mb-4">
           Risposta al Segnalante
         </h3>
 
@@ -160,16 +160,16 @@ export function AdminResponseForm({
         <div className="mb-4">
           <label
             htmlFor="admin-response"
-            className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider"
+            className="block text-sm font-medium text-gray-700 mb-2"
           >
-            ✍️ Risposta al Segnalante
+            Risposta al Segnalante
           </label>
           <textarea
             id="admin-response"
             value={response}
             onChange={(e) => setResponse(e.target.value)}
             rows={12}
-            className="w-full min-h-[300px] px-4 py-3 border border-slate-700 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 resize-y font-courier text-sm bg-black text-emerald-400 placeholder:text-emerald-700"
+            className="w-full min-h-[300px] px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y font-mono text-sm"
             placeholder="Scrivi qui la risposta al segnalante oppure usa il bottone 'Genera Bozza con AI' per creare una bozza automatica..."
           />
         </div>
