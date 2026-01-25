@@ -12,6 +12,7 @@ interface Report {
   status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
   encrypted_contact_info: string | null
+  is_spam?: boolean | null
 }
 
 interface PageProps {

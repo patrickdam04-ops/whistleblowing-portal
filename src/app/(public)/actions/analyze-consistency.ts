@@ -1,6 +1,7 @@
 'use server'
 
 import { redactSensitiveText, restoreTokensInObject } from '@/lib/privacy-redaction'
+import { createClient } from '@/utils/supabase/server'
 
 export interface ConsistencyAnalysisResult {
   score_solidita: number
@@ -34,21 +35,28 @@ const safetySettings = [
 
 function normalizeResult(raw: any): ConsistencyAnalysisResult {
   const score = Number(raw?.score_solidita)
-  const safeScore = Number.isFinite(score)
-    ? Math.min(100, Math.max(1, Math.round(score)))
+  let safeScore = Number.isFinite(score)
+    ? Math.min(100, Math.max(0, Math.round(score)))
     : 50
 
   const toArray = (value: unknown): string[] =>
     Array.isArray(value) ? value.map((item) => String(item)) : []
 
+  const isFutileOrSpam = Boolean(raw?.is_futile_or_spam ?? raw?.is_spam)
+
   const category = String(raw?.category_label || '').toUpperCase()
-  const category_label: ConsistencyAnalysisResult['category_label'] =
+  let category_label: ConsistencyAnalysisResult['category_label'] =
     category === 'FRODE' ||
     category === 'HR' ||
     category === 'SICUREZZA' ||
     category === 'FUTILITÀ/SPAM'
       ? (category as ConsistencyAnalysisResult['category_label'])
       : 'FRODE'
+
+  if (isFutileOrSpam) {
+    category_label = 'FUTILITÀ/SPAM'
+    if (safeScore > 1) safeScore = 1
+  }
 
   const emotion = String(raw?.emotional_profile?.dominant_emotion || '').toUpperCase()
   const dominant_emotion: ConsistencyAnalysisResult['emotional_profile']['dominant_emotion'] =
@@ -79,7 +87,7 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
     incoerenze_rilevate: toArray(raw?.incoerenze_rilevate),
     buchi_narrativi: toArray(raw?.buchi_narrativi),
     consiglio_investigativo: String(raw?.consiglio_investigativo || '').trim(),
-    is_futile_or_spam: Boolean(raw?.is_futile_or_spam),
+    is_futile_or_spam: isFutileOrSpam,
     category_label,
     emotional_profile: {
       dominant_emotion,
@@ -94,7 +102,10 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
   }
 }
 
-export async function analyzeConsistency(description: string): Promise<ConsistencyAnalysisResult> {
+export async function analyzeConsistency(
+  description: string,
+  reportId?: string
+): Promise<ConsistencyAnalysisResult> {
   if (!description) {
     return {
       score_solidita: 50,
@@ -130,14 +141,16 @@ CONTESTO AZIENDALE IMPLICITO: Non inserire mai "Nome Azienda", "Luogo di Lavoro"
 Esempio negativo: se l'utente scrive "Il direttore ha rubato", NON dire "Manca il nome dell'azienda". Dì: "Dati mancanti: Nessuno" (se il resto c'è).
 Valutazione solidità: NON abbassare il punteggio di solidità solo perché la segnalazione è anonima. Valuta basandoti su coerenza interna, dettagli forniti e presenza di prove.
 Contesto legale: nel whistleblowing (D.Lgs 24/2023) l'anonimato è un diritto protetto e una condizione standard, non un errore.
+Regola anti-futilità: SE il testo contiene lamentele su cibo, temperatura, comfort, antipatie personali o macchinette del caffè, ALLORA "is_futile_or_spam" (alias: is_spam) DEVE essere true, "category_label" DEVE essere "FUTILITÀ/SPAM" e "score_solidita" DEVE essere 0 o 1.
 
 Restituisci un JSON rigoroso:
 {
-  "score_solidita": (numero 1-100 basato su ricchezza dettagli e coerenza),
+  "score_solidita": (numero 0-100 basato su ricchezza dettagli e coerenza),
   "incoerenze_rilevate": ["Es: Dice lunedì ma cita una data che era domenica", "Es: Dice di essere solo ma poi parla di un collega"],
   "buchi_narrativi": ["Es: Manca la data dell'evento", "Es: Non specifica chi era presente"],
   "consiglio_investigativo": "Frase sintetica su cosa verificare subito",
   "is_futile_or_spam": true | false,
+  "is_spam": true | false,
   "category_label": "FRODE" | "HR" | "SICUREZZA" | "FUTILITÀ/SPAM",
   "emotional_profile": {
     "dominant_emotion": "PAURA" | "RABBIA" | "FRUSTRAZIONE" | "VENDETTA" | "CALMA/OGGETTIVA",
@@ -196,5 +209,22 @@ Testo da analizzare: "${redactedText}"`
   }
 
   const normalized = normalizeResult(parsed)
-  return restoreTokensInObject(normalized, tokenMap) as ConsistencyAnalysisResult
+  const restored = restoreTokensInObject(normalized, tokenMap) as ConsistencyAnalysisResult
+
+  if (reportId) {
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from('reports')
+        .update({ is_spam: restored.is_futile_or_spam })
+        .eq('id', reportId)
+      if (error) {
+        console.error('Errore salvataggio flag spam:', error)
+      }
+    } catch (dbError) {
+      console.error('Errore connessione DB per salvataggio spam:', dbError)
+    }
+  }
+
+  return restored
 }
