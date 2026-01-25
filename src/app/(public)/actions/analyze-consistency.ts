@@ -7,6 +7,16 @@ export interface ConsistencyAnalysisResult {
   incoerenze_rilevate: string[]
   buchi_narrativi: string[]
   consiglio_investigativo: string
+  emotional_profile: {
+    dominant_emotion: 'PAURA' | 'RABBIA' | 'FRUSTRAZIONE' | 'VENDETTA' | 'CALMA/OGGETTIVA'
+    intensity: 'BASSA' | 'MEDIA' | 'ALTA'
+    stress_indicators: string[]
+  }
+  frivolity_check: {
+    is_likely_futile: boolean
+    nature: 'FATTUALE' | 'SOGGETTIVA/OPINIONE' | 'CONFLITTO INTERPERSONALE'
+    reasoning: string
+  }
 }
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
@@ -29,11 +39,45 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
   const toArray = (value: unknown): string[] =>
     Array.isArray(value) ? value.map((item) => String(item)) : []
 
+  const emotion = String(raw?.emotional_profile?.dominant_emotion || '').toUpperCase()
+  const dominant_emotion: ConsistencyAnalysisResult['emotional_profile']['dominant_emotion'] =
+    emotion === 'PAURA' ||
+    emotion === 'RABBIA' ||
+    emotion === 'FRUSTRAZIONE' ||
+    emotion === 'VENDETTA' ||
+    emotion === 'CALMA/OGGETTIVA'
+      ? (emotion as ConsistencyAnalysisResult['emotional_profile']['dominant_emotion'])
+      : 'CALMA/OGGETTIVA'
+
+  const intensity = String(raw?.emotional_profile?.intensity || '').toUpperCase()
+  const normalized_intensity: ConsistencyAnalysisResult['emotional_profile']['intensity'] =
+    intensity === 'BASSA' || intensity === 'MEDIA' || intensity === 'ALTA'
+      ? (intensity as ConsistencyAnalysisResult['emotional_profile']['intensity'])
+      : 'MEDIA'
+
+  const nature = String(raw?.frivolity_check?.nature || '').toUpperCase()
+  const normalized_nature: ConsistencyAnalysisResult['frivolity_check']['nature'] =
+    nature === 'FATTUALE' ||
+    nature === 'SOGGETTIVA/OPINIONE' ||
+    nature === 'CONFLITTO INTERPERSONALE'
+      ? (nature as ConsistencyAnalysisResult['frivolity_check']['nature'])
+      : 'FATTUALE'
+
   return {
     score_solidita: safeScore,
     incoerenze_rilevate: toArray(raw?.incoerenze_rilevate),
     buchi_narrativi: toArray(raw?.buchi_narrativi),
     consiglio_investigativo: String(raw?.consiglio_investigativo || '').trim(),
+    emotional_profile: {
+      dominant_emotion,
+      intensity: normalized_intensity,
+      stress_indicators: toArray(raw?.emotional_profile?.stress_indicators),
+    },
+    frivolity_check: {
+      is_likely_futile: Boolean(raw?.frivolity_check?.is_likely_futile),
+      nature: normalized_nature,
+      reasoning: String(raw?.frivolity_check?.reasoning || '').trim(),
+    },
   }
 }
 
@@ -44,6 +88,16 @@ export async function analyzeConsistency(description: string): Promise<Consisten
       incoerenze_rilevate: [],
       buchi_narrativi: [],
       consiglio_investigativo: 'Descrizione mancante: raccogliere dettagli aggiuntivi.',
+      emotional_profile: {
+        dominant_emotion: 'CALMA/OGGETTIVA',
+        intensity: 'BASSA',
+        stress_indicators: [],
+      },
+      frivolity_check: {
+        is_likely_futile: false,
+        nature: 'FATTUALE',
+        reasoning: 'Dati insufficienti per valutare la futilità.',
+      },
     }
   }
 
@@ -62,7 +116,17 @@ Restituisci un JSON rigoroso:
   "score_solidita": (numero 1-100 basato su ricchezza dettagli e coerenza),
   "incoerenze_rilevate": ["Es: Dice lunedì ma cita una data che era domenica", "Es: Dice di essere solo ma poi parla di un collega"],
   "buchi_narrativi": ["Es: Manca la data dell'evento", "Es: Non specifica chi era presente"],
-  "consiglio_investigativo": "Frase sintetica su cosa verificare subito"
+  "consiglio_investigativo": "Frase sintetica su cosa verificare subito",
+  "emotional_profile": {
+    "dominant_emotion": "PAURA" | "RABBIA" | "FRUSTRAZIONE" | "VENDETTA" | "CALMA/OGGETTIVA",
+    "intensity": "BASSA" | "MEDIA" | "ALTA",
+    "stress_indicators": ["Uso di maiuscole", "Punteggiatura aggressiva"]
+  },
+  "frivolity_check": {
+    "is_likely_futile": true | false,
+    "nature": "FATTUALE" | "SOGGETTIVA/OPINIONE" | "CONFLITTO INTERPERSONALE",
+    "reasoning": "Spiegazione sintetica del perché"
+  }
 }
 
 Testo da analizzare: "${redactedText}"`

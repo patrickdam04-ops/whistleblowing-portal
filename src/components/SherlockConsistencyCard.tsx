@@ -118,6 +118,43 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
               <h4 className="text-sm font-semibold text-slate-900 mb-2">Consiglio investigativo</h4>
               <p className="text-sm text-gray-700">{analysis.consiglio_investigativo}</p>
             </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Analisi emotiva</h4>
+              <p className="text-sm text-gray-700">
+                Emozione dominante:{' '}
+                <span className="font-medium">{analysis.emotional_profile.dominant_emotion}</span>
+              </p>
+              <p className="text-sm text-gray-700">
+                Intensità:{' '}
+                <span className="font-medium">{analysis.emotional_profile.intensity}</span>
+              </p>
+              {analysis.emotional_profile.stress_indicators.length === 0 ? (
+                <p className="text-sm text-slate-500 mt-1">
+                  Nessun indicatore di stress evidente
+                </p>
+              ) : (
+                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mt-1">
+                  {analysis.emotional_profile.stress_indicators.map((item, idx) => (
+                    <li key={`stress-${idx}`}>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-slate-900 mb-2">Rilevamento futilità</h4>
+              <p className="text-sm text-gray-700">
+                Probabile futilità:{' '}
+                <span className="font-medium">
+                  {analysis.frivolity_check.is_likely_futile ? 'Sì' : 'No'}
+                </span>
+              </p>
+              <p className="text-sm text-gray-700">
+                Natura: <span className="font-medium">{analysis.frivolity_check.nature}</span>
+              </p>
+              <p className="text-sm text-gray-700">{analysis.frivolity_check.reasoning}</p>
+            </div>
           </div>
         )}
       </div>
