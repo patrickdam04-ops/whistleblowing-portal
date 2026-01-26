@@ -22,6 +22,7 @@ const TENANT_MAPPING: Record<string, string> = {
   'demo@lexant.it': 'Lexant',
   'demo@laborproject.it': 'LaborProject',
   'demo@231consulting.it': '231Consulting',
+  'demo@braviassociati.it': 'Braviassociati',
   'patrickdam04@gmail.com': 'Patrick-Personal',
 }
 
