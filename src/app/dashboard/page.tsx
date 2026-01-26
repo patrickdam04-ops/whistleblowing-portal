@@ -15,14 +15,14 @@ interface Report {
   company_id: string | null
 }
 
-const TENANT_ACCESS: Record<string, string[]> = {
+const TENANT_PERMISSIONS: Record<string, string[]> = {
   'demo@studiorock.it': ['StudioRock'],
   'demo@nexumstp.it': ['NexumStp'],
   'demo@lexant.it': ['Lexant'],
   'demo@laborproject.it': ['LaborProject'],
   'demo@231consulting.it': ['231Consulting'],
   'demo@braviassociati.it': ['Braviassociati'],
-  'patrickdam04@gmail.com': ['StudioRock', 'NexumStp'],
+  'patrickdam04@gmail.com': ['Patrick-Personal'],
 }
 
 interface PageProps {
@@ -46,7 +46,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   }
 
   const userEmail = user?.email?.toLowerCase() || ''
-  const allowedCompanies = TENANT_ACCESS[userEmail] || []
+  const allowedCompanies = TENANT_PERMISSIONS[userEmail] || []
 
   if (!userEmail || allowedCompanies.length === 0) {
     return (
