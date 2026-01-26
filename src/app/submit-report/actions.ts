@@ -77,6 +77,16 @@ export async function submitReport(
     }
 
     const validatedData = validationResult.data
+    const normalizedCompanyId = companyId?.trim() || ''
+
+    if (!normalizedCompanyId) {
+      console.error('❌ company_id mancante: segnalazione rifiutata per sicurezza')
+      return {
+        success: false,
+        message:
+          'Ambiente demo non valido o non specificato. Riapri il link corretto fornito dall’azienda.',
+      }
+    }
 
     // Se l'utente ha scelto l'anonimato, forza contact_info a null
     const encryptedContactInfo = validatedData.is_anonymous
@@ -171,6 +181,8 @@ export async function submitReport(
     // Salva i path come array nativo (PostgreSQL array type)
     console.log('💾 Salvataggio nel DB con attachments:', attachmentPaths)
     
+    console.log('Salvataggio report per azienda:', normalizedCompanyId)
+
     const insertData: any = {
       description: validatedData.description,
       severity: validatedData.severity,
@@ -180,9 +192,7 @@ export async function submitReport(
       ticket_code: ticketCode, // <--- QUESTO DEVE ESSERE PRESENTE!
     }
 
-    if (companyId && companyId.trim() !== '') {
-      insertData.company_id = companyId.trim()
-    }
+    insertData.company_id = normalizedCompanyId
 
     // Aggiungi attachments solo se ci sono file (come array nativo, non stringa JSON)
     if (attachmentPaths.length > 0) {
