@@ -18,6 +18,7 @@ interface Report {
 const TENANT_MAPPING: Record<string, string> = {
   'demo@nexumstp.it': 'NexumStp',
   'demo@studiobiagi.it': 'StudioBiagi',
+  'demo@studiorock.it': 'StudioRock',
   'patrickdam04@gmail.com': 'Patrick-Personal',
 }
 
