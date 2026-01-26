@@ -46,9 +46,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   }
 
   const userEmail = user?.email?.toLowerCase() || ''
-  const allowedCompanies = TENANT_PERMISSIONS[userEmail] || []
+  const allowedCompanies = TENANT_PERMISSIONS[userEmail]
 
-  if (!userEmail || allowedCompanies.length === 0) {
+  if (!userEmail || !allowedCompanies || allowedCompanies.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -63,7 +63,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </div>
 
           <div className="rounded-lg border border-red-200 bg-red-50 text-red-900 px-4 py-3 text-sm">
-            Accesso non autorizzato per questa utenza.
+            Nessun accesso configurato per questa utenza.
           </div>
         </div>
       </div>
