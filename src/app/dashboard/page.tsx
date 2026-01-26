@@ -15,8 +15,9 @@ interface Report {
   company_id: string | null
 }
 
-const DEMO_ACCOUNTS: Record<string, string> = {
+const DEMO_TENANTS: Record<string, string> = {
   'demo@nexumstp.it': 'NexumStp',
+  'demo@studiobiagi.it': 'StudioBiagi',
 }
 
 interface PageProps {
@@ -40,15 +41,15 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   }
 
   const demoCompany =
-    user?.email && DEMO_ACCOUNTS[user.email.toLowerCase()]
-      ? DEMO_ACCOUNTS[user.email.toLowerCase()]
+    user?.email && DEMO_TENANTS[user.email.toLowerCase()]
+      ? DEMO_TENANTS[user.email.toLowerCase()]
       : null
 
   // Query delle segnalazioni
   let query = supabase.from('reports').select('*').order('created_at', { ascending: false })
 
   if (demoCompany) {
-    query = query.ilike('company_id', demoCompany)
+    query = query.eq('company_id', demoCompany)
   }
 
   const { data: reports, error } = await query

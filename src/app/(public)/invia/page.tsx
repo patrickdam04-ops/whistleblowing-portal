@@ -1,5 +1,9 @@
 import SubmitReportPage from '@/app/submit-report/page'
 
-export default function Page() {
-  return <SubmitReportPage />
+interface PageProps {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+export default function Page({ searchParams }: PageProps) {
+  return <SubmitReportPage searchParams={searchParams} />
 }

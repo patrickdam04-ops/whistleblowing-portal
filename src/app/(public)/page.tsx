@@ -1,9 +1,22 @@
 import Link from 'next/link'
 
-export default function HomePage() {
+interface PageProps {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+const getParam = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value
+
+export default function HomePage({ searchParams }: PageProps) {
+  const clientParam = getParam(searchParams?.client)
   return (
     <div className="min-h-screen bg-slate-950 text-slate-300 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-4xl">
+        {clientParam && (
+          <div className="mb-8 rounded-lg border border-blue-700 bg-blue-900 text-blue-100 px-4 py-3 text-sm">
+            Ambiente Demo Riservato: <span className="font-semibold">{clientParam}</span>
+          </div>
+        )}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-100">
             Zona Segnalazioni
@@ -15,7 +28,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Link
-            href="/submit-report"
+            href={`/invia${clientParam ? `?client=${encodeURIComponent(clientParam)}` : ''}`}
             className="group bg-slate-900/50 border border-slate-700 shadow-xl shadow-black/20 rounded-2xl p-6 md:p-8 transition-all hover:border-blue-600 hover:shadow-black/40"
           >
             <div className="text-2xl mb-3">📝</div>
@@ -31,7 +44,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/track"
+            href={`/track${clientParam ? `?client=${encodeURIComponent(clientParam)}` : ''}`}
             className="group bg-slate-900/50 border border-slate-700 shadow-xl shadow-black/20 rounded-2xl p-6 md:p-8 transition-all hover:border-blue-600 hover:shadow-black/40"
           >
             <div className="text-2xl mb-3">🔍</div>
