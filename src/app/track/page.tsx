@@ -14,8 +14,15 @@ import { Search, Shield, Calendar, FileText, AlertCircle, CheckCircle, Clock } f
 import { StatusBadge } from '@/components/ui/badges'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 export default function TrackPage() {
+  const searchParams = useSearchParams()
+  const clientParam = searchParams.get('client')
+  const homeLink = clientParam ? `/?client=${encodeURIComponent(clientParam)}` : '/'
+  const submitLink = clientParam
+    ? `/invia?client=${encodeURIComponent(clientParam)}`
+    : '/invia'
   const [code, setCode] = useState('')
   const [result, setResult] = useState<ReportStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -205,7 +212,7 @@ export default function TrackPage() {
             {/* Bottone per tornare alla home */}
             <div className="mt-6 pt-6 border-t border-slate-200">
               <Button asChild variant="outline" className="w-full">
-                <Link href="/">
+                <Link href={homeLink}>
                   Torna alla Home
                 </Link>
               </Button>
@@ -220,7 +227,7 @@ export default function TrackPage() {
               Non hai ancora inviato una segnalazione?
             </p>
             <Button asChild variant="outline">
-              <Link href="/submit-report">
+              <Link href={submitLink}>
                 Invia una Segnalazione
               </Link>
             </Button>
