@@ -19,7 +19,6 @@ import {
   Loader2,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 
 const initialState: ActionResult = {
   success: false,
@@ -40,9 +39,15 @@ function SubmitButton() {
   )
 }
 
-export default function SubmitReportPage() {
-  const searchParams = useSearchParams()
-  const clientParam = searchParams.get('client') || searchParams.get('ref')
+interface SubmitReportPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+const getParam = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value
+
+export default function SubmitReportPage({ searchParams }: SubmitReportPageProps) {
+  const clientParam = getParam(searchParams?.client) || getParam(searchParams?.ref)
   const [state, formAction] = useFormState(submitReport, initialState)
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [copied, setCopied] = useState(false)
