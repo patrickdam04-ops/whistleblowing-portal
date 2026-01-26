@@ -20,7 +20,7 @@ interface Report {
 }
 
 const TENANT_PERMISSIONS: Record<string, string[]> = {
-  'demo@studiorock.it': ['StudioRock'],
+  'demo@studiorock.it': ['StudioRock', 'Studio Rock', 'studio rock', 'studiorock'],
   'demo@nexumstp.it': ['NexumStp'],
   'demo@lexant.it': ['Lexant'],
   'demo@laborproject.it': ['LaborProject'],
@@ -51,6 +51,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   const userEmail = user?.email?.toLowerCase() || ''
   const allowedCompanies = TENANT_PERMISSIONS[userEmail]
+
+  console.log('Admin:', userEmail, 'Cerca aziende:', allowedCompanies)
 
   if (!userEmail || !allowedCompanies || allowedCompanies.length === 0) {
     return (
