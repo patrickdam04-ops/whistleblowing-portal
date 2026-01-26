@@ -15,15 +15,14 @@ interface Report {
   company_id: string | null
 }
 
-const TENANT_MAPPING: Record<string, string> = {
-  'demo@nexumstp.it': 'NexumStp',
-  'demo@studiobiagi.it': 'StudioBiagi',
-  'demo@studiorock.it': 'StudioRock',
-  'demo@lexant.it': 'Lexant',
-  'demo@laborproject.it': 'LaborProject',
-  'demo@231consulting.it': '231Consulting',
-  'demo@braviassociati.it': 'Braviassociati',
-  'patrickdam04@gmail.com': 'Patrick-Personal',
+const TENANT_ACCESS: Record<string, string[]> = {
+  'demo@studiorock.it': ['StudioRock'],
+  'demo@nexumstp.it': ['NexumStp'],
+  'demo@lexant.it': ['Lexant'],
+  'demo@laborproject.it': ['LaborProject'],
+  'demo@231consulting.it': ['231Consulting'],
+  'demo@braviassociati.it': ['Braviassociati'],
+  'patrickdam04@gmail.com': ['StudioRock', 'NexumStp'],
 }
 
 interface PageProps {
@@ -46,22 +45,36 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     redirect('/gestione')
   }
 
-  const tenantCompany =
-    user?.email && TENANT_MAPPING[user.email.toLowerCase()]
-      ? TENANT_MAPPING[user.email.toLowerCase()]
-      : null
+  const userEmail = user?.email?.toLowerCase() || ''
+  const allowedCompanies = TENANT_ACCESS[userEmail] || []
 
-  // Query delle segnalazioni
-  let query = supabase.from('reports').select('*').order('created_at', { ascending: false })
+  if (!userEmail || allowedCompanies.length === 0) {
+    return (
+      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <Shield className="w-8 h-8 text-blue-600" />
+              <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+            </div>
+            <p className="text-sm text-slate-600">
+              Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
+            </p>
+          </div>
 
-  if (tenantCompany) {
-    query = query.eq('company_id', tenantCompany)
-  } else {
-    // Segregazione rigida: se non mappato, non mostrare nulla
-    query = query.eq('company_id', '__NO_ACCESS__')
+          <div className="rounded-lg border border-red-200 bg-red-50 text-red-900 px-4 py-3 text-sm">
+            Accesso non autorizzato per questa utenza.
+          </div>
+        </div>
+      </div>
+    )
   }
 
-  const { data: reports, error } = await query
+  const { data: reports, error } = await supabase
+    .from('reports')
+    .select('*')
+    .in('company_id', allowedCompanies)
+    .order('created_at', { ascending: false })
 
   if (error) {
     console.error('Errore durante il recupero delle segnalazioni:', error)
@@ -110,9 +123,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         <DashboardFilters currentView={currentView} currentSort={currentSort} />
 
-        {tenantCompany && (
+        {allowedCompanies.length > 0 && (
           <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3 text-sm">
-            Benvenuto nel portale riservato: <span className="font-semibold">{tenantCompany}</span>
+            Benvenuto nel portale riservato:{' '}
+            <span className="font-semibold">{allowedCompanies.join(', ')}</span>
           </div>
         )}
 
