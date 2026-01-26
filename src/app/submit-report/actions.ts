@@ -23,6 +23,7 @@ export async function submitReport(
     const isAnonymousValue = formData.get('is_anonymous') as string | null
     const contactInfo = formData.get('contact_info') as string | null
     const attachments = formData.getAll('attachments') as File[]
+    const companyId = formData.get('company_id') as string | null
 
     // Prepara i dati per la validazione (normalizza i valori)
     const rawData = {
@@ -177,6 +178,10 @@ export async function submitReport(
       encrypted_contact_info: encryptedContactInfo,
       status: 'PENDING',
       ticket_code: ticketCode, // <--- QUESTO DEVE ESSERE PRESENTE!
+    }
+
+    if (companyId && companyId.trim() !== '') {
+      insertData.company_id = companyId.trim()
     }
 
     // Aggiungi attachments solo se ci sono file (come array nativo, non stringa JSON)

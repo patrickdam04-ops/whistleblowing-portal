@@ -12,6 +12,11 @@ interface Report {
   status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'DISMISSED'
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
   encrypted_contact_info: string | null
+  company_id: string | null
+}
+
+const DEMO_ACCOUNTS: Record<string, string> = {
+  'demo@nexumstp.it': 'NexumStp',
 }
 
 interface PageProps {
@@ -34,11 +39,19 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     redirect('/gestione')
   }
 
+  const demoCompany =
+    user?.email && DEMO_ACCOUNTS[user.email.toLowerCase()]
+      ? DEMO_ACCOUNTS[user.email.toLowerCase()]
+      : null
+
   // Query delle segnalazioni
-  const { data: reports, error } = await supabase
-    .from('reports')
-    .select('*')
-    .order('created_at', { ascending: false })
+  let query = supabase.from('reports').select('*').order('created_at', { ascending: false })
+
+  if (demoCompany) {
+    query = query.ilike('company_id', demoCompany)
+  }
+
+  const { data: reports, error } = await query
 
   if (error) {
     console.error('Errore durante il recupero delle segnalazioni:', error)
@@ -86,6 +99,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </div>
 
         <DashboardFilters currentView={currentView} currentSort={currentSort} />
+
+        {demoCompany && (
+          <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3 text-sm">
+            Benvenuto nel portale riservato: <span className="font-semibold">{demoCompany}</span>
+          </div>
+        )}
 
         {/* Tabella */}
         {sortedReports.length === 0 ? (

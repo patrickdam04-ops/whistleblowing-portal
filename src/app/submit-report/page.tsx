@@ -19,6 +19,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 const initialState: ActionResult = {
   success: false,
@@ -40,6 +41,8 @@ function SubmitButton() {
 }
 
 export default function SubmitReportPage() {
+  const searchParams = useSearchParams()
+  const clientParam = searchParams.get('client') || searchParams.get('ref')
   const [state, formAction] = useFormState(submitReport, initialState)
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -107,10 +110,11 @@ export default function SubmitReportPage() {
           formData.append('audio', audioFile)
 
           const result = await transcribeAudio(formData)
-          if (!result.success || !result.text) {
+          const transcribedText = result.text ?? ''
+          if (!result.success || !transcribedText) {
             setTranscriptionError(result.error || 'Errore durante la trascrizione.')
           } else {
-            setDescriptionText((prev) => (prev ? `${prev}\n${result.text}` : result.text))
+            setDescriptionText((prev) => (prev ? `${prev}\n${transcribedText}` : transcribedText))
           }
         } catch (error) {
           console.error('Errore trascrizione:', error)
@@ -145,6 +149,11 @@ export default function SubmitReportPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
+        {clientParam && (
+          <div className="mb-6 rounded-lg border border-blue-700 bg-blue-900 text-blue-100 px-4 py-3 text-sm">
+            👋 Ambiente Demo Riservato per: <span className="font-semibold">{clientParam}</span>
+          </div>
+        )}
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
@@ -239,6 +248,9 @@ export default function SubmitReportPage() {
             )}
 
             <form ref={formRef} action={formAction} className="space-y-6">
+              {clientParam && (
+                <input type="hidden" name="company_id" value={clientParam} />
+              )}
             {/* Descrizione */}
             <div>
               <div className="flex items-center justify-between gap-3 mb-2">
