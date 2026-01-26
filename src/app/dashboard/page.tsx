@@ -20,13 +20,7 @@ interface Report {
 }
 
 const TENANT_PERMISSIONS: Record<string, string[]> = {
-  'demo@studiorock.it': [
-    'StudioRock',
-    'Studio Rock',
-    'studio rock',
-    'studiorock',
-    'Studio-Rock',
-  ],
+  'demo@studiorock.it': ['Studiorock'],
   'demo@nexumstp.it': ['NexumStp'],
   'demo@lexant.it': ['Lexant'],
   'demo@laborproject.it': ['LaborProject'],
