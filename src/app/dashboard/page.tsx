@@ -15,9 +15,10 @@ interface Report {
   company_id: string | null
 }
 
-const DEMO_TENANTS: Record<string, string> = {
+const TENANT_MAPPING: Record<string, string> = {
   'demo@nexumstp.it': 'NexumStp',
   'demo@studiobiagi.it': 'StudioBiagi',
+  'patrickdam04@gmail.com': 'Patrick-Personal',
 }
 
 interface PageProps {
@@ -40,16 +41,19 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     redirect('/gestione')
   }
 
-  const demoCompany =
-    user?.email && DEMO_TENANTS[user.email.toLowerCase()]
-      ? DEMO_TENANTS[user.email.toLowerCase()]
+  const tenantCompany =
+    user?.email && TENANT_MAPPING[user.email.toLowerCase()]
+      ? TENANT_MAPPING[user.email.toLowerCase()]
       : null
 
   // Query delle segnalazioni
   let query = supabase.from('reports').select('*').order('created_at', { ascending: false })
 
-  if (demoCompany) {
-    query = query.eq('company_id', demoCompany)
+  if (tenantCompany) {
+    query = query.eq('company_id', tenantCompany)
+  } else {
+    // Segregazione rigida: se non mappato, non mostrare nulla
+    query = query.eq('company_id', '__NO_ACCESS__')
   }
 
   const { data: reports, error } = await query
@@ -101,9 +105,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         <DashboardFilters currentView={currentView} currentSort={currentSort} />
 
-        {demoCompany && (
+        {tenantCompany && (
           <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3 text-sm">
-            Benvenuto nel portale riservato: <span className="font-semibold">{demoCompany}</span>
+            Benvenuto nel portale riservato: <span className="font-semibold">{tenantCompany}</span>
           </div>
         )}
 
