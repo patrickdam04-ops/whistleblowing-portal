@@ -48,6 +48,7 @@ const getParam = (value: string | string[] | undefined) =>
 
 export default function SubmitReportPage({ searchParams }: SubmitReportPageProps) {
   const clientParam = getParam(searchParams?.client) || getParam(searchParams?.ref)
+  const homeLink = clientParam ? `/?client=${encodeURIComponent(clientParam)}` : '/'
   const [state, formAction] = useFormState(submitReport, initialState)
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -217,7 +218,7 @@ export default function SubmitReportPage({ searchParams }: SubmitReportPageProps
               {/* Bottoni */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild variant="outline" size="lg">
-                  <Link href="/">
+                  <Link href={homeLink}>
                     <Home className="w-4 h-4 mr-2" />
                     Torna alla Home
                   </Link>
