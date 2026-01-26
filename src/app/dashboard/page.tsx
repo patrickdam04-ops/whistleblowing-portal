@@ -1,8 +1,12 @@
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { Shield, AlertCircle } from 'lucide-react'
 import { ReportRow } from './report-row'
 import { DashboardFilters } from '@/components/DashboardFilters'
+import { LogoutButton } from '@/components/LogoutButton'
 
 interface Report {
   id: string
@@ -111,14 +115,17 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Shield className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Shield className="w-8 h-8 text-blue-600" />
+              <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+            </div>
+            <p className="text-sm text-slate-600">
+              Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
+            </p>
           </div>
-          <p className="text-sm text-slate-600">
-            Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
-          </p>
+          <LogoutButton />
         </div>
 
         <DashboardFilters currentView={currentView} currentSort={currentSort} />
