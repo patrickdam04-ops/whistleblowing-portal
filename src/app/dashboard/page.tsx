@@ -26,6 +26,7 @@ const TENANT_PERMISSIONS: Record<string, string[]> = {
   'demo@laborproject.it': ['LaborProject'],
   'demo@231consulting.it': ['231Consulting'],
   'demo@braviassociati.it': ['Braviassociati'],
+  'demo@studioscalco.it': ['StudioScalco'],
   'patrickdam04@gmail.com': ['Patrick-Personal'],
 }
 
