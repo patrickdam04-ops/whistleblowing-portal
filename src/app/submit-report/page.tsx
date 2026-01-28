@@ -41,13 +41,14 @@ function SubmitButton() {
 
 interface SubmitReportPageProps {
   searchParams?: { [key: string]: string | string[] | undefined }
+  clientName?: string
 }
 
 const getParam = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value
 
-export default function SubmitReportPage({ searchParams }: SubmitReportPageProps) {
-  const clientParam = getParam(searchParams?.client) || getParam(searchParams?.ref)
+export default function SubmitReportPage({ searchParams, clientName }: SubmitReportPageProps) {
+  const clientParam = clientName || getParam(searchParams?.client) || getParam(searchParams?.ref)
   const homeLink = clientParam ? `/?client=${encodeURIComponent(clientParam)}` : '/'
   const [state, formAction] = useFormState(submitReport, initialState)
   const [isAnonymous, setIsAnonymous] = useState(false)
