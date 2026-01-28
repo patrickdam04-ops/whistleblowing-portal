@@ -20,7 +20,7 @@ export interface ConsistencyAnalysisResult {
 }
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-1.5-pro'
+const MODEL = 'gemini-2.5-pro'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
 const safetySettings = [

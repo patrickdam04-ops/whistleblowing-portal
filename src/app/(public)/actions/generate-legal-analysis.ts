@@ -12,8 +12,8 @@ export interface LegalAnalysisResult {
 }
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const PRIMARY_MODEL = 'gemini-1.5-pro'
-const FALLBACK_MODEL = 'gemini-1.5-pro'
+const PRIMARY_MODEL = 'gemini-2.5-pro'
+const FALLBACK_MODEL = 'gemini-2.5-pro'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
 const safetySettings = [
