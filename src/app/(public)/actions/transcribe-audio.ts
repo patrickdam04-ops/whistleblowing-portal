@@ -1,7 +1,7 @@
 'use server'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const PRIMARY_MODEL = 'gemini-2.0-flash-exp'
+const PRIMARY_MODEL = 'gemini-1.5-flash'
 const FALLBACK_MODEL = 'gemini-1.5-flash'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
@@ -15,8 +15,9 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 async function callGemini(model: string, file: File): Promise<string> {
-  if (!API_KEY) {
-    throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('CRITICAL: API KEY MISSING')
+    throw new Error('Configurazione Server Mancante')
   }
 
   const buffer = await file.arrayBuffer()
@@ -63,6 +64,11 @@ async function callGemini(model: string, file: File): Promise<string> {
 }
 
 export async function transcribeAudio(formData: FormData): Promise<{ success: boolean; text?: string; error?: string }> {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('CRITICAL: API KEY MISSING')
+    throw new Error('Configurazione Server Mancante')
+  }
+
   const file = formData.get('audio') as File | null
 
   if (!file || file.size === 0) {
@@ -73,12 +79,16 @@ export async function transcribeAudio(formData: FormData): Promise<{ success: bo
     const text = await callGemini(PRIMARY_MODEL, file)
     return { success: true, text }
   } catch (error) {
-    console.error('Errore trascrizione (primary):', error)
+    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
     try {
       const text = await callGemini(FALLBACK_MODEL, file)
       return { success: true, text }
     } catch (fallbackError) {
-      console.error('Errore trascrizione (fallback):', fallbackError)
+      console.error(
+        'Gemini Error:',
+        (fallbackError as any)?.message,
+        (fallbackError as any)?.response?.data
+      )
       return { success: false, error: 'Trascrizione non disponibile al momento' }
     }
   }

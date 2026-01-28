@@ -20,7 +20,7 @@ export interface ConsistencyAnalysisResult {
 }
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-2.0-flash-exp'
+const MODEL = 'gemini-1.5-flash'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
 const safetySettings = [
@@ -82,6 +82,11 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
 }
 
 export async function analyzeConsistency(description: string): Promise<ConsistencyAnalysisResult> {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('CRITICAL: API KEY MISSING')
+    throw new Error('Configurazione Server Mancante')
+  }
+
   if (!description) {
     return {
       score_solidita: 50,
@@ -99,10 +104,6 @@ export async function analyzeConsistency(description: string): Promise<Consisten
         reasoning: 'Dati insufficienti per valutare la futilità.',
       },
     }
-  }
-
-  if (!API_KEY) {
-    throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
   }
 
   const { redactedText, tokenMap } = redactSensitiveText(description.trim())
@@ -157,7 +158,8 @@ Testo da analizzare: "${redactedText}"`
   let outer: any
   try {
     outer = JSON.parse(rawText)
-  } catch {
+  } catch (error) {
+    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
     throw new Error(`Risposta Gemini non JSON: ${rawText}`)
   }
 
@@ -174,7 +176,8 @@ Testo da analizzare: "${redactedText}"`
   let parsed: any
   try {
     parsed = JSON.parse(extracted)
-  } catch {
+  } catch (error) {
+    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
     throw new Error(`JSON Gemini non valido: ${cleaned}`)
   }
 

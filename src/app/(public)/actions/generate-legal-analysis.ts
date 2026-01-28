@@ -12,7 +12,7 @@ export interface LegalAnalysisResult {
 }
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const PRIMARY_MODEL = 'gemini-2.0-flash-exp'
+const PRIMARY_MODEL = 'gemini-1.5-flash'
 const FALLBACK_MODEL = 'gemini-1.5-flash'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
@@ -53,8 +53,9 @@ function normalizeResult(raw: any): LegalAnalysisResult {
 }
 
 async function callGeminiModel(model: string, description: string): Promise<LegalAnalysisResult> {
-  if (!API_KEY) {
-    throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('CRITICAL: API KEY MISSING')
+    throw new Error('Configurazione Server Mancante')
   }
 
   const { redactedText, tokenMap } = redactSensitiveText(description.trim())
@@ -81,7 +82,8 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
   let outer: any
   try {
     outer = JSON.parse(rawText)
-  } catch {
+  } catch (error) {
+    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
     throw new Error(`Risposta Gemini non JSON: ${rawText}`)
   }
 
@@ -98,7 +100,8 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
   let parsed: any
   try {
     parsed = JSON.parse(extracted)
-  } catch {
+  } catch (error) {
+    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
     throw new Error(`JSON Gemini non valido: ${cleaned}`)
   }
 
@@ -107,6 +110,11 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
 }
 
 export async function generateLegalAnalysis(description: string): Promise<LegalAnalysisResult> {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('CRITICAL: API KEY MISSING')
+    throw new Error('Configurazione Server Mancante')
+  }
+
   if (!description) {
     return {
       reati_ipotizzati: [],
@@ -119,7 +127,7 @@ export async function generateLegalAnalysis(description: string): Promise<LegalA
   try {
     return await callGeminiModel(PRIMARY_MODEL, description)
   } catch (error) {
-    console.error('Errore Gemini Legal (primary):', error)
+    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
     return await callGeminiModel(FALLBACK_MODEL, description)
   }
 }

@@ -3,7 +3,7 @@
 import type { ConsistencyAnalysisResult } from '@/app/(public)/actions/analyze-consistency'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-2.0-flash-exp'
+const MODEL = 'gemini-1.5-flash'
 const URL =
   'https://generativelanguage.googleapis.com/v1beta/models/' +
   MODEL +
@@ -16,14 +16,16 @@ export async function generateAIResponse(
   sherlockAnalysis?: ConsistencyAnalysisResult | null,
   mode: 'SHERLOCK' | 'STANDARD' = 'STANDARD'
 ): Promise<string> {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    console.error('CRITICAL: API KEY MISSING')
+    throw new Error('Configurazione Server Mancante')
+  }
+
   if (!description) {
     throw new Error('Descrizione mancante')
   }
 
   try {
-    if (!API_KEY) {
-      throw new Error('GOOGLE_GENERATIVE_AI_API_KEY non configurata')
-    }
     console.log('🤖 Generazione risposta AI per segnalazione...', ticketCode ? `Codice: ${ticketCode}` : '')
 
     // Costruisci il prompt migliorato
@@ -142,7 +144,7 @@ Il Responsabile della Gestione delle Segnalazioni`
 
     return cleanedResponse
   } catch (error: any) {
-    console.error('Critical AI Error:', error)
+    console.error('Gemini Error:', error?.message, error?.response?.data)
     // Restituisci una risposta di fallback in caso di errore
     const codeReference = ticketCode
       ? `La sua segnalazione è stata registrata con il codice ${ticketCode}.`
