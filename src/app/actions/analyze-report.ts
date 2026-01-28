@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redactSensitiveText, restoreTokensInObject } from '@/lib/privacy-redaction'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-1.5-pro'
+const MODEL = 'gemini-2.5-pro'
 
 export interface AIAnalysisResult {
   summary: string
@@ -63,7 +63,25 @@ Analizza il testo mantenendo rigorosamente i placeholder originali (es. [NOME_1]
 Rispondi SOLO con un JSON valido (senza markdown) con:
 { "summary": "riassunto breve", "risk_level": "LOW/MEDIUM/HIGH", "recommended_actions": ["azione1", "azione2"] }`
 
-    const result = await model.generateContent(prompt)
+    let result
+    try {
+      result = await model.generateContent(prompt)
+    } catch (error: any) {
+      const errorMessage = String(error?.message || error || '')
+      if (errorMessage.includes('404') || errorMessage.toLowerCase().includes('not found')) {
+        try {
+          const availableModels = await (genAI as any).getGenerativeModelFactory().listModels()
+          console.error(
+            `ERRORE: Il modello 'gemini-2.5-pro' non è stato trovato. Ecco i modelli disponibili per questa API Key: ${JSON.stringify(availableModels)}`
+          )
+        } catch (listError: any) {
+          console.error(
+            `ERRORE: Il modello 'gemini-2.5-pro' non è stato trovato. Impossibile recuperare la lista modelli: ${listError?.message || listError}`
+          )
+        }
+      }
+      throw error
+    }
     const response = result.response
     const rawText = response.text()
 
