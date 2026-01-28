@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redactSensitiveText, restoreTokensInObject } from '@/lib/privacy-redaction'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-1.5-flash'
+const MODEL = 'gemini-1.5-pro'
 
 export interface AIAnalysisResult {
   summary: string
