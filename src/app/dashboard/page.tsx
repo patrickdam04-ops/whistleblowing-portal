@@ -20,19 +20,6 @@ interface Report {
 }
 
 const TENANT_PERMISSIONS: Record<string, string[]> = {
-  'demo@studiorock.it': ['StudioRock'],
-  'demo@nexumstp.it': ['NexumStp'],
-  'demo@lexant.it': ['Lexant'],
-  'demo@laborproject.it': ['LaborProject'],
-  'demo@231consulting.it': ['231Consulting'],
-  'demo@braviassociati.it': ['Braviassociati'],
-  'demo@studioscalco.it': ['StudioScalco'],
-  'demo@sistemassociati.it': ['SistemaAssociati'],
-  'demo@studiobandera.it': ['StudioBandera'],
-  'demo@studiocapra.it': ['StudioCapra'],
-  'demo@mazzolenisaita.it': ['MazzoleniSaita'],
-  'demo@studioaltomonte.it': ['StudioAltomonte'],
-  'demo@csaisrl.it': ['StudioCSAI'],
   'patrickdam04@gmail.com': ['Patrick-Personal'],
 }
 
