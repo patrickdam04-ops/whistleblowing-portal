@@ -35,9 +35,6 @@ const getParam = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value
 
 export default async function DashboardPage({ searchParams }: PageProps) {
-  // #region agent log
-  const _sp = searchParams; fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/page.tsx:entry',message:'DashboardPage entry',data:{searchParamsType:typeof _sp,isPromise:typeof (_sp as any)?.then==='function'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4'})}).catch(()=>{});
-  // #endregion agent log
   const supabase = createClient()
 
   // Verifica autenticazione
@@ -49,9 +46,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   if (authError || !user) {
     redirect('/gestione')
   }
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/page.tsx:afterAuth',message:'auth ok',data:{userId:user?.id},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4'})}).catch(()=>{});
-  // #endregion agent log
+
   const userEmail = user?.email?.toLowerCase() || ''
 
   const { data: memberships, error: membershipError } = await supabase
@@ -83,9 +78,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     .filter(Boolean) as { id: string; label: string }[]
 
   const allowedCompanyIds = companyOptions.map((company) => company.id)
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'dashboard/page.tsx:companies',message:'companies loaded',data:{allowedCount:allowedCompanyIds.length,membershipError:membershipError?.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H4'})}).catch(()=>{});
-  // #endregion agent log
+
   console.log('Admin:', user?.email, 'Filtra per aziende:', allowedCompanyIds)
 
   if (!userEmail || allowedCompanyIds.length === 0) {

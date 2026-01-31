@@ -8,13 +8,7 @@ const getParam = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value
 
 export default function HomePage({ searchParams }: PageProps) {
-  // #region agent log
-  const _sp = searchParams; fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'(public)/page.tsx:entry',message:'HomePage render',data:{searchParamsType:typeof _sp,isPromise:typeof (_sp as any)?.then==='function'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-  // #endregion agent log
   const clientParam = getParam(searchParams?.client)
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'(public)/page.tsx:getParam',message:'getParam done',data:{clientParam},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H2'})}).catch(()=>{});
-  // #endregion agent log
   return (
     <div className="min-h-screen bg-slate-950 text-slate-300 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-4xl">

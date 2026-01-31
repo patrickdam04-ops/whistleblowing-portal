@@ -1,8 +1,5 @@
 'use server'
 
-// #region agent log
-if (typeof fetch !== 'undefined') fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'generate-dashboard-summary.ts:moduleLoad',message:'action module loaded',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H5'})}).catch(()=>{});
-// #endregion agent log
 import { createClient } from '@/utils/supabase/server'
 import {
   getInitialFeedbackStatus,
