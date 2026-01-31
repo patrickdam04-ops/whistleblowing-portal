@@ -7,6 +7,7 @@ import { Shield, AlertCircle } from 'lucide-react'
 import { ReportRow } from './report-row'
 import { DashboardFilters } from '@/components/DashboardFilters'
 import { LogoutButton } from '@/components/LogoutButton'
+import { CompanySwitcher } from '@/components/CompanySwitcher'
 
 interface Report {
   id: string
@@ -27,8 +28,12 @@ interface PageProps {
   searchParams?: {
     view?: 'active' | 'archived'
     sort?: 'recent' | 'severity'
+    company?: string | string[]
   }
 }
+
+const getParam = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value
 
 export default async function DashboardPage({ searchParams }: PageProps) {
   const supabase = createClient()
@@ -70,10 +75,37 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     )
   }
 
+  const selectedCompanyParam = getParam(searchParams?.company)
+  const selectedCompany = allowedCompanies.includes(selectedCompanyParam || '')
+    ? (selectedCompanyParam as string)
+    : allowedCompanies[0]
+
+  if (!selectedCompany) {
+    return (
+      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <Shield className="w-8 h-8 text-blue-600" />
+              <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+            </div>
+            <p className="text-sm text-slate-600">
+              Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-amber-200 bg-amber-50 text-amber-900 px-4 py-3 text-sm">
+            Nessuna azienda selezionata. Seleziona un&apos;azienda dal menu per continuare.
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const { data: reports, error } = await supabase
     .from('reports')
     .select('*')
-    .in('company_id', allowedCompanies)
+    .eq('company_id', selectedCompany)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -124,12 +156,20 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <LogoutButton />
         </div>
 
-        <DashboardFilters currentView={currentView} currentSort={currentSort} />
+        <div className="flex flex-col gap-4">
+          <DashboardFilters currentView={currentView} currentSort={currentSort} />
+          {allowedCompanies.length > 1 && (
+            <CompanySwitcher
+              companies={allowedCompanies}
+              selectedCompany={selectedCompany}
+            />
+          )}
+        </div>
 
         {allowedCompanies.length > 0 && (
           <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3 text-sm">
-            Benvenuto nel portale riservato:{' '}
-            <span className="font-semibold">{allowedCompanies.join(', ')}</span>
+            Portale riservato attivo per:{' '}
+            <span className="font-semibold">{selectedCompany}</span>
           </div>
         )}
 

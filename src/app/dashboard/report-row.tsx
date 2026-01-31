@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { formatDate, truncateDescription } from '@/lib/report-utils'
 import { SeverityBadge, StatusBadge } from '@/components/ui/badges'
 
@@ -17,9 +17,12 @@ interface ReportRowProps {
 
 export function ReportRow({ report }: ReportRowProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const companyParam = searchParams.get('company')
 
   const handleClick = () => {
-    router.push(`/dashboard/${report.id}`)
+    const suffix = companyParam ? `?company=${encodeURIComponent(companyParam)}` : ''
+    router.push(`/dashboard/${report.id}${suffix}`)
   }
 
   return (

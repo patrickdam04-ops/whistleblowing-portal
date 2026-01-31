@@ -33,9 +33,15 @@ interface Report {
 
 interface PageProps {
   params: Promise<{ id: string }>
+  searchParams?: {
+    company?: string | string[]
+  }
 }
 
-export default async function ReportDetailPage({ params }: PageProps) {
+const getParam = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value
+
+export default async function ReportDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params
   const supabase = createClient()
 
@@ -62,13 +68,18 @@ export default async function ReportDetailPage({ params }: PageProps) {
 
   const reportData = report as Report
 
+  const companyParam = getParam(searchParams?.company)
+  const backHref = companyParam
+    ? `/dashboard?company=${encodeURIComponent(companyParam)}`
+    : '/dashboard'
+
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header con back button */}
         <div className="mb-6">
           <Link
-            href="/dashboard"
+            href={backHref}
             className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
