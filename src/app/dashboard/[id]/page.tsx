@@ -8,6 +8,7 @@ import {
   FileText,
   ArrowLeft,
   Clock,
+  Scale,
 } from 'lucide-react'
 import Link from 'next/link'
 import { StatusSelector } from '@/components/StatusSelector'
@@ -15,8 +16,15 @@ import { AdminResponseForm } from '@/components/AdminResponseForm'
 import { ReportAttachments } from '@/components/ReportAttachments'
 import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
 import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
+import { AcknowledgeReportButton } from './AcknowledgeReportButton'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import { SeverityBadge } from '@/components/ui/badges'
+import {
+  getFinalOutcomeDeadline,
+  getDaysRemaining,
+  getInitialFeedbackLabel,
+  getFinalOutcomeLabel,
+} from '@/lib/sla-utils'
 
 interface Report {
   id: string
@@ -28,7 +36,8 @@ interface Report {
   encrypted_contact_info: string | null
   admin_response: string | null
   ticket_code: string | null
-  attachments: string | string[] | null // Array di path (PostgreSQL array) o stringa JSON
+  attachments: string | string[] | null
+  acknowledged_at: string | null
 }
 
 interface PageProps {
@@ -152,6 +161,46 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
                   <StatusSelector id={reportData.id} initialStatus={reportData.status} />
                 </div>
 
+              </div>
+            </div>
+
+            {/* Conformità D.Lgs. 24/2023 */}
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <Scale className="w-5 h-5" />
+                Conformità D.Lgs. 24/2023
+              </h2>
+              <p className="text-xs text-slate-500 mb-4">
+                Riscontro iniziale entro 7 giorni (Art. 8; Direttiva UE 2019/1937). Comunicazione esito entro 90 giorni.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-slate-700 mb-1">Riscontro iniziale (7 gg)</p>
+                  {reportData.acknowledged_at ? (
+                    <p className="text-sm text-green-700">
+                      Riscontro inviato il {formatDate(reportData.acknowledged_at)}
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-sm text-slate-900">{getInitialFeedbackLabel(reportData)}</p>
+                      <div className="mt-2">
+                        <AcknowledgeReportButton reportId={reportData.id} />
+                      </div>
+                    </>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-700 mb-1">Comunicazione esito (90 gg)</p>
+                  <p className="text-sm text-slate-900">{getFinalOutcomeLabel(reportData)}</p>
+                  {reportData.status !== 'RESOLVED' && reportData.status !== 'DISMISSED' && (
+                    <p className="text-xs text-slate-500 mt-1">
+                      Scadenza: {formatDate(getFinalOutcomeDeadline(reportData.created_at).toISOString())} —{' '}
+                      {getDaysRemaining(getFinalOutcomeDeadline(reportData.created_at)) >= 0
+                        ? `${getDaysRemaining(getFinalOutcomeDeadline(reportData.created_at))} giorni rimanenti`
+                        : `${Math.abs(getDaysRemaining(getFinalOutcomeDeadline(reportData.created_at)))} giorni oltre il termine`}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 

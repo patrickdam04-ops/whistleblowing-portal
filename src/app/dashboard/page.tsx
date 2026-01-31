@@ -18,6 +18,7 @@ interface Report {
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' | null
   encrypted_contact_info: string | null
   company_id: string | null
+  acknowledged_at: string | null
 }
 
 interface PageProps {
@@ -215,6 +216,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Stato
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      SLA
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                       Descrizione

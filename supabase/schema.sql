@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS reports (
   encrypted_contact_info TEXT,
   company_id TEXT,
   ai_analysis JSONB,
+  acknowledged_at TIMESTAMP WITH TIME ZONE,
   
   -- Vincoli CHECK per status
   CONSTRAINT reports_status_check CHECK (

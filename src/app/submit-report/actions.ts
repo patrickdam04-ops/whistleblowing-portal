@@ -33,9 +33,6 @@ export async function submitReport(
       contact_info: contactInfo && contactInfo.trim() !== '' ? contactInfo.trim() : '',
     }
 
-    // Debug: log dei dati ricevuti
-    console.log('📥 Dati ricevuti dal form:', rawData)
-
     // Valida i dati con Zod
     const validationResult = reportSchema.safeParse(rawData)
 
@@ -80,7 +77,6 @@ export async function submitReport(
     const normalizedCompanyId = companyId?.trim() || ''
 
     if (!normalizedCompanyId) {
-      console.error('❌ company_id mancante: segnalazione rifiutata per sicurezza')
       return {
         success: false,
         message:
@@ -112,8 +108,6 @@ export async function submitReport(
     )
 
     if (validAttachments.length > 0) {
-      console.log(`📦 Tentativo upload di ${validAttachments.length} file(s) nel bucket: "${BUCKET_NAME}"`)
-      
       for (const file of validAttachments) {
         // Verifica dimensione file (5MB = 5 * 1024 * 1024 bytes)
         const maxSize = 5 * 1024 * 1024 // 5MB
@@ -143,15 +137,6 @@ export async function submitReport(
             })
 
           if (uploadError) {
-            console.error(uploadError)
-            console.error('Errore Storage: ' + uploadError.message)
-            console.error('📋 Dettagli errore:', {
-              message: uploadError.message,
-              statusCode: uploadError.statusCode,
-              error: uploadError.error,
-              bucket: BUCKET_NAME,
-              path: filePath,
-            })
             return {
               success: false,
               message: `Errore durante l'upload del file "${file.name}". Verifica che il bucket "${BUCKET_NAME}" esista su Supabase.`,
@@ -160,15 +145,7 @@ export async function submitReport(
 
           // Salva solo il path (non l'URL completo)
           attachmentPaths.push(filePath)
-          console.log('✅ File caricato con successo:', filePath, uploadData)
         } catch (uploadErr: any) {
-          console.error('❌ Errore imprevisto durante l\'upload:', uploadErr)
-          console.error('📋 Dettagli errore:', {
-            message: uploadErr.message,
-            stack: uploadErr.stack,
-            bucket: BUCKET_NAME,
-            path: filePath,
-          })
           return {
             success: false,
             message: `Errore durante l'upload del file "${file.name}". Riprova più tardi.`,
@@ -179,10 +156,6 @@ export async function submitReport(
 
     // SALVA NEL DB INCLUDENDO IL CODICE E GLI ALLEGATI
     // Salva i path come array nativo (PostgreSQL array type)
-    console.log('💾 Salvataggio nel DB con attachments:', attachmentPaths)
-    
-    console.log('Salvataggio report per azienda:', normalizedCompanyId)
-
     const insertData: any = {
       description: validatedData.description,
       severity: validatedData.severity,
@@ -202,15 +175,11 @@ export async function submitReport(
     const { error, data } = await supabase.from('reports').insert(insertData)
 
     if (error) {
-      console.error('❌ Errore durante l\'inserimento della segnalazione:', error)
-      console.error('🎫 Codice che stavo cercando di salvare:', ticketCode)
       return {
         success: false,
-        message: 'Si è verificato un errore durante l\'invio della segnalazione. Riprova più tardi.',
+        message: error.message || 'Si è verificato un errore durante l\'invio della segnalazione. Riprova più tardi.',
       }
     }
-
-    console.log('✅ Segnalazione salvata con successo. Codice:', ticketCode)
 
     // Invia notifica email all'amministratore
     try {
@@ -248,11 +217,9 @@ export async function submitReport(
           `,
         })
 
-        console.log('Tentativo di invio mail a patrickdam04@gmail.com effettuato.')
       }
     } catch (emailError: any) {
-      // Non blocchiamo il flusso se l'email fallisce - loggiamo solo l'errore
-      console.error('❌ Errore durante l\'invio dell\'email di notifica:', emailError)
+      // Non blocchiamo il flusso se l'email fallisce
       // Continuiamo comunque - la segnalazione è stata salvata con successo
     }
 
@@ -266,7 +233,6 @@ export async function submitReport(
       ticket_code: ticketCode, // <--- RESTITUISCI IL CODICE
     }
   } catch (error) {
-    console.error('Errore imprevisto durante l\'invio della segnalazione:', error)
     return {
       success: false,
       message: 'Si è verificato un errore imprevisto. Riprova più tardi.',
