@@ -73,14 +73,24 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
     // #endregion agent log
   }, [state])
 
+  useEffect(() => {
+    if (!state.message) return
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:81',message:'submit state message',data:{message:state.message,success:state.success},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion agent log
+  }, [state.message, state.success])
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget)
     const description = (formData.get('description') as string | null) || ''
     const severity = (formData.get('severity') as string | null) || ''
     const companyId = (formData.get('company_id') as string | null) || ''
     const attachments = formData.getAll('attachments') as File[]
+    const attachmentSizes = attachments
+      .map((file) => (file instanceof File ? file.size : 0))
+      .filter((size) => size !== undefined)
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:85',message:'submit form snapshot',data:{descriptionLength:description.length,severity,isAnonymous,hasCompanyId:Boolean(companyId),attachmentsCount:attachments.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:93',message:'submit form snapshot',data:{descriptionLength:description.length,severity,isAnonymous,hasCompanyId:Boolean(companyId),attachmentsCount:attachments.length,attachmentSizes},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
     // #endregion agent log
   }
 
