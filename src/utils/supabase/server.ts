@@ -2,10 +2,12 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export function createClient() {
-  // TEMP: hardcoded for storage debug
-  const url = 'https://tbppzqaduyfygudhdxwo.supabase.co'
-  const key =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRicHB6cWFkdXlmeWd1ZGhkeHdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMDM5ODcsImV4cCI6MjA4NDY3OTk4N30.qXF_-7niXJ3KW_dgO3HAvPqy1z1I3uBvVGXeQYHciaE'
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables.')
+  }
 
   const cookieStore = cookies()
 
