@@ -24,6 +24,9 @@ export async function submitReport(
     const contactInfo = formData.get('contact_info') as string | null
     const attachments = formData.getAll('attachments') as File[]
     const companyId = formData.get('company_id') as string | null
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:28',message:'submitReport entry',data:{hasDescription:Boolean(description),descriptionLength:description?.length||0,severity,isAnonymous:isAnonymousValue=== 'true',hasCompanyId:Boolean(companyId),attachmentsCount:attachments?.length||0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion agent log
 
     // Prepara i dati per la validazione (normalizza i valori)
     const rawData = {
@@ -38,6 +41,9 @@ export async function submitReport(
 
     // Valida i dati con Zod
     const validationResult = reportSchema.safeParse(rawData)
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:43',message:'validation result',data:{success:validationResult.success,fields:validationResult.success?[]:validationResult.error.errors.map((e)=>e.path[0])},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion agent log
 
     if (!validationResult.success) {
       // Debug: log dettagliato degli errori Zod
@@ -80,6 +86,9 @@ export async function submitReport(
     const normalizedCompanyId = companyId?.trim() || ''
 
     if (!normalizedCompanyId) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:85',message:'missing company_id',data:{companyIdRaw:companyId||null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+      // #endregion agent log
       console.error('❌ company_id mancante: segnalazione rifiutata per sicurezza')
       return {
         success: false,
@@ -100,6 +109,9 @@ export async function submitReport(
     console.log('🎫 Codice generato:', ticketCode)
 
     // Crea il client Supabase
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:108',message:'creating supabase client',data:{envSupabaseUrlSet:Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),envSupabaseKeySet:Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion agent log
     const supabase = createClient()
 
     const BUCKET_NAME = 'report-attachments'
@@ -143,6 +155,9 @@ export async function submitReport(
             })
 
           if (uploadError) {
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:149',message:'upload error',data:{message:uploadError.message,statusCode:uploadError.statusCode},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+            // #endregion agent log
             console.error(uploadError)
             console.error('Errore Storage: ' + uploadError.message)
             console.error('📋 Dettagli errore:', {
@@ -182,6 +197,9 @@ export async function submitReport(
     console.log('💾 Salvataggio nel DB con attachments:', attachmentPaths)
     
     console.log('Salvataggio report per azienda:', normalizedCompanyId)
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:198',message:'before insert report',data:{companyId:normalizedCompanyId,attachmentsCount:attachmentPaths.length,status:'PENDING'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+    // #endregion agent log
 
     const insertData: any = {
       description: validatedData.description,
@@ -202,6 +220,9 @@ export async function submitReport(
     const { error, data } = await supabase.from('reports').insert(insertData)
 
     if (error) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/actions.ts:212',message:'insert error',data:{message:error.message,code:error.code,details:error.details},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+      // #endregion agent log
       console.error('❌ Errore durante l\'inserimento della segnalazione:', error)
       console.error('🎫 Codice che stavo cercando di salvare:', ticketCode)
       return {
