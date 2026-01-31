@@ -190,13 +190,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           )}
         </div>
 
-        {allowedCompanyIds.length > 0 && (
-          <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3 text-sm">
-            Portale riservato attivo per:{' '}
-            <span className="font-semibold">{selectedCompanyLabel}</span>
-          </div>
-        )}
-
         {/* Tabella */}
         {sortedReports.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-12 text-center">
