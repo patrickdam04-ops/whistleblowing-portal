@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 
 interface CompanySwitcherProps {
-  companies: string[]
+  companies: { id: string; label: string }[]
   selectedCompany?: string
 }
 
@@ -29,8 +29,8 @@ export function CompanySwitcher({ companies, selectedCompany }: CompanySwitcherP
         className="border border-slate-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
         {companies.map((company) => (
-          <option key={company} value={company}>
-            {company}
+          <option key={company.id} value={company.id}>
+            {company.label}
           </option>
         ))}
       </select>

@@ -20,10 +20,6 @@ interface Report {
   company_id: string | null
 }
 
-const TENANT_PERMISSIONS: Record<string, string[]> = {
-  'patrickdam04@gmail.com': ['Patrick-Personal'],
-}
-
 interface PageProps {
   searchParams?: {
     view?: 'active' | 'archived'
@@ -49,11 +45,40 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   }
 
   const userEmail = user?.email?.toLowerCase() || ''
-  const allowedCompanies = TENANT_PERMISSIONS[userEmail]
 
-  console.log('Admin:', user?.email, 'Filtra per aziende:', allowedCompanies)
+  const { data: memberships, error: membershipError } = await supabase
+    .from('tenant_members')
+    .select(
+      `
+      tenants (
+        name,
+        slug
+      )
+    `
+    )
+    .eq('user_id', user.id)
 
-  if (!userEmail || !allowedCompanies || allowedCompanies.length === 0) {
+  if (membershipError) {
+    console.error('Errore durante il recupero dei tenant:', membershipError)
+  }
+
+  const companyOptions = (memberships || [])
+    .map((row: any) => {
+      const tenant = Array.isArray(row.tenants) ? row.tenants[0] : row.tenants
+      const id = tenant?.slug || tenant?.name
+      if (!id) return null
+      return {
+        id,
+        label: tenant?.name || id,
+      }
+    })
+    .filter(Boolean) as { id: string; label: string }[]
+
+  const allowedCompanyIds = companyOptions.map((company) => company.id)
+
+  console.log('Admin:', user?.email, 'Filtra per aziende:', allowedCompanyIds)
+
+  if (!userEmail || allowedCompanyIds.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
@@ -68,7 +93,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </div>
 
           <div className="rounded-lg border border-red-200 bg-red-50 text-red-900 px-4 py-3 text-sm">
-            Nessun accesso configurato per questa utenza.
+            Nessuna azienda assegnata per questa utenza.
           </div>
         </div>
       </div>
@@ -76,9 +101,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   }
 
   const selectedCompanyParam = getParam(searchParams?.company)
-  const selectedCompany = allowedCompanies.includes(selectedCompanyParam || '')
+  const selectedCompany = allowedCompanyIds.includes(selectedCompanyParam || '')
     ? (selectedCompanyParam as string)
-    : allowedCompanies[0]
+    : allowedCompanyIds[0]
+  const selectedCompanyLabel =
+    companyOptions.find((company) => company.id === selectedCompany)?.label || selectedCompany
 
   if (!selectedCompany) {
     return (
@@ -158,18 +185,15 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         <div className="flex flex-col gap-4">
           <DashboardFilters currentView={currentView} currentSort={currentSort} />
-          {allowedCompanies.length > 1 && (
-            <CompanySwitcher
-              companies={allowedCompanies}
-              selectedCompany={selectedCompany}
-            />
+          {companyOptions.length > 1 && (
+            <CompanySwitcher companies={companyOptions} selectedCompany={selectedCompany} />
           )}
         </div>
 
-        {allowedCompanies.length > 0 && (
+        {allowedCompanyIds.length > 0 && (
           <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 text-blue-900 px-4 py-3 text-sm">
             Portale riservato attivo per:{' '}
-            <span className="font-semibold">{selectedCompany}</span>
+            <span className="font-semibold">{selectedCompanyLabel}</span>
           </div>
         )}
 
