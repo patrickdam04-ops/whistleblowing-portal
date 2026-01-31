@@ -83,14 +83,13 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget)
     const description = (formData.get('description') as string | null) || ''
-    const severity = (formData.get('severity') as string | null) || ''
     const companyId = (formData.get('company_id') as string | null) || ''
     const attachments = formData.getAll('attachments') as File[]
     const attachmentSizes = attachments
       .map((file) => (file instanceof File ? file.size : 0))
       .filter((size) => size !== undefined)
     // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:93',message:'submit form snapshot',data:{descriptionLength:description.length,severity,isAnonymous,hasCompanyId:Boolean(companyId),attachmentsCount:attachments.length,attachmentSizes},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:93',message:'submit form snapshot',data:{descriptionLength:description.length,isAnonymous,hasCompanyId:Boolean(companyId),attachmentsCount:attachments.length,attachmentSizes},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
     // #endregion agent log
   }
 
@@ -356,36 +355,6 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
               <p className="mt-1 text-xs text-slate-500">
                 Minimo 10 caratteri, massimo 5000 caratteri
               </p>
-            </div>
-
-            {/* Gravità */}
-            <div>
-              <label
-                htmlFor="severity"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Gravità <span className="text-red-500">*</span>
-              </label>
-              <select
-                id="severity"
-                name="severity"
-                required
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Seleziona la gravità
-                </option>
-                <option value="LOW">Bassa - Violazione minore</option>
-                <option value="MEDIUM">Media - Violazione moderata</option>
-                <option value="HIGH">Alta - Violazione grave</option>
-                <option value="CRITICAL">Critica - Violazione molto grave</option>
-              </select>
-              {state.errors?.severity && (
-                <p className="mt-1 text-sm text-red-600">
-                  {state.errors.severity[0]}
-                </p>
-              )}
             </div>
 
             {/* Anonimato */}

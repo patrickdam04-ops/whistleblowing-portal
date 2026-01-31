@@ -19,7 +19,6 @@ export async function submitReport(
   try {
     // Estrai i dati dal FormData
     const description = formData.get('description') as string | null
-    const severity = formData.get('severity') as string | null
     const isAnonymousValue = formData.get('is_anonymous') as string | null
     const contactInfo = formData.get('contact_info') as string | null
     const attachments = formData.getAll('attachments') as File[]
@@ -28,7 +27,6 @@ export async function submitReport(
     // Prepara i dati per la validazione (normalizza i valori)
     const rawData = {
       description: description || '',
-      severity: severity || '', // Stringa vuota se non selezionato (Zod darà errore)
       is_anonymous: isAnonymousValue === 'true',
       contact_info: contactInfo && contactInfo.trim() !== '' ? contactInfo.trim() : '',
     }
@@ -54,7 +52,6 @@ export async function submitReport(
         .map((field) => {
           const fieldNames: Record<string, string> = {
             description: 'Descrizione',
-            severity: 'Gravità',
             is_anonymous: 'Anonimato',
             contact_info: 'Contatto',
           }
@@ -146,10 +143,9 @@ export async function submitReport(
     }
 
     // SALVA NEL DB INCLUDENDO IL CODICE E GLI ALLEGATI
-    // Salva i path come array nativo (PostgreSQL array type)
+    // Gravità non impostata: sarà stimata dall'AI al caricamento della dashboard
     const insertData: any = {
       description: validatedData.description,
-      severity: validatedData.severity,
       is_anonymous: validatedData.is_anonymous,
       encrypted_contact_info: encryptedContactInfo,
       status: 'PENDING',

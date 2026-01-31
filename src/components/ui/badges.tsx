@@ -13,8 +13,8 @@ export function SeverityBadge({ severity, size = 'sm' }: SeverityBadgeProps) {
     LOW: 'bg-green-100 text-green-800 border-green-200',
   }
 
-  const style = severity ? styles[severity] : 'bg-gray-100 text-gray-800 border-slate-200'
-  const label = severity || 'N/A'
+  const style = severity ? styles[severity] : 'bg-slate-100 text-slate-600 border-slate-200'
+  const label = severity ?? 'In valutazione'
   const sizeClasses = size === 'lg' 
     ? 'px-3 py-1 text-sm' 
     : 'px-2.5 py-0.5 text-xs'

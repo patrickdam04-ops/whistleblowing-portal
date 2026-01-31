@@ -5,9 +5,6 @@ export const reportSchema = z.object({
     .string()
     .min(10, 'La descrizione deve contenere almeno 10 caratteri')
     .max(5000, 'La descrizione non può superare i 5000 caratteri'),
-  severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], {
-    required_error: 'Seleziona la gravità della segnalazione',
-  }),
   is_anonymous: z.boolean().default(false),
   contact_info: z
     .string()
