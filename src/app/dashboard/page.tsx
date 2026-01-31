@@ -211,7 +211,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-card border border-slate-200/80 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">

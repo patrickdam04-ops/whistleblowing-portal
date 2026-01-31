@@ -33,11 +33,11 @@ export function DashboardFilters({ currentView, currentSort }: DashboardFiltersP
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
-      <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1">
+      <div className="inline-flex rounded-xl border border-slate-200/80 bg-white p-1 shadow-card">
         <button
           type="button"
           onClick={() => updateParams({ view: 'active' })}
-          className={`px-4 py-2 text-sm font-medium rounded-md ${
+          className={`px-4 py-2 text-sm font-medium rounded-xl ${
             currentView === 'active'
               ? 'bg-blue-600 text-white'
               : 'text-slate-600 hover:text-slate-900'
@@ -48,7 +48,7 @@ export function DashboardFilters({ currentView, currentSort }: DashboardFiltersP
         <button
           type="button"
           onClick={() => updateParams({ view: 'archived' })}
-          className={`px-4 py-2 text-sm font-medium rounded-md ${
+          className={`px-4 py-2 text-sm font-medium rounded-xl ${
             currentView === 'archived'
               ? 'bg-blue-600 text-white'
               : 'text-slate-600 hover:text-slate-900'
@@ -66,7 +66,7 @@ export function DashboardFilters({ currentView, currentSort }: DashboardFiltersP
           id="sort"
           value={currentSort}
           onChange={(e) => updateParams({ sort: e.target.value as SortMode })}
-          className="border border-slate-300 rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="border border-slate-200/80 rounded-xl px-3 py-2 text-sm bg-white shadow-card focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="recent">Più Recenti</option>
           <option value="severity">Priorità/Rischio</option>

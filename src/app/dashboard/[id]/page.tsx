@@ -110,7 +110,7 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
           {/* Colonna SX: Metadata + Smart Reply */}
           <div className="md:col-span-1 space-y-6">
             {/* Card Metadata */}
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+            <div className="bg-white rounded-2xl shadow-card border border-slate-200/80 p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Informazioni
@@ -164,17 +164,28 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
               </div>
             </div>
 
-            {/* Conformità D.Lgs. 24/2023 */}
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            {/* Smart Reply - Risposta al Segnalante */}
+            <AdminResponseForm
+              reportId={reportData.id}
+              reportDescription={reportData.description}
+              ticketCode={reportData.ticket_code}
+              initialResponse={reportData.admin_response}
+            />
+          </div>
+
+          {/* Colonna DX: Conformità in evidenza + Descrizione */}
+          <div className="md:col-span-2 space-y-6">
+            {/* Conformità D.Lgs. 24/2023 - in cima alla colonna destra */}
+            <div className="bg-white rounded-2xl shadow-card border border-slate-200/80 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
                 <Scale className="w-5 h-5" />
                 Conformità D.Lgs. 24/2023
               </h2>
               <p className="text-xs text-slate-500 mb-4">
                 Riscontro iniziale entro 7 giorni (Art. 8; Direttiva UE 2019/1937). Comunicazione esito entro 90 giorni.
               </p>
-              <div className="space-y-4">
-                <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="rounded-xl bg-slate-50/80 p-4 border border-slate-200/60">
                   <p className="text-sm font-medium text-slate-700 mb-1">Riscontro iniziale (7 gg)</p>
                   {reportData.acknowledged_at ? (
                     <p className="text-sm text-green-700">
@@ -189,7 +200,7 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
                     </>
                   )}
                 </div>
-                <div>
+                <div className="rounded-xl bg-slate-50/80 p-4 border border-slate-200/60">
                   <p className="text-sm font-medium text-slate-700 mb-1">Comunicazione esito (90 gg)</p>
                   <p className="text-sm text-slate-900">{getFinalOutcomeLabel(reportData)}</p>
                   {reportData.status !== 'RESOLVED' && reportData.status !== 'DISMISSED' && (
@@ -204,24 +215,14 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
               </div>
             </div>
 
-            {/* Smart Reply - Risposta al Segnalante */}
-            <AdminResponseForm
-              reportId={reportData.id}
-              reportDescription={reportData.description}
-              ticketCode={reportData.ticket_code}
-              initialResponse={reportData.admin_response}
-            />
-          </div>
-
-          {/* Colonna DX: Descrizione */}
-          <div className="md:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+            {/* Descrizione della Segnalazione */}
+            <div className="bg-white rounded-2xl shadow-card border border-slate-200/80 p-6">
               <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Descrizione della Segnalazione
               </h2>
               <div className="prose max-w-none">
-                <div className="bg-gray-50 rounded-lg p-6 border border-slate-200">
+                <div className="bg-slate-50/80 rounded-xl p-6 border border-slate-200/60">
                   <p className="text-slate-900 whitespace-pre-wrap leading-relaxed">
                     {reportData.description}
                   </p>
@@ -230,7 +231,7 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
 
               {/* Contatto (se disponibile) */}
               {!reportData.is_anonymous && reportData.encrypted_contact_info && (
-                <div className="mt-6 pt-6 border-t border-slate-200">
+                <div className="mt-6 pt-6 border-t border-slate-200/80">
                   <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <User className="w-4 h-4" />
                     Contatto Segnalante
