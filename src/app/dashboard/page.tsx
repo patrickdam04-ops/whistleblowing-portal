@@ -197,6 +197,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             companies={companiesWithStats}
             selectedCompany={selectedCompany}
           />
+
+          <DashboardSummaryCard
+            selectedCompanyId={selectedCompany}
+            selectedCompanyLabel={selectedCompanyLabel}
+          />
         </div>
 
         {/* Tabella */}
