@@ -13,9 +13,6 @@ export function AcknowledgeReportButton({ reportId }: { reportId: string }) {
   const handleClick = () => {
     startTransition(async () => {
       const result = await acknowledgeReport(reportId)
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'AcknowledgeReportButton:result',message:'acknowledgeReport result',data:{success:result?.success,error:result && !result.success ? (result as { error: string }).error : null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H5'})}).catch(()=>{});
-      // #endregion agent log
       if (result && !result.success) {
         alert('Errore: ' + (result as { error: string }).error)
         return

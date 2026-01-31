@@ -45,6 +45,15 @@ FOR SELECT
 TO authenticated
 USING (true);
 
+-- Policy: Allow admin update
+-- Permette agli utenti autenticati di aggiornare le segnalazioni (es. acknowledged_at, status, admin_response)
+CREATE POLICY "Allow admin update"
+ON reports
+FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
 -- IMPORTANTE: Disabilita Realtime per questa tabella
 -- Vai su Supabase Dashboard > Database > Replication
 -- e DISABILITA il Realtime per la tabella 'reports'
