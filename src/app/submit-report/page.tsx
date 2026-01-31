@@ -61,6 +61,29 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
 
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:67',message:'submit page mount',data:{hasClientParam:Boolean(clientParam),clientParamLength:clientParam?.length||0},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion agent log
+  }, [clientParam])
+
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:74',message:'submit state update',data:{success:state.success,messageLength:state.message?.length||0,errorFields:state.errors?Object.keys(state.errors):[],hasTicket:Boolean(state.ticket_code)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion agent log
+  }, [state])
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(event.currentTarget)
+    const description = (formData.get('description') as string | null) || ''
+    const severity = (formData.get('severity') as string | null) || ''
+    const companyId = (formData.get('company_id') as string | null) || ''
+    const attachments = formData.getAll('attachments') as File[]
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/5141b8e2-d936-46ae-8beb-6c0c4c1faa0e',{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'submit-report/page.tsx:85',message:'submit form snapshot',data:{descriptionLength:description.length,severity,isAnonymous,hasCompanyId:Boolean(companyId),attachmentsCount:attachments.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion agent log
+  }
+
   // Funzione per copiare il codice nella clipboard
   const handleCopyCode = async () => {
     if (state.ticket_code) {
@@ -249,7 +272,12 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
               </div>
             )}
 
-            <form ref={formRef} action={formAction} className="space-y-6">
+            <form
+              ref={formRef}
+              action={formAction}
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               {clientParam && (
                 <input type="hidden" name="company_id" value={clientParam} />
               )}
