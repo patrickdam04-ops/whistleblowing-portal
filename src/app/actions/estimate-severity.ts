@@ -1,7 +1,7 @@
 'use server'
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
-const MODEL = 'gemini-2.5-pro'
+const MODEL = 'gemini-2.5-flash'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 const MAX_BATCH = 20
 
