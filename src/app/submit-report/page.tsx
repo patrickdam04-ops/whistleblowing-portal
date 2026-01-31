@@ -156,11 +156,6 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        {clientParam && (
-          <div className="mb-6 rounded-lg border border-blue-700 bg-blue-900 text-blue-100 px-4 py-3 text-sm">
-            👋 Ambiente Demo Riservato per: <span className="font-semibold">{clientParam}</span>
-          </div>
-        )}
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">

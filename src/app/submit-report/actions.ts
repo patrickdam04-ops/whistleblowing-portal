@@ -84,7 +84,7 @@ export async function submitReport(
       return {
         success: false,
         message:
-          'Ambiente demo non valido o non specificato. Riapri il link corretto fornito dall’azienda.',
+          'Portale non valido o non specificato. Riapri il link corretto fornito dall’azienda.',
       }
     }
 

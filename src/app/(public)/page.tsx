@@ -12,11 +12,6 @@ export default function HomePage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-300 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-4xl">
-        {clientParam && (
-          <div className="mb-8 rounded-lg border border-blue-700 bg-blue-900 text-blue-100 px-4 py-3 text-sm">
-            Ambiente Demo Riservato: <span className="font-semibold">{clientParam}</span>
-          </div>
-        )}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-100">
             Zona Segnalazioni
