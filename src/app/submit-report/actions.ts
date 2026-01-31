@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/server'
 import { reportSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { Resend } from 'resend'
+import { estimateSeveritiesBatch } from '@/app/actions/estimate-severity'
 
 export interface ActionResult {
   success: boolean
@@ -159,12 +160,35 @@ export async function submitReport(
       insertData.attachments = attachmentPaths // Array nativo, non JSON.stringify()
     }
 
-    const { error, data } = await supabase.from('reports').insert(insertData)
+    const { error, data } = await supabase
+      .from('reports')
+      .insert(insertData)
+      .select('id')
+      .single()
 
     if (error) {
       return {
         success: false,
         message: error.message || 'Si è verificato un errore durante l\'invio della segnalazione. Riprova più tardi.',
+      }
+    }
+
+    // Stima gravità con AI subito dopo l'inserimento, così in dashboard non si aspetta l'AI
+    const newReportId = (data as { id?: string } | null)?.id
+    if (newReportId && validatedData.description) {
+      try {
+        const estimated = await estimateSeveritiesBatch([
+          { id: newReportId, description: validatedData.description },
+        ])
+        if (estimated.length > 0) {
+          await supabase
+            .from('reports')
+            .update({ severity: estimated[0].severity })
+            .eq('id', newReportId)
+        }
+      } catch (e) {
+        console.warn('Stima gravità post-invio fallita:', e)
+        // Segnalazione già salvata, severity resta null (in dashboard: "In valutazione")
       }
     }
 

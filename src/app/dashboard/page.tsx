@@ -10,7 +10,6 @@ import { LogoutButton } from '@/components/LogoutButton'
 import { CompanySwitcher } from '@/components/CompanySwitcher'
 import { DashboardSummaryCard } from '@/components/DashboardSummaryCard'
 import { computeCompanyStats, getEmptyCompanyStats } from '@/lib/sla-utils'
-import { estimateSeveritiesBatch } from '@/app/actions/estimate-severity'
 
 interface Report {
   id: string
@@ -143,24 +142,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     console.error('Errore durante il recupero delle segnalazioni:', error)
   }
 
-  let reportsData = (reports || []) as Report[]
-  let reportsForSelected = reportsData.filter((r) => r.company_id === selectedCompany)
-
-  // Stima gravità con AI per le segnalazioni senza severity (solo per l'azienda selezionata)
-  const withoutSeverity = reportsForSelected.filter((r) => r.severity === null)
-  if (withoutSeverity.length > 0) {
-    const toEstimate = withoutSeverity.slice(0, 20).map((r) => ({ id: r.id, description: r.description }))
-    const estimated = await estimateSeveritiesBatch(toEstimate)
-    for (const e of estimated) {
-      await supabase.from('reports').update({ severity: e.severity }).eq('id', e.id)
-    }
-    // Aggiorna in memoria così stats e tabella usano le gravità stimate
-    const severityById = Object.fromEntries(estimated.map((e) => [e.id, e.severity]))
-    reportsData = reportsData.map((r) =>
-      severityById[r.id] ? { ...r, severity: severityById[r.id] } : r
-    )
-    reportsForSelected = reportsData.filter((r) => r.company_id === selectedCompany)
-  }
+  const reportsData = (reports || []) as Report[]
+  const reportsForSelected = reportsData.filter((r) => r.company_id === selectedCompany)
 
   const companyStats = computeCompanyStats(reportsData)
   const companiesWithStats = companyOptions.map((c) => ({
