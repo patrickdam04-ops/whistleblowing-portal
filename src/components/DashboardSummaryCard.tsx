@@ -64,10 +64,6 @@ export function DashboardSummaryCard({
           )}
         </Button>
       </div>
-      <p className="text-xs text-slate-500 mt-1 mb-4">
-        Riassunto narrativo delle segnalazioni per l&apos;azienda selezionata
-        (senza riferimenti a periodi temporali).
-      </p>
 
       {error && (
         <div className="rounded-xl border border-red-200 bg-red-50 text-red-800 text-sm px-4 py-3">
@@ -76,16 +72,9 @@ export function DashboardSummaryCard({
       )}
 
       {summary && (
-        <div className="rounded-xl bg-slate-50/80 border border-slate-200/60 p-4 text-sm text-slate-800 leading-relaxed">
+        <div className="rounded-xl bg-slate-50/80 border border-slate-200/60 p-4 text-sm text-slate-800 leading-relaxed mt-4">
           {summary}
         </div>
-      )}
-
-      {!summary && !error && !loading && (
-        <p className="text-sm text-slate-500 italic">
-          Clicca &quot;Genera riepilogo&quot; per ottenere un riassunto della
-          situazione delle segnalazioni.
-        </p>
       )}
     </div>
   )
