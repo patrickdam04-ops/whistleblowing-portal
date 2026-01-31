@@ -35,16 +35,22 @@ export async function estimateSeveritiesBatch(
   }
 
   const descriptions = reports.map((r, i) => `[${i + 1}] ${r.description}`).join('\n\n---\n\n')
-  const prompt = `Sei un assistente per la gestione di segnalazioni whistleblowing (D.Lgs. 24/2023). 
-Per ogni segnalazione sotto, assegna UNA sola gravità in base alla gravità della condotta segnalata:
-- LOW: violazioni minori, richieste informative, disagi lievi
-- MEDIUM: irregolarità moderate, mancanze procedurali
-- HIGH: violazioni gravi, possibili illeciti, molestie, discriminazioni
-- CRITICAL: reati gravi, frodi, corruzione, minacce, situazioni di pericolo
+  const prompt = `Sei un assistente per la gestione di segnalazioni whistleblowing (D.Lgs. 24/2023).
+
+Valuta la GRAVITÀ REALE della condotta segnalata, non il tono o il linguaggio usato. Una segnalazione scritta in modo formale o "legale" su un fatto futile deve essere LOW.
+
+Regole:
+- Valuta COSA è stato fatto (sostanza), non come è scritto. Es.: furto di cialde di caffè o materiale d'ufficio = LOW anche se descritto con termini come "violazione reiterata e sistematica", "occultamento", "Soggetto X".
+- LOW: violazioni minori, richieste informative, disagi lievi, questioni futili (consumo non autorizzato di viveri d'ufficio, materiale di cancelleria, tensioni interpersonali minori).
+- MEDIUM: irregolarità procedurali moderate, mancanze documentali, ritardi significativi.
+- HIGH: violazioni gravi, possibili illeciti, molestie, discriminazioni, frodi di una certa entità.
+- CRITICAL: reati gravi (corruzione, appropriazione indebita rilevante, minacce, pericolo per persone), frodi sistemiche, violazioni della sicurezza.
+
+NON elevare la gravità solo perché il testo usa un linguaggio formale o giuridico. Se il fatto descritto è banale (es. caffè, materiale di poco valore, litigi da ufficio), rispondi LOW.
 
 Rispondi SOLO con un JSON array di stringhe, nello stesso ordine delle segnalazioni (1 = primo elemento, 2 = secondo, ecc.).
 Valori ammessi esattamente: "LOW", "MEDIUM", "HIGH", "CRITICAL".
-Esempio: ["MEDIUM", "CRITICAL", "LOW"]
+Esempio: ["LOW", "CRITICAL", "MEDIUM"]
 
 Segnalazioni:
 
