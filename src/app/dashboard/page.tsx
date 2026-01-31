@@ -8,6 +8,7 @@ import { ReportRow } from './report-row'
 import { DashboardFilters } from '@/components/DashboardFilters'
 import { LogoutButton } from '@/components/LogoutButton'
 import { CompanySwitcher } from '@/components/CompanySwitcher'
+import { DashboardSummaryCard } from '@/components/DashboardSummaryCard'
 import { computeCompanyStats, getEmptyCompanyStats } from '@/lib/sla-utils'
 
 interface Report {
