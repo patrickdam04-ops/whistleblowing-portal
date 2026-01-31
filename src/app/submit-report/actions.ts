@@ -227,7 +227,7 @@ export async function submitReport(
       console.error('🎫 Codice che stavo cercando di salvare:', ticketCode)
       return {
         success: false,
-        message: 'Si è verificato un errore durante l\'invio della segnalazione. Riprova più tardi.',
+        message: `Errore invio: ${error.message}`,
       }
     }
 
@@ -290,7 +290,9 @@ export async function submitReport(
     console.error('Errore imprevisto durante l\'invio della segnalazione:', error)
     return {
       success: false,
-      message: 'Si è verificato un errore imprevisto. Riprova più tardi.',
+      message:
+        'Errore imprevisto: ' +
+        (error instanceof Error ? error.message : 'Impossibile inviare la segnalazione.'),
     }
   }
 }
