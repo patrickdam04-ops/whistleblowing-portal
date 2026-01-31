@@ -82,3 +82,35 @@ export async function saveAdminResponse(id: string, response: string) {
 
   return { success: true, message: 'Risposta salvata con successo' }
 }
+
+export async function acknowledgeReport(reportId: string) {
+  const supabase = createClient()
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    throw new Error('Non autorizzato')
+  }
+
+  const { error, data } = await supabase
+    .from('reports')
+    .update({ acknowledged_at: new Date().toISOString() })
+    .eq('id', reportId)
+    .select()
+
+  if (error) {
+    console.error('Errore durante il salvataggio del riscontro:', error)
+    throw new Error(`Errore durante il salvataggio: ${error.message}`)
+  }
+
+  if (!data || data.length === 0) {
+    throw new Error('Segnalazione non trovata')
+  }
+
+  revalidatePath('/dashboard')
+  revalidatePath(`/dashboard/${reportId}`)
+  return { success: true }
+}
