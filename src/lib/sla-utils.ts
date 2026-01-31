@@ -83,3 +83,81 @@ export function getFinalOutcomeLabel(report: {
   if (remaining === 0) return 'Esito oggi'
   return `Esito: ${remaining} gg`
 }
+
+/** Report minimo per calcolo stats per azienda */
+export interface ReportForStats {
+  company_id: string | null
+  created_at: string
+  acknowledged_at: string | null
+  status: string
+  severity: string | null
+}
+
+export interface CompanyStats {
+  pending: number
+  critical: number
+  initialOverdue: number
+  initialDueSoon: number
+  finalOverdue: number
+  finalDueSoon: number
+}
+
+const EMPTY_STATS: CompanyStats = {
+  pending: 0,
+  critical: 0,
+  initialOverdue: 0,
+  initialDueSoon: 0,
+  finalOverdue: 0,
+  finalDueSoon: 0,
+}
+
+/** Riscontro "in scadenza": remaining 1-2 gg (0 = oggi). Esito "in scadenza": remaining 1-30 gg, non chiuso. */
+export function computeCompanyStats(reports: ReportForStats[]): Record<string, CompanyStats> {
+  const now = new Date()
+  const byCompany: Record<string, ReportForStats[]> = {}
+  for (const r of reports) {
+    const cid = r.company_id ?? ''
+    if (!cid) continue
+    if (!byCompany[cid]) byCompany[cid] = []
+    byCompany[cid].push(r)
+  }
+  const out: Record<string, CompanyStats> = {}
+  for (const [companyId, list] of Object.entries(byCompany)) {
+    let pending = 0
+    let critical = 0
+    let initialOverdue = 0
+    let initialDueSoon = 0
+    let finalOverdue = 0
+    let finalDueSoon = 0
+    for (const r of list) {
+      const closed = r.status === 'RESOLVED' || r.status === 'DISMISSED'
+      if (!closed) pending++
+      if (!closed && r.severity === 'CRITICAL') critical++
+      const initialStatus = getInitialFeedbackStatus(r)
+      if (initialStatus === 'overdue') initialOverdue++
+      else if (initialStatus === 'pending') {
+        const rem = getDaysRemaining(getInitialFeedbackDeadline(r.created_at), now)
+        if (rem >= 0 && rem <= 2) initialDueSoon++
+      }
+      const finalStatus = getFinalOutcomeStatus(r)
+      if (finalStatus === 'overdue') finalOverdue++
+      else if (finalStatus === 'pending') {
+        const rem = getDaysRemaining(getFinalOutcomeDeadline(r.created_at), now)
+        if (rem >= 0 && rem <= 30) finalDueSoon++
+      }
+    }
+    out[companyId] = {
+      pending,
+      critical,
+      initialOverdue,
+      initialDueSoon,
+      finalOverdue,
+      finalDueSoon,
+    }
+  }
+  return out
+}
+
+export function getEmptyCompanyStats(): CompanyStats {
+  return { ...EMPTY_STATS }
+}

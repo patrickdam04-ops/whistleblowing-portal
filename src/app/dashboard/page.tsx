@@ -8,6 +8,7 @@ import { ReportRow } from './report-row'
 import { DashboardFilters } from '@/components/DashboardFilters'
 import { LogoutButton } from '@/components/LogoutButton'
 import { CompanySwitcher } from '@/components/CompanySwitcher'
+import { computeCompanyStats, getEmptyCompanyStats } from '@/lib/sla-utils'
 
 interface Report {
   id: string
@@ -133,7 +134,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const { data: reports, error } = await supabase
     .from('reports')
     .select('*')
-    .eq('company_id', selectedCompany)
+    .in('company_id', allowedCompanyIds)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -141,11 +142,17 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   }
 
   const reportsData = (reports || []) as Report[]
+  const reportsForSelected = reportsData.filter((r) => r.company_id === selectedCompany)
+  const companyStats = computeCompanyStats(reportsData)
+  const companiesWithStats = companyOptions.map((c) => ({
+    ...c,
+    stats: companyStats[c.id] ?? getEmptyCompanyStats(),
+  }))
 
   const currentView = searchParams?.view === 'archived' ? 'archived' : 'active'
   const currentSort = searchParams?.sort === 'severity' ? 'severity' : 'recent'
 
-  const filteredReports = reportsData.filter((report) =>
+  const filteredReports = reportsForSelected.filter((report) =>
     currentView === 'archived' ? report.status === 'RESOLVED' : report.status !== 'RESOLVED'
   )
 
@@ -186,9 +193,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         <div className="flex flex-col gap-4">
           <DashboardFilters currentView={currentView} currentSort={currentSort} />
-          {companyOptions.length > 1 && (
-            <CompanySwitcher companies={companyOptions} selectedCompany={selectedCompany} />
-          )}
+          <CompanySwitcher
+            companies={companiesWithStats}
+            selectedCompany={selectedCompany}
+          />
         </div>
 
         {/* Tabella */}
