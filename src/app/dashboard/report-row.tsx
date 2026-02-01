@@ -20,18 +20,19 @@ function SlaBadges({
   const initialLabel = getInitialFeedbackLabel(report)
   const finalLabel = getFinalOutcomeLabel(report)
 
+  // Colore solo per scaduto (rosso) e in scadenza (ambra); ok neutro
   const initialStyle =
     initialStatus === 'ok'
-      ? 'bg-green-100 text-green-800 border-green-200'
+      ? 'bg-slate-700 text-slate-300 border-slate-600'
       : initialStatus === 'overdue'
-        ? 'bg-red-100 text-red-800 border-red-200'
-        : 'bg-amber-100 text-amber-800 border-amber-200'
+        ? 'bg-red-900/50 text-red-300 border-red-700'
+        : 'bg-amber-900/40 text-amber-300 border-amber-700'
   const finalStyle =
     finalStatus === 'ok'
-      ? 'bg-green-100 text-green-800 border-green-200'
+      ? 'bg-slate-700 text-slate-300 border-slate-600'
       : finalStatus === 'overdue'
-        ? 'bg-red-100 text-red-800 border-red-200'
-        : 'bg-amber-100 text-amber-800 border-amber-200'
+        ? 'bg-red-900/50 text-red-300 border-red-700'
+        : 'bg-amber-900/40 text-amber-300 border-amber-700'
 
   return (
     <div className="flex flex-col gap-1">
@@ -76,9 +77,9 @@ export function ReportRow({ report }: ReportRowProps) {
   return (
     <tr
       onClick={handleClick}
-      className="hover:bg-gray-50 transition-colors cursor-pointer"
+      className="hover:bg-slate-700/50 transition-colors cursor-pointer"
     >
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-200">
         {formatDate(report.created_at)}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -90,18 +91,18 @@ export function ReportRow({ report }: ReportRowProps) {
       <td className="px-6 py-4 whitespace-nowrap">
         <SlaBadges report={report} />
       </td>
-      <td className="px-6 py-4 text-sm text-slate-900 max-w-md">
+      <td className="px-6 py-4 text-sm text-slate-300 max-w-md">
         <p className="truncate" title={report.description}>
           {truncateDescription(report.description)}
         </p>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         {report.is_anonymous ? (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700 text-slate-300 border border-slate-600">
             Sì
           </span>
         ) : (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-slate-200">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-700 text-slate-300 border border-slate-600">
             No
           </span>
         )}

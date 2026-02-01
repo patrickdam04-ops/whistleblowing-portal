@@ -21,7 +21,12 @@ export function LogoutButton() {
   }
 
   return (
-    <Button type="button" variant="outline" onClick={handleLogout}>
+    <Button
+      type="button"
+      variant="outline"
+      onClick={handleLogout}
+      className="border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-slate-100 focus-visible:ring-slate-500"
+    >
       <LogOut className="w-4 h-4 mr-2" />
       Logout
     </Button>

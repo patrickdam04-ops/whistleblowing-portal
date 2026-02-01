@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FileText, Loader2 } from 'lucide-react'
+import { FileText, Loader2, Sparkles } from 'lucide-react'
 import { generateDashboardSummary } from '@/app/actions/generate-dashboard-summary'
 import { Button } from '@/components/ui/button'
 
@@ -38,11 +38,11 @@ export function DashboardSummaryCard({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-200/80 p-6">
+    <div className="bg-slate-800 rounded-2xl shadow-card border border-slate-700 p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-slate-600" />
-          <h2 className="text-lg font-semibold text-slate-900">
+          <FileText className="w-5 h-5 text-slate-400" />
+          <h2 className="text-lg font-semibold text-slate-100">
             Riepilogo situazione
           </h2>
         </div>
@@ -52,7 +52,7 @@ export function DashboardSummaryCard({
           size="sm"
           onClick={handleGenerate}
           disabled={loading}
-          className="shrink-0"
+          className="shrink-0 border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
         >
           {loading ? (
             <>
@@ -60,19 +60,22 @@ export function DashboardSummaryCard({
               Generazione...
             </>
           ) : (
-            'Genera riepilogo'
+            <>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Genera riepilogo
+            </>
           )}
         </Button>
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 text-red-800 text-sm px-4 py-3">
+        <div className="rounded-xl border border-red-700 bg-red-900/30 text-red-300 text-sm px-4 py-3 mt-4">
           {error}
         </div>
       )}
 
       {summary && (
-        <div className="rounded-xl bg-slate-50/80 border border-slate-200/60 p-4 text-sm text-slate-800 leading-relaxed mt-4">
+        <div className="rounded-xl bg-slate-700/50 border border-slate-600 p-4 text-sm text-slate-200 leading-relaxed mt-4">
           {summary}
         </div>
       )}

@@ -133,8 +133,8 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
 
   if (loading) {
     return (
-      <div className="mt-6 pt-6 border-t border-slate-200">
-        <div className="flex items-center gap-2 text-sm text-slate-600">
+      <div className="mt-6 pt-6 border-t border-slate-700">
+        <div className="flex items-center gap-2 text-sm text-slate-400">
           <Loader2 className="w-4 h-4 animate-spin" />
           Caricamento allegati...
         </div>
@@ -144,8 +144,8 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
 
   if (error) {
     return (
-      <div className="mt-6 pt-6 border-t border-slate-200">
-        <div className="flex items-center gap-2 text-sm text-red-600">
+      <div className="mt-6 pt-6 border-t border-slate-700">
+        <div className="flex items-center gap-2 text-sm text-red-400">
           <AlertCircle className="w-4 h-4" />
           {error}
         </div>
@@ -156,13 +156,13 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
   // Se non ci sono allegati, mostra un messaggio
   if (!attachments || signedUrls.length === 0) {
     return (
-      <div className="mt-6 pt-6 border-t border-slate-200">
-        <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+      <div className="mt-6 pt-6 border-t border-slate-700">
+        <h3 className="text-sm font-medium text-slate-300 mb-3 flex items-center gap-2">
           <FileText className="w-4 h-4" />
           📁 Allegati e Prove
         </h3>
-        <div className="bg-gray-50 rounded-lg p-4 border border-slate-200">
-          <p className="text-sm text-slate-500 text-center">
+        <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-600">
+          <p className="text-sm text-slate-400 text-center">
             Nessun allegato presente
           </p>
         </div>
@@ -171,8 +171,8 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
   }
 
   return (
-    <div className="mt-6 pt-6 border-t border-slate-200">
-      <h3 className="text-sm font-medium text-gray-700 mb-4 flex items-center gap-2">
+    <div className="mt-6 pt-6 border-t border-slate-700">
+      <h3 className="text-sm font-medium text-slate-300 mb-4 flex items-center gap-2">
         <FileText className="w-4 h-4" />
         📁 Allegati e Prove ({signedUrls.length})
       </h3>
@@ -184,7 +184,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
           return (
             <div
               key={index}
-              className="bg-gray-50 rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-slate-700/50 rounded-xl border border-slate-600 overflow-hidden hover:shadow-md transition-shadow"
             >
               {isImage ? (
                 // Miniatura per immagini
@@ -194,7 +194,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
                   rel="noopener noreferrer"
                   className="block group"
                 >
-                  <div className="relative aspect-video bg-gray-100 overflow-hidden">
+                  <div className="relative aspect-video bg-slate-700 overflow-hidden">
                     <img
                       src={item.url}
                       alt={item.name}
@@ -206,34 +206,34 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
                       }}
                     />
                     {/* Fallback visivo se l'immagine non carica */}
-                    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-200 hidden">
-                      <Image className="w-12 h-12 text-gray-400" />
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-slate-700 hidden">
+                      <Image className="w-12 h-12 text-slate-500" />
                     </div>
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity flex items-center justify-center">
                       <Download className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </div>
                   <div className="p-3">
-                    <p className="text-sm font-medium text-gray-700 truncate">{item.name}</p>
-                    <p className="text-xs text-slate-500 mt-1">Clicca per visualizzare</p>
+                    <p className="text-sm font-medium text-slate-200 truncate">{item.name}</p>
+                    <p className="text-xs text-slate-400 mt-1">Clicca per visualizzare</p>
                   </div>
                 </a>
               ) : (
                 // Icona e download per altri file
                 <div className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 p-3 bg-white rounded-lg border border-slate-200">
-                      <FileIcon className="w-6 h-6 text-slate-600" />
+                    <div className="flex-shrink-0 p-3 bg-slate-700 rounded-xl border border-slate-600">
+                      <FileIcon className="w-6 h-6 text-slate-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-700 truncate mb-2">
+                      <p className="text-sm font-medium text-slate-200 truncate mb-2">
                         {item.name}
                       </p>
                       <Button
                         asChild
                         variant="outline"
                         size="sm"
-                        className="w-full sm:w-auto"
+                        className="w-full sm:w-auto border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
                       >
                         <a
                           href={item.url}
@@ -253,7 +253,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
           )
         })}
       </div>
-      <p className="mt-4 text-xs text-slate-500">
+      <p className="mt-4 text-xs text-slate-400">
         ⚠️ I link di download scadono dopo 1 ora per motivi di sicurezza.
       </p>
     </div>

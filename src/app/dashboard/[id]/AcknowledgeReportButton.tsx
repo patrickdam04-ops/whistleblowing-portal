@@ -28,7 +28,7 @@ export function AcknowledgeReportButton({ reportId }: { reportId: string }) {
       size="sm"
       onClick={handleClick}
       disabled={isPending}
-      className="flex items-center gap-2"
+      className="flex items-center gap-2 border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
     >
       <CheckCircle className="w-4 h-4" />
       {isPending ? 'Salvataggio...' : 'Segna riscontro inviato'}

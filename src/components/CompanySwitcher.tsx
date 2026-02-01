@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ChevronDown } from 'lucide-react'
+import { Building2, ChevronDown } from 'lucide-react'
 import type { CompanyStats } from '@/lib/sla-utils'
 
 interface CompanyWithStats {
@@ -68,23 +68,24 @@ export function CompanySwitcher({ companies, selectedCompany }: CompanySwitcherP
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        className="inline-flex items-center gap-2 rounded-xl border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-200 shadow-sm hover:bg-slate-700 focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-900"
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-label="Seleziona azienda"
       >
-        <span className="font-medium">Azienda:</span>
+        <Building2 className="h-4 w-4 text-slate-400 shrink-0" />
+        <span className="font-medium text-slate-400">Azienda:</span>
         <span>{selectedLabel}</span>
-        <ChevronDown className={`h-4 w-4 text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
         <div
-          className="absolute left-0 top-full z-50 mt-2 w-full min-w-[320px] max-w-xl rounded-lg border border-slate-200 bg-white shadow-lg"
+          className="absolute left-0 top-full z-50 mt-2 w-full min-w-[320px] max-w-xl rounded-xl border border-slate-700 bg-slate-800 shadow-lg"
           role="listbox"
         >
-          <div className="border-b border-slate-200 px-4 py-2">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500 mb-2">
+          <div className="border-b border-slate-700 px-4 py-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-2">
               Aziende da monitorare
             </p>
             <input
@@ -92,13 +93,13 @@ export function CompanySwitcher({ companies, selectedCompany }: CompanySwitcherP
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cerca azienda..."
-              className="w-full rounded border border-slate-200 px-3 py-2 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-slate-600 bg-slate-700/50 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
               autoComplete="off"
             />
           </div>
           <ul className="max-h-[70vh] overflow-y-auto py-2">
             {filteredCompanies.length === 0 ? (
-              <li className="px-4 py-3 text-sm text-slate-500">Nessuna azienda trovata</li>
+              <li className="px-4 py-3 text-sm text-slate-400">Nessuna azienda trovata</li>
             ) : (
               filteredCompanies.map((company) => {
                 const s = company.stats
@@ -114,48 +115,48 @@ export function CompanySwitcher({ companies, selectedCompany }: CompanySwitcherP
                     <button
                       type="button"
                       onClick={() => handleSelect(company.id)}
-                      className={`flex w-full flex-col gap-2 px-4 py-3 text-left transition-colors hover:bg-slate-50 ${
-                        isSelected ? 'bg-blue-50 ring-inset ring-1 ring-blue-200' : ''
+                      className={`flex w-full flex-col gap-2 px-4 py-3 text-left transition-colors hover:bg-slate-700/50 ${
+                        isSelected ? 'bg-slate-700 ring-inset ring-1 ring-slate-500' : ''
                       }`}
                       role="option"
                       aria-selected={isSelected}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className={`font-medium ${isSelected ? 'text-blue-900' : 'text-slate-900'}`}>
+                        <span className={`font-medium ${isSelected ? 'text-slate-100' : 'text-slate-200'}`}>
                           {company.label}
                         </span>
                         {hasUrgency && (
-                          <span className="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800 border border-amber-200">
+                          <span className="rounded bg-amber-900/50 px-1.5 py-0.5 text-xs font-medium text-amber-300 border border-amber-700">
                             Attenzione
                           </span>
                         )}
                       </div>
                       <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                        <span className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 text-slate-700">
+                        <span className="rounded border border-slate-600 bg-slate-700/50 px-2 py-0.5 text-slate-300">
                           Da completare: {s.pending}
                         </span>
                         {s.critical > 0 && (
-                          <span className="rounded border border-red-200 bg-red-50 px-2 py-0.5 font-medium text-red-800">
+                          <span className="rounded border border-red-700 bg-red-900/40 px-2 py-0.5 font-medium text-red-300">
                             Critiche: {s.critical}
                           </span>
                         )}
                         {s.initialOverdue > 0 && (
-                          <span className="rounded border border-red-200 bg-red-50 px-2 py-0.5 font-medium text-red-800">
+                          <span className="rounded border border-red-700 bg-red-900/40 px-2 py-0.5 font-medium text-red-300">
                             Riscontro 7 gg scaduti: {s.initialOverdue}
                           </span>
                         )}
                         {s.initialDueSoon > 0 && (
-                          <span className="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-800">
+                          <span className="rounded border border-amber-700 bg-amber-900/40 px-2 py-0.5 text-amber-300">
                             Riscontro 7 gg in scadenza: {s.initialDueSoon}
                           </span>
                         )}
                         {s.finalOverdue > 0 && (
-                          <span className="rounded border border-red-200 bg-red-50 px-2 py-0.5 font-medium text-red-800">
+                          <span className="rounded border border-red-700 bg-red-900/40 px-2 py-0.5 font-medium text-red-300">
                             Esito 90 gg scaduti: {s.finalOverdue}
                           </span>
                         )}
                         {s.finalDueSoon > 0 && (
-                          <span className="rounded border border-amber-200 bg-amber-50 px-2 py-0.5 text-amber-800">
+                          <span className="rounded border border-amber-700 bg-amber-900/40 px-2 py-0.5 text-amber-300">
                             Esito 90 gg in scadenza: {s.finalDueSoon}
                           </span>
                         )}

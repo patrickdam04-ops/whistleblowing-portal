@@ -3,11 +3,10 @@ export const revalidate = 0
 
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { Shield, AlertCircle } from 'lucide-react'
+import { Shield, AlertCircle, Calendar, AlertTriangle, Activity, Clock, FileText, EyeOff } from 'lucide-react'
 import { ReportRow } from './report-row'
-import { DashboardFilters } from '@/components/DashboardFilters'
+import { DashboardToolbar } from '@/components/DashboardToolbar'
 import { LogoutButton } from '@/components/LogoutButton'
-import { CompanySwitcher } from '@/components/CompanySwitcher'
 import { DashboardSummaryCard } from '@/components/DashboardSummaryCard'
 import { computeCompanyStats, getEmptyCompanyStats } from '@/lib/sla-utils'
 
@@ -83,19 +82,19 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   if (!userEmail || allowedCompanyIds.length === 0) {
     return (
-      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-              <Shield className="w-8 h-8 text-blue-600" />
-              <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+              <Shield className="w-8 h-8 text-slate-400" />
+              <h1 className="text-3xl font-bold text-slate-100">Gestione Segnalazioni</h1>
             </div>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-400">
               Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
             </p>
           </div>
 
-          <div className="rounded-lg border border-red-200 bg-red-50 text-red-900 px-4 py-3 text-sm">
+          <div className="rounded-xl border border-slate-600 bg-slate-800 text-slate-200 px-4 py-3 text-sm">
             Nessuna azienda assegnata per questa utenza.
           </div>
         </div>
@@ -112,19 +111,19 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   if (!selectedCompany) {
     return (
-      <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-              <Shield className="w-8 h-8 text-blue-600" />
-              <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+              <Shield className="w-8 h-8 text-slate-400" />
+              <h1 className="text-3xl font-bold text-slate-100">Gestione Segnalazioni</h1>
             </div>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-400">
               Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
             </p>
           </div>
 
-          <div className="rounded-lg border border-amber-200 bg-amber-50 text-amber-900 px-4 py-3 text-sm">
+          <div className="rounded-xl border border-slate-600 bg-slate-800 text-amber-400 px-4 py-3 text-sm">
             Nessuna azienda selezionata. Seleziona un&apos;azienda dal menu per continuare.
           </div>
         </div>
@@ -177,29 +176,30 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   })
 
   return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <Shield className="w-8 h-8 text-blue-600" />
-              <h1 className="text-3xl font-bold text-slate-900">Gestione Segnalazioni</h1>
+              <Shield className="w-8 h-8 text-slate-400" />
+              <h1 className="text-3xl font-bold text-slate-100">Gestione Segnalazioni</h1>
             </div>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-400">
               Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
             </p>
           </div>
           <LogoutButton />
         </div>
 
-        <div className="flex flex-col gap-4">
-          <DashboardFilters currentView={currentView} currentSort={currentSort} />
-          <CompanySwitcher
-            companies={companiesWithStats}
-            selectedCompany={selectedCompany}
-          />
+        <DashboardToolbar
+          companies={companiesWithStats}
+          selectedCompany={selectedCompany}
+          currentView={currentView}
+          currentSort={currentSort}
+        />
 
+        <div id="riepilogo-section" className="mb-6">
           <DashboardSummaryCard
             selectedCompanyId={selectedCompany}
             selectedCompanyLabel={selectedCompanyLabel}
@@ -208,42 +208,60 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Tabella */}
         {sortedReports.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-12 text-center">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-lg font-medium text-slate-900 mb-2">
+          <div className="bg-slate-800 rounded-2xl shadow-card border border-slate-700 p-12 text-center">
+            <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+            <p className="text-lg font-medium text-slate-200 mb-2">
               Nessuna segnalazione trovata
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-400">
               Le segnalazioni corrispondenti ai filtri appariranno qui.
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-card border border-slate-200/80 overflow-hidden">
+          <div className="bg-slate-800 rounded-2xl shadow-card border border-slate-700 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-slate-700">
+                <thead className="bg-slate-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      Data
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Calendar className="h-3.5 w-3.5" />
+                        Data
+                      </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      Gravità
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1.5">
+                        <AlertTriangle className="h-3.5 w-3.5" />
+                        Gravità
+                      </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      Stato
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Activity className="h-3.5 w-3.5" />
+                        Stato
+                      </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      SLA
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1.5">
+                        <Clock className="h-3.5 w-3.5" />
+                        SLA
+                      </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      Descrizione
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1.5">
+                        <FileText className="h-3.5 w-3.5" />
+                        Descrizione
+                      </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                      Anonimo
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1.5">
+                        <EyeOff className="h-3.5 w-3.5" />
+                        Anonimo
+                      </span>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-slate-800 divide-y divide-slate-700">
                   {sortedReports.map((report) => (
                     <ReportRow key={report.id} report={report} />
                   ))}
@@ -255,8 +273,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Footer con conteggio */}
         {sortedReports.length > 0 && (
-          <div className="mt-4 text-sm text-slate-600">
-            Totale segnalazioni: <span className="font-medium">{sortedReports.length}</span>
+          <div className="mt-4 text-sm text-slate-400">
+            Totale segnalazioni: <span className="font-medium text-slate-200">{sortedReports.length}</span>
           </div>
         )}
       </div>
