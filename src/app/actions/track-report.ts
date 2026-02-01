@@ -7,18 +7,14 @@ export async function getReportStatus(code: string) {
 
   if (!code) return { error: 'Inserisci un codice.' }
 
-  // Pulizia aggressiva: via spazi, tutto maiuscolo
   const cleanCode = code.trim().toUpperCase()
-  console.log('SERVER: Cerco codice:', cleanCode)
 
   try {
     const { data, error } = await supabase
-      .rpc('get_ticket_status', { input_code: cleanCode }) // <--- PARAMETRO AGGIORNATO
+      .rpc('get_ticket_status', { input_code: cleanCode })
       .single()
 
     if (error) {
-      console.error('RPC Error:', error)
-      // PGRST116 significa "Nessuna riga trovata" (quindi codice errato)
       if (error.code === 'PGRST116') {
         return { error: 'Codice non trovato. Controlla di averlo scritto bene.' }
       }
@@ -27,7 +23,43 @@ export async function getReportStatus(code: string) {
 
     return { success: true, data }
   } catch (err: any) {
-    console.error('Crash:', err)
     return { error: 'Errore di connessione.' }
+  }
+}
+
+export type ReportMessage = { role: string; body: string; created_at: string }
+
+/** Messaggi della conversazione per un codice (segnalante). */
+export async function getReportMessagesByTicket(code: string): Promise<ReportMessage[]> {
+  const supabase = createClient()
+  if (!code?.trim()) return []
+  try {
+    const { data, error } = await supabase.rpc('get_ticket_messages', {
+      input_code: code.trim().toUpperCase(),
+    })
+    if (error) return []
+    return (data ?? []) as ReportMessage[]
+  } catch {
+    return []
+  }
+}
+
+/** Aggiunge un messaggio del segnalante (solo con codice valido). */
+export async function addWhistleblowerMessage(
+  code: string,
+  body: string
+): Promise<{ success: true } | { success: false; error: string }> {
+  if (!code?.trim()) return { success: false, error: 'Codice mancante.' }
+  if (!body?.trim()) return { success: false, error: 'Scrivi un messaggio.' }
+  const supabase = createClient()
+  try {
+    const { error } = await supabase.rpc('add_whistleblower_message', {
+      input_code: code.trim().toUpperCase(),
+      msg_body: body.trim(),
+    })
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Errore durante l\'invio.' }
   }
 }

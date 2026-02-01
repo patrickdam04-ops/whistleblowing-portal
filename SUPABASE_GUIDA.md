@@ -138,6 +138,14 @@ ALTER TABLE reports ADD COLUMN IF NOT EXISTS admin_response TEXT;
 
 ---
 
+### Script 5 – Conversazione segnalante / admin (messaggi successivi)
+
+Aggiunge la tabella e le funzioni per la chat tra segnalante e amministrazione (pagina di tracciamento + dashboard). **Esegui dopo gli script 1–4** (dipende da `get_my_tenant_slugs()`).
+
+Copia e incolla **tutto** il contenuto del file `supabase/migrations/20250201000002_report_messages.sql` nel SQL Editor e clicca Run.
+
+---
+
 ## 3. Fine
 
 Dopo aver eseguito gli script con successo **non devi fare altro su Supabase**.  

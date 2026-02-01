@@ -59,10 +59,12 @@ export async function saveAdminResponse(id: string, response: string) {
     throw new Error('La risposta non può essere vuota')
   }
 
-  // Aggiorna la risposta nel database
+  const trimmed = response.trim()
+
+  // Aggiorna la risposta principale nel database (prima risposta = reports.admin_response)
   const { error, data } = await supabase
     .from('reports')
-    .update({ admin_response: response.trim() })
+    .update({ admin_response: trimmed })
     .eq('id', id)
     .select()
 
@@ -75,12 +77,34 @@ export async function saveAdminResponse(id: string, response: string) {
     throw new Error('Segnalazione non trovata')
   }
 
-  // Revalida le pagine per aggiornare i dati
   revalidatePath('/dashboard')
   revalidatePath(`/dashboard/${id}`)
-  revalidatePath('/track') // Anche la pagina di tracking deve aggiornarsi
+  revalidatePath('/track')
 
   return { success: true, message: 'Risposta salvata con successo' }
+}
+
+/** Aggiunge un messaggio admin nella conversazione (risposta successiva). */
+export async function addAdminMessage(reportId: string, body: string): Promise<{ success: true } | { success: false; error: string }> {
+  const supabase = createClient()
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+  if (authError || !user) return { success: false, error: 'Non autorizzato' }
+  if (!body?.trim()) return { success: false, error: 'Scrivi un messaggio.' }
+
+  const { error } = await supabase.from('report_messages').insert({
+    report_id: reportId,
+    role: 'admin',
+    body: body.trim(),
+  })
+
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/dashboard')
+  revalidatePath(`/dashboard/${reportId}`)
+  revalidatePath('/track')
+  return { success: true }
 }
 
 export async function acknowledgeReport(reportId: string): Promise<{ success: true } | { success: false; error: string }> {

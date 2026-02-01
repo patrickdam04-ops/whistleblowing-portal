@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { StatusSelector } from '@/components/StatusSelector'
 import { AdminResponseForm } from '@/components/AdminResponseForm'
 import { ReportAttachments } from '@/components/ReportAttachments'
+import { ReportConversation } from '@/components/ReportConversation'
 import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
 import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
 import { AcknowledgeReportButton } from './AcknowledgeReportButton'
@@ -106,6 +107,25 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
     ? `/dashboard?company=${encodeURIComponent(companyParam)}`
     : '/dashboard'
 
+  // Messaggi della conversazione (segnalante / admin)
+  const { data: messagesData } = await supabase
+    .from('report_messages')
+    .select('id, role, body, created_at')
+    .eq('report_id', id)
+    .order('created_at', { ascending: true })
+  const messages = (messagesData ?? []) as { id: string; role: string; body: string; created_at: string }[]
+
+  // Testo completo per AI: descrizione + prima risposta admin + messaggi successivi (per risposta, legal, Sherlock)
+  const parts: string[] = [reportData.description]
+  if (reportData.admin_response?.trim()) {
+    parts.push('\n\n--- Risposte successive ---\n[Amministrazione]: ' + reportData.admin_response.trim())
+  }
+  if (messages.length > 0) {
+    if (parts.length === 1) parts.push('\n\n--- Risposte successive ---')
+    parts.push(messages.map((m) => `[${m.role === 'admin' ? 'Amministrazione' : 'Segnalante'}]: ${m.body}`).join('\n\n'))
+  }
+  const fullConversation = parts.join('')
+
   return (
     <div className="py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -188,13 +208,17 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
               </div>
             </div>
 
-            {/* Smart Reply - Risposta al Segnalante */}
+            {/* Smart Reply - Risposta al Segnalante (AI legge anche le risposte successive) */}
             <AdminResponseForm
               reportId={reportData.id}
-              reportDescription={reportData.description}
+              reportDescription={fullConversation}
               ticketCode={reportData.ticket_code}
               initialResponse={reportData.admin_response}
             />
+            {/* Conversazione: messaggi successivi segnalante / admin */}
+            <div className="mt-6">
+              <ReportConversation reportId={reportData.id} messages={messages} dark />
+            </div>
           </div>
 
           {/* Colonna DX: Conformità in evidenza + Descrizione */}
@@ -267,10 +291,10 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
               {/* Allegati */}
               <ReportAttachments attachments={reportData.attachments} reportId={reportData.id} />
 
-              {/* AI Cards */}
+              {/* AI Cards (leggono descrizione + risposte successive per maggiore accuratezza) */}
               <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <SherlockConsistencyCard description={reportData.description} compact dark />
-                <LegalAnalysisCard description={reportData.description} compact dark />
+                <SherlockConsistencyCard description={fullConversation} compact dark />
+                <LegalAnalysisCard description={fullConversation} compact dark />
               </div>
             </div>
           </div>

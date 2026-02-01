@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { getReportStatus } from '@/app/actions/track-report'
+import { getReportStatus, getReportMessagesByTicket, addWhistleblowerMessage, type ReportMessage } from '@/app/actions/track-report'
 import { Button } from '@/components/ui/button'
-import { Search, Shield, Calendar, FileText, AlertCircle, CheckCircle, Clock } from 'lucide-react'
+import { Search, Shield, Calendar, FileText, AlertCircle, CheckCircle, Clock, MessageSquare, Send } from 'lucide-react'
 import { StatusBadge } from '@/components/ui/badges'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import Link from 'next/link'
@@ -26,6 +26,10 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
     : '/invia'
   const [code, setCode] = useState('')
   const [result, setResult] = useState<ReportStatus | null>(null)
+  const [messages, setMessages] = useState<ReportMessage[]>([])
+  const [messageText, setMessageText] = useState('')
+  const [sendingMessage, setSendingMessage] = useState(false)
+  const [messageError, setMessageError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -47,8 +51,11 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
         setError(response.error)
         setResult(null)
       } else if (response.success && response.data) {
-        setResult(response.data as ReportStatus)
+        const data = response.data as ReportStatus
+        setResult(data)
         setError(null)
+        const list = await getReportMessagesByTicket(data.ticket_code)
+        setMessages(list)
       } else {
         setError('Codice non valido. Verifica di aver inserito il codice corretto.')
         setResult(null)
@@ -183,20 +190,77 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
               )}
 
               {/* Messaggio se non c'è risposta */}
-              {!result.admin_response && (
+              {!result.admin_response && messages.length === 0 && (
                 <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
                   <div className="flex items-start">
                     <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                     <div className="ml-3">
                       <p className="text-sm font-medium text-yellow-900">In attesa di risposta</p>
                       <p className="text-xs text-yellow-800 mt-1">
-                        La tua segnalazione è in fase di valutazione. Controlla periodicamente questo
-                        codice per eventuali aggiornamenti.
+                        La tua segnalazione è in fase di valutazione. Puoi scrivere qui sotto per fornire altri dati o chiarimenti.
                       </p>
                     </div>
                   </div>
                 </div>
               )}
+
+              {/* Conversazione: messaggi successivi */}
+              <div className="border-t border-slate-200 pt-6 mt-6">
+                <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  Conversazione
+                </h3>
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {result.admin_response && (
+                    <div className="flex justify-end">
+                      <div className="bg-blue-100 text-blue-900 rounded-lg px-4 py-2 max-w-[85%] text-left">
+                        <p className="text-xs font-medium text-blue-700 mb-0.5">Amministrazione</p>
+                        <p className="text-sm whitespace-pre-wrap">{result.admin_response}</p>
+                      </div>
+                    </div>
+                  )}
+                  {messages.map((m, i) => (
+                    <div key={i} className={m.role === 'admin' ? 'flex justify-end' : 'flex justify-start'}>
+                      <div className={m.role === 'admin' ? 'bg-blue-100 text-blue-900 rounded-lg px-4 py-2 max-w-[85%] text-left' : 'bg-slate-100 text-slate-900 rounded-lg px-4 py-2 max-w-[85%] text-left'}>
+                        <p className="text-xs font-medium text-slate-600 mb-0.5">{m.role === 'admin' ? 'Amministrazione' : 'Tu'}</p>
+                        <p className="text-sm whitespace-pre-wrap">{m.body}</p>
+                        <p className="text-xs text-slate-500 mt-1">{formatDate(m.created_at)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <form
+                  className="mt-4 flex gap-2"
+                  onSubmit={async (e) => {
+                    e.preventDefault()
+                    if (!result?.ticket_code || !messageText.trim()) return
+                    setMessageError(null)
+                    setSendingMessage(true)
+                    const res = await addWhistleblowerMessage(result.ticket_code, messageText)
+                    setSendingMessage(false)
+                    if (res.success) {
+                      setMessageText('')
+                      const list = await getReportMessagesByTicket(result.ticket_code)
+                      setMessages(list)
+                    } else {
+                      setMessageError(res.error)
+                    }
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                    placeholder="Scrivi un messaggio (es. altri dati richiesti)..."
+                    className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    maxLength={2000}
+                  />
+                  <Button type="submit" disabled={sendingMessage || !messageText.trim()} size="sm">
+                    {sendingMessage ? 'Invio...' : <><Send className="w-4 h-4" /> Invia</>}
+                  </Button>
+                </form>
+                {messageError && <p className="text-sm text-red-600 mt-2">{messageError}</p>}
+              </div>
             </div>
 
             {/* Bottone per tornare alla home */}
