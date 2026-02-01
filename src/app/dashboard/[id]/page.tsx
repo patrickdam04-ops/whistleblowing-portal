@@ -18,6 +18,7 @@ import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
 import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
 import { AcknowledgeReportButton } from './AcknowledgeReportButton'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
+import { decryptContact } from '@/lib/encrypt'
 import { SeverityBadge } from '@/components/ui/badges'
 import {
   getFinalOutcomeDeadline,
@@ -76,6 +77,29 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
   }
 
   const reportData = report as Report
+
+  // Audit log: traccia accesso alla segnalazione (conformità D.Lgs. 24/2023)
+  try {
+    await supabase.from('report_access_log').insert({
+      report_id: id,
+      user_id: user.id,
+    })
+  } catch {
+    // Tabella non ancora creata su Supabase
+  }
+
+  // Decifra contatto solo se non anonimo (D.Lgs. 24/2023)
+  let contactDisplay: string | null = null
+  if (!reportData.is_anonymous && reportData.encrypted_contact_info) {
+    try {
+      contactDisplay = decryptContact(reportData.encrypted_contact_info)
+    } catch {
+      contactDisplay = null
+    }
+    if (!contactDisplay && /@/.test(reportData.encrypted_contact_info)) {
+      contactDisplay = reportData.encrypted_contact_info
+    }
+  }
 
   const companyParam = getParam(searchParams?.company)
   const backHref = companyParam
@@ -229,14 +253,14 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
                 </div>
               </div>
 
-              {/* Contatto (se disponibile) */}
-              {!reportData.is_anonymous && reportData.encrypted_contact_info && (
+              {/* Contatto (se disponibile, decifrato) */}
+              {!reportData.is_anonymous && contactDisplay && (
                 <div className="mt-6 pt-6 border-t border-slate-700">
                   <h3 className="text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
                     <User className="w-4 h-4" />
                     Contatto Segnalante
                   </h3>
-                  <p className="text-sm text-slate-400">{reportData.encrypted_contact_info}</p>
+                  <p className="text-sm text-slate-400">{contactDisplay}</p>
                 </div>
               )}
 

@@ -74,16 +74,9 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
           return
         }
 
-        console.log(`📦 Processing ${paths.length} attachment path(s):`, paths)
-
-        console.log(`📦 Tentativo generazione signed URLs per ${paths.length} file(s) dal bucket: "${BUCKET_NAME}"`)
-
         const supabase = createClient()
         const urlPromises = paths.map(async (path) => {
-          // Estrai il nome del file dal path
           const fileName = path.split('/').pop() || path
-
-          console.log(`🔗 Generazione signed URL per: ${path} dal bucket "${BUCKET_NAME}"`)
 
           // Crea signed URL valido per 1 ora (3600 secondi)
           const { data, error } = await supabase.storage
@@ -91,18 +84,8 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
             .createSignedUrl(path, 3600)
 
           if (error) {
-            console.error(`❌ Errore generando signed URL per ${path}:`, error)
-            console.error('📋 Dettagli errore:', {
-              message: error.message,
-              statusCode: error.statusCode,
-              error: error.error,
-              bucket: BUCKET_NAME,
-              path: path,
-            })
             return null
           }
-
-          console.log(`✅ Signed URL generato per: ${fileName}`)
           const fileType = getFileType(fileName)
           return {
             path,
@@ -121,8 +104,7 @@ export function ReportAttachments({ attachments, reportId }: ReportAttachmentsPr
 
         setSignedUrls(validUrls)
       } catch (err: any) {
-        console.error('❌ Errore durante il recupero degli allegati:', err)
-        setError(`Errore durante il caricamento degli allegati: ${err.message}`)
+        setError(`Errore durante il caricamento degli allegati: ${err?.message ?? 'Riprova più tardi.'}`)
       } finally {
         setLoading(false)
       }

@@ -5,6 +5,7 @@ import { reportSchema } from '@/lib/schemas'
 import { revalidatePath } from 'next/cache'
 import { Resend } from 'resend'
 import { estimateSeveritiesBatch } from '@/app/actions/estimate-severity'
+import { encryptContact } from '@/lib/encrypt'
 
 export interface ActionResult {
   success: boolean
@@ -78,10 +79,15 @@ export async function submitReport(
       }
     }
 
-    // Se l'utente ha scelto l'anonimato, forza contact_info a null
-    const encryptedContactInfo = validatedData.is_anonymous
-      ? null
-      : validatedData.contact_info || null
+    // Contatto: cifrato at-rest (D.Lgs. 24/2023). Se anonimo non salviamo contatto.
+    let encryptedContactInfo: string | null = null
+    if (!validatedData.is_anonymous && validatedData.contact_info?.trim()) {
+      try {
+        encryptedContactInfo = encryptContact(validatedData.contact_info.trim())
+      } catch {
+        encryptedContactInfo = null
+      }
+    }
 
     // GENERA IL CODICE (Cruciale!)
     // Esempio semplice e robusto
@@ -192,46 +198,29 @@ export async function submitReport(
       }
     }
 
-    // Invia notifica email all'amministratore
-    try {
-      // Usa variabile d'ambiente se disponibile, altrimenti fallback alla chiave hardcoded
-      const resendApiKey = process.env.RESEND_API_KEY || 're_bKNWtpSS_Ff5oKVo4wZ5xGPLSawkQ83Be'
-      
-      if (!resendApiKey) {
-        console.warn('⚠️ RESEND_API_KEY non configurata, email non inviata')
-        // Non blocchiamo il flusso se l'email non può essere inviata
-      } else {
+    // Notifica email: senza contenuto della segnalazione (riservatezza D.Lgs. 24/2023)
+    const resendApiKey = process.env.RESEND_API_KEY
+    const notifyEmail = process.env.WHISTLEBLOW_NOTIFY_EMAIL
+    if (resendApiKey && notifyEmail) {
+      try {
         const resend = new Resend(resendApiKey)
-
-        // Crea un titolo dalla descrizione (primi 50 caratteri)
-        const title = validatedData.description.length > 50
-          ? validatedData.description.substring(0, 50) + '...'
-          : validatedData.description
-
         await resend.emails.send({
-          from: 'Whistleblowing AI <onboarding@resend.dev>',
-          to: 'patrickdam04@gmail.com', // <-- Indirizzo corretto
-          subject: `🔴 Nuova Segnalazione: ${title}`,
+          from: process.env.RESEND_FROM ?? 'Whistleblowing <onboarding@resend.dev>',
+          to: notifyEmail,
+          subject: 'Nuova segnalazione ricevuta',
           html: `
-            <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
-              <h2 style="color: #d32f2f;">Nuova Segnalazione Ricevuta</h2>
-              <p><strong>Titolo:</strong> ${title}</p>
-              <p><strong>Codice di Tracciamento:</strong> ${ticketCode}</p>
-              <p><strong>Descrizione:</strong> ${validatedData.description}</p>
-              <hr />
-              <p>Accedi alla Dashboard per l'analisi AI completa e il piano investigativo.</p>
-              <br />
-              <p style="font-size: 11px; color: #666;">
-                ⚠️ AVVISO LEGALE: Questa notifica è generata automaticamente. Le analisi AI sono a scopo informativo e non sostituiscono il parere di un legale.
-              </p>
+            <div style="font-family: sans-serif; padding: 20px;">
+              <h2 style="color: #d32f2f;">Nuova segnalazione ricevuta</h2>
+              <p><strong>Codice:</strong> ${ticketCode}</p>
+              <p><strong>Azienda:</strong> ${normalizedCompanyId}</p>
+              <p>Accedi alla dashboard per visualizzare e gestire la segnalazione.</p>
+              <p style="font-size: 11px; color: #666;">Notifica automatica. Non includere dati sensibili per riservatezza.</p>
             </div>
           `,
         })
-
+      } catch {
+        // Non blocchiamo il flusso
       }
-    } catch (emailError: any) {
-      // Non blocchiamo il flusso se l'email fallisce
-      // Continuiamo comunque - la segnalazione è stata salvata con successo
     }
 
     // Revalida la pagina (opzionale, utile se si vuole mostrare statistiche)

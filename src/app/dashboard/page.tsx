@@ -86,8 +86,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   const allowedCompanyIds = companyOptions.map((company) => company.id)
 
-  console.log('Admin:', user?.email, 'Filtra per aziende:', allowedCompanyIds)
-
   if (!userEmail || allowedCompanyIds.length === 0) {
     return (
       <div className="py-8 px-4 sm:px-6 lg:px-8">
