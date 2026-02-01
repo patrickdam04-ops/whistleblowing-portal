@@ -283,7 +283,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         ) : (
           <div className="bg-slate-800 rounded-2xl shadow-card border border-slate-700 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-700">
+              <table className="min-w-[900px] w-full divide-y divide-slate-700">
                 <thead className="bg-slate-800">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
@@ -310,7 +310,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                         SLA
                       </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider min-w-[360px]">
                       <span className="inline-flex items-center gap-1.5">
                         <FileText className="h-3.5 w-3.5" />
                         Descrizione

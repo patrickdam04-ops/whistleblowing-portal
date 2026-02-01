@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { formatDate, truncateDescription } from '@/lib/report-utils'
+import { formatDate } from '@/lib/report-utils'
 import { SeverityBadge, StatusBadge } from '@/components/ui/badges'
 import {
   getInitialFeedbackStatus,
@@ -91,9 +91,9 @@ export function ReportRow({ report }: ReportRowProps) {
       <td className="px-6 py-4 whitespace-nowrap">
         <SlaBadges report={report} />
       </td>
-      <td className="px-6 py-4 text-sm text-slate-300 max-w-md">
-        <p className="truncate" title={report.description}>
-          {truncateDescription(report.description)}
+      <td className="px-6 py-4 text-sm text-slate-300 min-w-[360px]">
+        <p className="whitespace-pre-wrap break-words">
+          {report.description}
         </p>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
