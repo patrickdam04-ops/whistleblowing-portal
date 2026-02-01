@@ -125,10 +125,23 @@ USING (
 
 ---
 
+### Script 4 – Colonna risposta al segnalante (admin_response)
+
+Se quando clicchi **“Salva e Invia Risposta”** compare l’errore **“Could not find the 'admin_response' column”** (PGRST204), esegui questo script. Aggiunge la colonna che serve per salvare la risposta al segnalante.
+
+Copia e incolla **tutto** questo blocco, poi Run:
+
+```sql
+-- Aggiunge la colonna admin_response alla tabella reports (risposta al segnalante)
+ALTER TABLE reports ADD COLUMN IF NOT EXISTS admin_response TEXT;
+```
+
+---
+
 ## 3. Fine
 
-Dopo aver eseguito i tre script con successo **non devi fare altro su Supabase**.  
-Il sito userà da solo le nuove regole (RLS, storage, audit log).
+Dopo aver eseguito gli script con successo **non devi fare altro su Supabase**.  
+Il sito userà da solo le nuove regole (RLS, storage, audit log, risposta al segnalante).
 
 ---
 
@@ -136,4 +149,5 @@ Il sito userà da solo le nuove regole (RLS, storage, audit log).
 
 - **“relation tenant_members does not exist”** (o simile): nel tuo progetto le tabelle per aziende/tenant potrebbero avere nomi diversi. In quel caso scrivi come si chiamano le tabelle (e le colonne) che usi per “utenti” e “aziende” e si può adattare lo script.
 - **“policy already exists”**: puoi ignorarlo oppure, se vuoi, prima esegui solo la riga che fa `DROP POLICY IF EXISTS ...` e poi di nuovo lo script completo.
+- **“Could not find the 'admin_response' column”** (PGRST204): esegui **Script 4** sopra (aggiunge la colonna `admin_response`).
 - Altri errori: copia il messaggio di errore completo (testo in rosso) e usalo per chiedere supporto o per adattare gli script.
