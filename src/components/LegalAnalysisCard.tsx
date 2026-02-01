@@ -8,9 +8,10 @@ import { Scale, Loader2, AlertTriangle } from 'lucide-react'
 interface LegalAnalysisCardProps {
   description: string
   compact?: boolean
+  dark?: boolean
 }
 
-export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardProps) {
+export function LegalAnalysisCard({ description, compact, dark }: LegalAnalysisCardProps) {
   const [analysis, setAnalysis] = useState<LegalAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -29,6 +30,18 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
   }
 
   const getRiskBadge = (risk: LegalAnalysisResult['livello_rischio']) => {
+    if (dark) {
+      switch (risk) {
+        case 'ALTO':
+          return 'bg-red-900/40 text-red-300 border-red-700'
+        case 'MEDIO':
+          return 'bg-amber-900/40 text-amber-300 border-amber-700'
+        case 'BASSO':
+          return 'bg-slate-700 text-slate-300 border-slate-600'
+        default:
+          return 'bg-slate-700 text-slate-300 border-slate-600'
+      }
+    }
     switch (risk) {
       case 'ALTO':
         return 'bg-red-100 text-red-800 border-red-300'
@@ -42,11 +55,11 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
   }
 
   return (
-    <div className={compact ? '' : 'mt-8 pt-8 border-t border-slate-200'}>
-      <div className="bg-white rounded-lg border border-slate-200 p-6">
+    <div className={compact ? '' : dark ? 'mt-6 pt-6 border-t border-slate-700' : 'mt-8 pt-8 border-t border-slate-200'}>
+      <div className={dark ? 'bg-slate-800 rounded-2xl border border-slate-700 p-6' : 'bg-white rounded-lg border border-slate-200 p-6'}>
         <div className="flex items-center gap-2 mb-4">
-          <Scale className="w-5 h-5 text-gray-700" />
-          <h3 className="text-lg font-semibold text-slate-900">Categorizzazione Legale Automatica</h3>
+          <Scale className={`w-5 h-5 ${dark ? 'text-slate-400' : 'text-gray-700'}`} />
+          <h3 className={`text-lg font-semibold ${dark ? 'text-slate-100' : 'text-slate-900'}`}>Categorizzazione Legale Automatica</h3>
         </div>
 
         <Button
@@ -54,7 +67,7 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
           onClick={handleAnalyze}
           disabled={isPending}
           variant="outline"
-          className="w-full sm:w-auto mb-4"
+          className={`w-full sm:w-auto mb-4 ${dark ? 'border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100' : ''}`}
         >
           {isPending ? (
             <>
@@ -66,8 +79,8 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
           )}
         </Button>
 
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <p className="text-sm text-yellow-800">
+        <div className={dark ? 'bg-slate-700/50 border border-slate-600 rounded-xl p-4 mb-4' : 'bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4'}>
+          <p className={`text-sm ${dark ? 'text-amber-200' : 'text-yellow-800'}`}>
             ⚠️ AVVISO IMPORTANTE: Questa analisi è generata dall'Intelligenza Artificiale e ha
             scopo puramente indicativo. L'IA può commettere errori e non sostituisce in alcun
             modo il parere di un avvocato o di un ufficio legale competente. Si consiglia sempre
@@ -76,10 +89,10 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <div className={dark ? 'bg-red-900/30 border border-red-700 rounded-xl p-4 mb-4' : 'bg-red-50 border border-red-200 rounded-lg p-4 mb-4'}>
             <div className="flex items-start gap-2">
-              <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
+              <AlertTriangle className={`w-5 h-5 mt-0.5 ${dark ? 'text-red-400' : 'text-red-600'}`} />
+              <p className={dark ? 'text-sm text-red-300' : 'text-sm text-red-800'}>{error}</p>
             </div>
           </div>
         )}
@@ -93,11 +106,11 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Reati ipotizzati</h4>
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Reati ipotizzati</h4>
               {analysis.reati_ipotizzati.length === 0 ? (
-                <p className="text-sm text-slate-500">Nessuna voce rilevata</p>
+                <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Nessuna voce rilevata</p>
               ) : (
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <ul className={`list-disc list-inside text-sm space-y-1 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {analysis.reati_ipotizzati.map((item, idx) => (
                     <li key={`reato-${idx}`}>{item}</li>
                   ))}
@@ -106,11 +119,11 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Riferimenti normativi</h4>
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Riferimenti normativi</h4>
               {analysis.riferimenti_normativi.length === 0 ? (
-                <p className="text-sm text-slate-500">Nessuna voce rilevata</p>
+                <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Nessuna voce rilevata</p>
               ) : (
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <ul className={`list-disc list-inside text-sm space-y-1 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {analysis.riferimenti_normativi.map((item, idx) => (
                     <li key={`norma-${idx}`}>{item}</li>
                   ))}
@@ -119,11 +132,11 @@ export function LegalAnalysisCard({ description, compact }: LegalAnalysisCardPro
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Suggerimenti azione</h4>
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Suggerimenti azione</h4>
               {analysis.suggerimenti_azione.length === 0 ? (
-                <p className="text-sm text-slate-500">Nessuna voce rilevata</p>
+                <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Nessuna voce rilevata</p>
               ) : (
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <ul className={`list-disc list-inside text-sm space-y-1 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {analysis.suggerimenti_azione.map((item, idx) => (
                     <li key={`azione-${idx}`}>{item}</li>
                   ))}

@@ -6,17 +6,18 @@ interface SeverityBadgeProps {
 }
 
 export function SeverityBadge({ severity, size = 'sm' }: SeverityBadgeProps) {
+  // Colore solo per criticità alta; il resto neutro (dashboard dark)
   const styles = {
-    CRITICAL: 'bg-red-100 text-red-800 border-red-200',
-    HIGH: 'bg-orange-100 text-orange-800 border-orange-200',
-    MEDIUM: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    LOW: 'bg-green-100 text-green-800 border-green-200',
+    CRITICAL: 'bg-red-900/50 text-red-300 border-red-700',
+    HIGH: 'bg-orange-900/40 text-orange-300 border-orange-700',
+    MEDIUM: 'bg-slate-700 text-slate-300 border-slate-600',
+    LOW: 'bg-slate-700 text-slate-300 border-slate-600',
   }
 
-  const style = severity ? styles[severity] : 'bg-slate-100 text-slate-600 border-slate-200'
+  const style = severity ? styles[severity] : 'bg-slate-700 text-slate-400 border-slate-600'
   const label = severity ?? 'In valutazione'
-  const sizeClasses = size === 'lg' 
-    ? 'px-3 py-1 text-sm' 
+  const sizeClasses = size === 'lg'
+    ? 'px-3 py-1 text-sm'
     : 'px-2.5 py-0.5 text-xs'
 
   return (
@@ -31,11 +32,12 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
+  // Colore solo per Risolto (feedback positivo); il resto neutro
   const styles = {
-    PENDING: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-purple-100 text-purple-800 border-purple-200',
-    RESOLVED: 'bg-green-100 text-green-800 border-green-200',
-    DISMISSED: 'bg-gray-100 text-gray-800 border-slate-200',
+    PENDING: 'bg-slate-700 text-slate-300 border-slate-600',
+    IN_PROGRESS: 'bg-slate-700 text-slate-300 border-slate-600',
+    RESOLVED: 'bg-emerald-900/40 text-emerald-300 border-emerald-700',
+    DISMISSED: 'bg-slate-700 text-slate-300 border-slate-600',
   }
 
   const icons = {

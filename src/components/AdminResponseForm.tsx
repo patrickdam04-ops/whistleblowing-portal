@@ -93,17 +93,17 @@ export function AdminResponseForm({
   }
 
   return (
-    <div className="mt-8 pt-8 border-t border-slate-200">
-      <div className="bg-white rounded-lg border border-slate-200 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+    <div className="mt-8 pt-8 border-t border-slate-700">
+      <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+        <h3 className="text-lg font-semibold text-slate-100 mb-4">
           Risposta al Segnalante
         </h3>
 
         {/* Banner Avviso Legale */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 my-4">
+        <div className="bg-slate-700/50 border-l-4 border-amber-500 p-4 my-4 rounded-r">
           <div className="flex">
             <div className="ml-3">
-              <p className="text-sm text-yellow-700">
+              <p className="text-sm text-amber-200">
                 ⚠️ <strong>AVVISO:</strong> Questa è una bozza generata dall'AI. Si raccomanda caldamente di richiedere una consulenza legale prima dell'invio, poiché questa risposta non costituisce parere legale.
               </p>
             </div>
@@ -117,7 +117,7 @@ export function AdminResponseForm({
             onClick={() => handleGenerate('SHERLOCK')}
             disabled={isGenerating}
             variant="outline"
-            className="w-full"
+            className="w-full border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
           >
             {isGenerating ? (
               <>
@@ -136,7 +136,7 @@ export function AdminResponseForm({
             onClick={() => handleGenerate('STANDARD')}
             disabled={isGenerating}
             variant="outline"
-            className="w-full"
+            className="w-full border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
           >
             {isGenerating ? (
               <>
@@ -151,7 +151,7 @@ export function AdminResponseForm({
             )}
           </Button>
         </div>
-        <p className="text-xs text-slate-500 mb-4">
+        <p className="text-xs text-slate-400 mb-4">
           ℹ️ Standard: Risposta generica formale. 🕵️ Sherlock: Include domande specifiche sui dati
           mancanti rilevati dall&apos;IA.
         </p>
@@ -160,7 +160,7 @@ export function AdminResponseForm({
         <div className="mb-4">
           <label
             htmlFor="admin-response"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-slate-300 mb-2"
           >
             Risposta al Segnalante
           </label>
@@ -169,21 +169,21 @@ export function AdminResponseForm({
             value={response}
             onChange={(e) => setResponse(e.target.value)}
             rows={12}
-            className="w-full min-h-[300px] px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y font-mono text-sm"
+            className="w-full min-h-[300px] px-4 py-3 border border-slate-600 rounded-xl bg-slate-700/50 text-slate-200 placeholder:text-slate-500 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 resize-y font-mono text-sm"
             placeholder="Scrivi qui la risposta al segnalante oppure usa il bottone 'Genera Bozza con AI' per creare una bozza automatica..."
           />
         </div>
 
         {/* Messaggi di errore/successo */}
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">{error}</p>
+          <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-xl">
+            <p className="text-sm text-red-300">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm text-green-800">
+          <div className="mb-4 p-3 bg-emerald-900/30 border border-emerald-700 rounded-xl">
+            <p className="text-sm text-emerald-300">
               ✅ Risposta salvata con successo! Il segnalante potrà visualizzarla tramite il codice di tracking.
             </p>
           </div>
@@ -195,7 +195,7 @@ export function AdminResponseForm({
             type="button"
             onClick={handleSave}
             disabled={isSaving || !response.trim()}
-            className="min-w-[200px]"
+            className="min-w-[200px] bg-slate-600 text-slate-100 hover:bg-slate-500"
           >
             {isSaving ? (
               <>

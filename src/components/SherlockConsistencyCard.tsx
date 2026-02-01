@@ -8,10 +8,11 @@ import { Search, Loader2, AlertTriangle } from 'lucide-react'
 interface SherlockConsistencyCardProps {
   description: string
   compact?: boolean
+  dark?: boolean
   onAnalysis?: (analysis: ConsistencyAnalysisResult) => void
 }
 
-export function SherlockConsistencyCard({ description, compact, onAnalysis }: SherlockConsistencyCardProps) {
+export function SherlockConsistencyCard({ description, compact, dark, onAnalysis }: SherlockConsistencyCardProps) {
   const [analysis, setAnalysis] = useState<ConsistencyAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -40,11 +41,11 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
   }
 
   return (
-    <div className={compact ? '' : 'mt-8 pt-8 border-t border-slate-200'}>
-      <div className="bg-white rounded-lg border border-slate-200 p-6">
+    <div className={compact ? '' : dark ? 'mt-6 pt-6 border-t border-slate-700' : 'mt-8 pt-8 border-t border-slate-200'}>
+      <div className={dark ? 'bg-slate-800 rounded-2xl border border-slate-700 p-6' : 'bg-white rounded-lg border border-slate-200 p-6'}>
         <div className="flex items-center gap-2 mb-4">
-          <Search className="w-5 h-5 text-gray-700" />
-          <h3 className="text-lg font-semibold text-slate-900">
+          <Search className={`w-5 h-5 ${dark ? 'text-slate-400' : 'text-gray-700'}`} />
+          <h3 className={`text-lg font-semibold ${dark ? 'text-slate-100' : 'text-slate-900'}`}>
             🕵️‍♂️ Sherlock AI - Analisi Coerenza
           </h3>
         </div>
@@ -54,7 +55,7 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
           onClick={handleAnalyze}
           disabled={isPending}
           variant="outline"
-          className="w-full sm:w-auto mb-4"
+          className={`w-full sm:w-auto mb-4 ${dark ? 'border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100' : ''}`}
         >
           {isPending ? (
             <>
@@ -67,10 +68,10 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
         </Button>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <div className={dark ? 'bg-red-900/30 border border-red-700 rounded-xl p-4 mb-4' : 'bg-red-50 border border-red-200 rounded-lg p-4 mb-4'}>
             <div className="flex items-start gap-2">
-              <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
+              <AlertTriangle className={`w-5 h-5 mt-0.5 ${dark ? 'text-red-400' : 'text-red-600'}`} />
+              <p className={dark ? 'text-sm text-red-300' : 'text-sm text-red-800'}>{error}</p>
             </div>
           </div>
         )}
@@ -78,22 +79,22 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
         {analysis && (
           <div className="space-y-4">
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Punteggio di Solidità</p>
-              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <p className={`text-sm font-medium mb-2 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>Punteggio di Solidità</p>
+              <div className={`w-full rounded-full h-3 overflow-hidden ${dark ? 'bg-slate-700' : 'bg-gray-200'}`}>
                 <div
                   className={`h-3 ${getScoreColor(analysis.score_solidita)}`}
                   style={{ width: `${analysis.score_solidita}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-500 mt-1">{analysis.score_solidita}/100</p>
+              <p className={`text-xs mt-1 ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{analysis.score_solidita}/100</p>
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Incoerenze rilevate</h4>
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Incoerenze rilevate</h4>
               {analysis.incoerenze_rilevate.length === 0 ? (
-                <p className="text-sm text-slate-500">Nessuna incoerenza evidente</p>
+                <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Nessuna incoerenza evidente</p>
               ) : (
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <ul className={`list-disc list-inside text-sm space-y-1 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {analysis.incoerenze_rilevate.map((item, idx) => (
                     <li key={`inc-${idx}`}>⚠️ {item}</li>
                   ))}
@@ -102,11 +103,11 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Dati mancanti</h4>
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Dati mancanti</h4>
               {analysis.buchi_narrativi.length === 0 ? (
-                <p className="text-sm text-slate-500">Nessun buco narrativo evidente</p>
+                <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>Nessun buco narrativo evidente</p>
               ) : (
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+                <ul className={`list-disc list-inside text-sm space-y-1 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {analysis.buchi_narrativi.map((item, idx) => (
                     <li key={`gap-${idx}`}>⚠️ {item}</li>
                   ))}
@@ -115,26 +116,26 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Consiglio investigativo</h4>
-              <p className="text-sm text-gray-700">{analysis.consiglio_investigativo}</p>
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Consiglio investigativo</h4>
+              <p className={dark ? 'text-sm text-slate-300' : 'text-sm text-gray-700'}>{analysis.consiglio_investigativo}</p>
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Analisi emotiva</h4>
-              <p className="text-sm text-gray-700">
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Analisi emotiva</h4>
+              <p className={dark ? 'text-sm text-slate-300' : 'text-sm text-gray-700'}>
                 Emozione dominante:{' '}
                 <span className="font-medium">{analysis.emotional_profile.dominant_emotion}</span>
               </p>
-              <p className="text-sm text-gray-700">
+              <p className={dark ? 'text-sm text-slate-300' : 'text-sm text-gray-700'}>
                 Intensità:{' '}
                 <span className="font-medium">{analysis.emotional_profile.intensity}</span>
               </p>
               {analysis.emotional_profile.stress_indicators.length === 0 ? (
-                <p className="text-sm text-slate-500 mt-1">
+                <p className={`text-sm mt-1 ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Nessun indicatore di stress evidente
                 </p>
               ) : (
-                <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mt-1">
+                <ul className={`list-disc list-inside text-sm space-y-1 mt-1 ${dark ? 'text-slate-300' : 'text-gray-700'}`}>
                   {analysis.emotional_profile.stress_indicators.map((item, idx) => (
                     <li key={`stress-${idx}`}>{item}</li>
                   ))}
@@ -143,17 +144,17 @@ export function SherlockConsistencyCard({ description, compact, onAnalysis }: Sh
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-slate-900 mb-2">Rilevamento futilità</h4>
-              <p className="text-sm text-gray-700">
+              <h4 className={`text-sm font-semibold mb-2 ${dark ? 'text-slate-300' : 'text-slate-900'}`}>Rilevamento futilità</h4>
+              <p className={dark ? 'text-sm text-slate-300' : 'text-sm text-gray-700'}>
                 Probabile futilità:{' '}
                 <span className="font-medium">
                   {analysis.frivolity_check.is_likely_futile ? 'Sì' : 'No'}
                 </span>
               </p>
-              <p className="text-sm text-gray-700">
+              <p className={dark ? 'text-sm text-slate-300' : 'text-sm text-gray-700'}>
                 Natura: <span className="font-medium">{analysis.frivolity_check.nature}</span>
               </p>
-              <p className="text-sm text-gray-700">{analysis.frivolity_check.reasoning}</p>
+              <p className={dark ? 'text-sm text-slate-300' : 'text-sm text-gray-700'}>{analysis.frivolity_check.reasoning}</p>
             </div>
           </div>
         )}
