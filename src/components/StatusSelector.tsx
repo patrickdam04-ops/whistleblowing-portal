@@ -47,7 +47,7 @@ export function StatusSelector({ id, initialStatus }: StatusSelectorProps) {
         value={normalizedStatus}
         onChange={handleStatusChange}
         disabled={isPending}
-        className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-2 border border-slate-600 rounded-xl bg-slate-700/50 text-slate-200 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {statusOptions.map((option) => (
           <option key={option.value} value={option.value}>
@@ -56,7 +56,7 @@ export function StatusSelector({ id, initialStatus }: StatusSelectorProps) {
         ))}
       </select>
       {isPending && (
-        <p className="mt-2 text-xs text-slate-500 flex items-center gap-1">
+        <p className="mt-2 text-xs text-slate-400 flex items-center gap-1">
           <span className="animate-spin">⏳</span>
           Aggiornamento in corso...
         </p>
