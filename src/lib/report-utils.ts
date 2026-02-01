@@ -25,3 +25,12 @@ export function truncateDescription(description: string, maxLength: number = 100
   if (description.length <= maxLength) return description
   return description.substring(0, maxLength) + '...'
 }
+
+/** Prime N parole per anteprima in tabella; clicca per vedere tutto. */
+export function previewDescription(description: string, maxWords: number = 5): string {
+  const trimmed = description.trim()
+  if (!trimmed) return ''
+  const words = trimmed.split(/\s+/)
+  if (words.length <= maxWords) return trimmed
+  return words.slice(0, maxWords).join(' ') + '…'
+}

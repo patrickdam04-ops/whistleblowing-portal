@@ -310,7 +310,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                         SLA
                       </span>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider min-w-[360px]">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
                       <span className="inline-flex items-center gap-1.5">
                         <FileText className="h-3.5 w-3.5" />
                         Descrizione
