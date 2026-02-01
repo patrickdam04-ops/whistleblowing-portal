@@ -8,7 +8,7 @@ import { ReportRow } from './report-row'
 import { DashboardToolbar } from '@/components/DashboardToolbar'
 import { LogoutButton } from '@/components/LogoutButton'
 import { DashboardSummaryCard } from '@/components/DashboardSummaryCard'
-import { computeCompanyStats, getEmptyCompanyStats } from '@/lib/sla-utils'
+import { computeCompanyStats, getEmptyCompanyStats, getInitialFeedbackStatus, getFinalOutcomeStatus } from '@/lib/sla-utils'
 
 interface Report {
   id: string
@@ -27,6 +27,14 @@ interface PageProps {
     view?: 'active' | 'archived'
     sort?: 'recent' | 'severity'
     company?: string | string[]
+    q?: string
+    severity?: string
+    status?: string
+    anonimo?: string
+    dataDa?: string
+    dataA?: string
+    slaRiscontro?: string
+    slaEsito?: string
   }
 }
 
@@ -153,9 +161,61 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const currentView = searchParams?.view === 'archived' ? 'archived' : 'active'
   const currentSort = searchParams?.sort === 'severity' ? 'severity' : 'recent'
 
-  const filteredReports = reportsForSelected.filter((report) =>
+  let filteredReports = reportsForSelected.filter((report) =>
     currentView === 'archived' ? report.status === 'RESOLVED' : report.status !== 'RESOLVED'
   )
+
+  const filterQ = (getParam(searchParams?.q) || '').trim().toLowerCase()
+  const filterSeverity = getParam(searchParams?.severity)
+  const filterStatus = getParam(searchParams?.status)
+  const filterAnonimo = getParam(searchParams?.anonimo)
+  const filterDataDa = getParam(searchParams?.dataDa)
+  const filterDataA = getParam(searchParams?.dataA)
+  const filterSlaRiscontro = getParam(searchParams?.slaRiscontro)
+  const filterSlaEsito = getParam(searchParams?.slaEsito)
+
+  if (filterQ) {
+    filteredReports = filteredReports.filter((r) =>
+      r.description.toLowerCase().includes(filterQ)
+    )
+  }
+  if (filterSeverity) {
+    filteredReports = filteredReports.filter((r) =>
+      filterSeverity === 'NULL'
+        ? r.severity === null
+        : r.severity === filterSeverity
+    )
+  }
+  if (filterStatus) {
+    filteredReports = filteredReports.filter((r) => r.status === filterStatus)
+  }
+  if (filterAnonimo === 'si' || filterAnonimo === 'sì') {
+    filteredReports = filteredReports.filter((r) => r.is_anonymous)
+  } else if (filterAnonimo === 'no') {
+    filteredReports = filteredReports.filter((r) => !r.is_anonymous)
+  }
+  if (filterDataDa) {
+    const da = new Date(filterDataDa)
+    da.setHours(0, 0, 0, 0)
+    filteredReports = filteredReports.filter((r) => new Date(r.created_at) >= da)
+  }
+  if (filterDataA) {
+    const a = new Date(filterDataA)
+    a.setHours(23, 59, 59, 999)
+    filteredReports = filteredReports.filter((r) => new Date(r.created_at) <= a)
+  }
+  if (filterSlaRiscontro) {
+    filteredReports = filteredReports.filter((r) => {
+      const status = getInitialFeedbackStatus(r)
+      return status === filterSlaRiscontro
+    })
+  }
+  if (filterSlaEsito) {
+    filteredReports = filteredReports.filter((r) => {
+      const status = getFinalOutcomeStatus(r)
+      return status === filterSlaEsito
+    })
+  }
 
   const severityRank: Record<NonNullable<Report['severity']>, number> = {
     CRITICAL: 4,
@@ -187,6 +247,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </div>
             <p className="text-sm text-slate-400">
               Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
+            </p>
+            <p className="mt-1 text-xs font-medium text-emerald-400/90">
+              Conformità al 100% al D.Lgs. 24/2023 e alla Direttiva UE 2019/1937
             </p>
           </div>
           <LogoutButton />
