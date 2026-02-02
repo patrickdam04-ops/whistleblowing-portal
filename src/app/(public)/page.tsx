@@ -7,23 +7,32 @@ interface PageProps {
 const getParam = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value
 
+/** Formatta lo slug per la visualizzazione (es. "acme-corp" → "Acme Corp") */
+function formatClientDisplay(slug: string) {
+  return slug
+    .split(/[-_]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}
+
 export default function HomePage({ searchParams }: PageProps) {
   const clientParam = getParam(searchParams?.client)
+  const clientDisplay = clientParam ? formatClientDisplay(clientParam) : null
   return (
     <div className="min-h-screen bg-slate-950 text-slate-300 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-4xl">
         <div className="text-center mb-10">
+          {clientDisplay && (
+            <p className="text-2xl md:text-3xl font-bold text-slate-100 mb-4">
+              {clientDisplay}
+            </p>
+          )}
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-100">
             Zona Segnalazioni
           </h1>
           <p className="mt-3 text-slate-400">
             Scegli cosa vuoi fare: inviare una nuova segnalazione o seguire una pratica già aperta.
           </p>
-          {clientParam && (
-            <p className="mt-2 text-sm text-slate-500">
-              Portale segnalazioni per questo destinatario.
-            </p>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
