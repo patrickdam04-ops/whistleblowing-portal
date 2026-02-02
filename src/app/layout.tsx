@@ -22,7 +22,7 @@ export default function RootLayout({
         <div className="min-h-screen flex flex-col">
           <DemoBanner />
           <div className="flex-1">{children}</div>
-          <footer className="w-full text-center py-6 text-xs uppercase tracking-widest text-slate-600">
+          <footer className="w-full text-center py-6 text-xs uppercase tracking-widest bg-slate-900 border-t border-slate-700 text-slate-400">
             <span className="inline-flex items-center justify-center gap-2">
               <Lock className="w-3 h-3 text-slate-500" />
               Powered by AI Secure Engine™

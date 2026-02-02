@@ -57,7 +57,13 @@ export async function addWhistleblowerMessage(
       input_code: code.trim().toUpperCase(),
       msg_body: body.trim(),
     })
-    if (error) return { success: false, error: error.message }
+    if (error) {
+      const msg = error.message ?? ''
+      if (msg.includes('report_messages') && (msg.includes('does not exist') || msg.includes('non esiste'))) {
+        return { success: false, error: 'Funzionalità messaggi non ancora attiva. Contatta l\'amministratore per attivare l\'aggiornamento database (tabella report_messages).' }
+      }
+      return { success: false, error: error.message }
+    }
     return { success: true }
   } catch (e: any) {
     return { success: false, error: e?.message ?? 'Errore durante l\'invio.' }
