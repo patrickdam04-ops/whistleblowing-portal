@@ -144,3 +144,33 @@ export async function acknowledgeReport(reportId: string): Promise<{ success: tr
     return { success: false, error: e instanceof Error ? e.message : String(e) }
   }
 }
+
+/** Toglie il riscontro inviato (annulla "Segna riscontro inviato"). */
+export async function revokeAcknowledgeReport(reportId: string): Promise<{ success: true } | { success: false; error: string }> {
+  try {
+    const supabase = createClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+    if (authError || !user) return { success: false, error: 'Non autorizzato' }
+
+    const { error, data } = await supabase
+      .from('reports')
+      .update({ acknowledged_at: null })
+      .eq('id', reportId)
+      .select()
+
+    if (error) {
+      console.error('Errore durante la revoca del riscontro:', error)
+      return { success: false, error: error.message }
+    }
+    if (!data || data.length === 0) return { success: false, error: 'Segnalazione non trovata' }
+
+    revalidatePath('/dashboard')
+    revalidatePath(`/dashboard/${reportId}`)
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : String(e) }
+  }
+}

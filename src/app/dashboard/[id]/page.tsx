@@ -18,6 +18,7 @@ import { ReportConversation } from '@/components/ReportConversation'
 import { LegalAnalysisCard } from '@/components/LegalAnalysisCard'
 import { SherlockConsistencyCard } from '@/components/SherlockConsistencyCard'
 import { AcknowledgeReportButton } from './AcknowledgeReportButton'
+import { RevokeAcknowledgeButton } from './RevokeAcknowledgeButton'
 import { formatDate, formatFullDate } from '@/lib/report-utils'
 import { decryptContact } from '@/lib/encrypt'
 import { SeverityBadge } from '@/components/ui/badges'
@@ -236,9 +237,12 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
                 <div className="rounded-xl bg-slate-700/50 p-4 border border-slate-600">
                   <p className="text-sm font-medium text-slate-300 mb-1">Riscontro iniziale (7 gg)</p>
                   {reportData.acknowledged_at ? (
-                    <p className="text-sm text-emerald-400">
-                      Riscontro inviato il {formatDate(reportData.acknowledged_at)}
-                    </p>
+                    <>
+                      <p className="text-sm text-emerald-400">
+                        Riscontro inviato il {formatDate(reportData.acknowledged_at)}
+                      </p>
+                      <RevokeAcknowledgeButton reportId={reportData.id} />
+                    </>
                   ) : (
                     <>
                       <p className="text-sm text-slate-200">{getInitialFeedbackLabel(reportData)}</p>

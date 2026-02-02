@@ -26,7 +26,7 @@ export function AdminResponseForm({
   const [localSherlock, setLocalSherlock] = useState<ConsistencyAnalysisResult | null>(
     sherlockAnalysis || null
   )
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatingMode, setGeneratingMode] = useState<'SHERLOCK' | 'STANDARD' | null>(null)
   const [isSaving, startSaving] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -46,14 +46,14 @@ export function AdminResponseForm({
   }, [])
 
   const handleGenerate = async (mode: 'SHERLOCK' | 'STANDARD') => {
-    setIsGenerating(true)
+    setGeneratingMode(mode)
     setError(null)
     setSuccess(false)
 
     try {
       if (mode === 'SHERLOCK' && !localSherlock) {
         setError('Avvia prima l’analisi Sherlock per usare questa modalità.')
-        setIsGenerating(false)
+        setGeneratingMode(null)
         return
       }
       const aiResponse = await generateAIResponse(
@@ -67,7 +67,7 @@ export function AdminResponseForm({
       console.error('Errore generazione AI:', err)
       setError('Errore durante la generazione della bozza. Riprova più tardi.')
     } finally {
-      setIsGenerating(false)
+      setGeneratingMode(null)
     }
   }
 
@@ -110,16 +110,16 @@ export function AdminResponseForm({
           </div>
         </div>
 
-        {/* Bottoni Genera Bozza */}
+        {/* Bottoni Genera Bozza (loading solo sul pulsante cliccato) */}
         <div className="mb-4 flex flex-col gap-3">
           <Button
             type="button"
             onClick={() => handleGenerate('SHERLOCK')}
-            disabled={isGenerating}
+            disabled={generatingMode !== null}
             variant="outline"
             className="w-full border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
           >
-            {isGenerating ? (
+            {generatingMode === 'SHERLOCK' ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Generazione in corso...
@@ -134,11 +134,11 @@ export function AdminResponseForm({
           <Button
             type="button"
             onClick={() => handleGenerate('STANDARD')}
-            disabled={isGenerating}
+            disabled={generatingMode !== null}
             variant="outline"
             className="w-full border-slate-600 bg-slate-700/50 text-slate-200 hover:bg-slate-700 hover:text-slate-100"
           >
-            {isGenerating ? (
+            {generatingMode === 'STANDARD' ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Generazione in corso...
