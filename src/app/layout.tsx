@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Lock } from 'lucide-react'
+import { DemoBanner } from '@/components/DemoBanner'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="it">
       <body className={inter.className}>
         <div className="min-h-screen flex flex-col">
+          <DemoBanner />
           <div className="flex-1">{children}</div>
           <footer className="w-full text-center py-6 text-xs uppercase tracking-widest text-slate-600">
             <span className="inline-flex items-center justify-center gap-2">

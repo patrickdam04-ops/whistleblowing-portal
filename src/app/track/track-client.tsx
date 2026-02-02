@@ -70,25 +70,25 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-900 text-slate-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-            <Shield className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-700 border border-slate-600 rounded-full mb-4">
+            <Shield className="w-8 h-8 text-slate-200" />
           </div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Segui la tua Segnalazione</h1>
-          <p className="text-lg text-slate-600">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2">Segui la tua Segnalazione</h1>
+          <p className="text-lg text-slate-400">
             Inserisci il tuo codice di tracciamento per verificare lo stato della pratica
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 mb-6">
+        <div className="bg-slate-800 border border-slate-600 rounded-xl shadow-xl p-6 sm:p-8 mb-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Input Codice */}
             <div>
-              <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="code" className="block text-sm font-medium text-slate-300 mb-2">
                 Codice di Tracciamento
               </label>
               <input
@@ -99,7 +99,7 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
                 placeholder="WB-XXXX-XXXX"
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-mono text-center text-lg tracking-wider uppercase"
+                className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors font-mono text-center text-lg tracking-wider uppercase"
                 maxLength={15}
               />
               <p className="mt-2 text-xs text-slate-500 text-center">
@@ -109,11 +109,11 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
 
             {/* Messaggio di errore */}
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="p-4 bg-red-900/30 border border-red-800 rounded-lg">
                 <div className="flex items-start">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-red-800">{error}</p>
+                    <p className="text-sm font-medium text-red-200">{error}</p>
                   </div>
                 </div>
               </div>
@@ -140,22 +140,22 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
 
         {/* Risultato - Card con lo stato */}
         {result && (
-          <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
+          <div className="bg-slate-800 border border-slate-600 rounded-xl shadow-xl p-6 sm:p-8">
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-700 border border-slate-600 rounded-full mb-4">
+                <CheckCircle className="w-8 h-8 text-emerald-400" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">Segnalazione Trovata</h2>
-              <p className="text-sm text-slate-600">
-                Codice: <span className="font-mono font-semibold">{result.ticket_code}</span>
+              <h2 className="text-2xl font-bold text-slate-100 mb-2">Segnalazione Trovata</h2>
+              <p className="text-sm text-slate-400">
+                Codice: <span className="font-mono font-semibold text-slate-200">{result.ticket_code}</span>
               </p>
             </div>
 
             <div className="space-y-6">
               {/* Stato */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-slate-200">
+              <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-600">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Stato della Pratica</span>
+                  <span className="text-sm font-medium text-slate-300">Stato della Pratica</span>
                 </div>
                 <div className="mt-2">
                   <StatusBadge status={result.status} />
@@ -163,26 +163,26 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
               </div>
 
               {/* Data */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-slate-200">
+              <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-600">
                 <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="w-4 h-4 text-slate-600" />
-                  <span className="text-sm font-medium text-gray-700">Data di Ricezione</span>
+                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <span className="text-sm font-medium text-slate-300">Data di Ricezione</span>
                 </div>
-                <p className="text-sm text-slate-900 mt-1">{formatFullDate(result.created_at)}</p>
+                <p className="text-sm text-slate-200 mt-1">{formatFullDate(result.created_at)}</p>
                 <p className="text-xs text-slate-500 mt-1">{formatDate(result.created_at)}</p>
               </div>
 
               {/* Risposta Admin (se presente) */}
               {result.admin_response && (
-                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
                   <div className="flex items-center gap-2 mb-2">
-                    <FileText className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-900">
+                    <FileText className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm font-medium text-slate-200">
                       Risposta dell'Amministrazione
                     </span>
                   </div>
                   <div className="mt-2">
-                    <p className="text-sm text-blue-800 whitespace-pre-wrap leading-relaxed">
+                    <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">
                       {result.admin_response}
                     </p>
                   </div>
@@ -191,12 +191,12 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
 
               {/* Messaggio se non c'è risposta */}
               {!result.admin_response && messages.length === 0 && (
-                <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+                <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
                   <div className="flex items-start">
-                    <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                    <Clock className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-yellow-900">In attesa di risposta</p>
-                      <p className="text-xs text-yellow-800 mt-1">
+                      <p className="text-sm font-medium text-slate-200">In attesa di risposta</p>
+                      <p className="text-xs text-slate-400 mt-1">
                         La tua segnalazione è in fase di valutazione. Puoi scrivere qui sotto per fornire altri dati o chiarimenti.
                       </p>
                     </div>
@@ -205,24 +205,24 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
               )}
 
               {/* Conversazione: messaggi successivi */}
-              <div className="border-t border-slate-200 pt-6 mt-6">
-                <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+              <div className="border-t border-slate-600 pt-6 mt-6">
+                <h3 className="text-sm font-semibold text-slate-200 mb-3 flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" />
                   Conversazione
                 </h3>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {result.admin_response && (
                     <div className="flex justify-end">
-                      <div className="bg-blue-100 text-blue-900 rounded-lg px-4 py-2 max-w-[85%] text-left">
-                        <p className="text-xs font-medium text-blue-700 mb-0.5">Amministrazione</p>
+                      <div className="bg-slate-700 text-slate-200 rounded-lg px-4 py-2 max-w-[85%] text-left border border-slate-600">
+                        <p className="text-xs font-medium text-slate-400 mb-0.5">Amministrazione</p>
                         <p className="text-sm whitespace-pre-wrap">{result.admin_response}</p>
                       </div>
                     </div>
                   )}
                   {messages.map((m, i) => (
                     <div key={i} className={m.role === 'admin' ? 'flex justify-end' : 'flex justify-start'}>
-                      <div className={m.role === 'admin' ? 'bg-blue-100 text-blue-900 rounded-lg px-4 py-2 max-w-[85%] text-left' : 'bg-slate-100 text-slate-900 rounded-lg px-4 py-2 max-w-[85%] text-left'}>
-                        <p className="text-xs font-medium text-slate-600 mb-0.5">{m.role === 'admin' ? 'Amministrazione' : 'Tu'}</p>
+                      <div className={m.role === 'admin' ? 'bg-slate-700 text-slate-200 rounded-lg px-4 py-2 max-w-[85%] text-left border border-slate-600' : 'bg-slate-900/70 text-slate-200 rounded-lg px-4 py-2 max-w-[85%] text-left border border-slate-600'}>
+                        <p className="text-xs font-medium text-slate-400 mb-0.5">{m.role === 'admin' ? 'Amministrazione' : 'Tu'}</p>
                         <p className="text-sm whitespace-pre-wrap">{m.body}</p>
                         <p className="text-xs text-slate-500 mt-1">{formatDate(m.created_at)}</p>
                       </div>
@@ -252,20 +252,20 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
                     placeholder="Scrivi un messaggio (es. altri dati richiesti)..."
-                    className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                    className="flex-1 px-3 py-2 bg-slate-900 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 text-sm"
                     maxLength={2000}
                   />
                   <Button type="submit" disabled={sendingMessage || !messageText.trim()} size="sm">
                     {sendingMessage ? 'Invio...' : <><Send className="w-4 h-4" /> Invia</>}
                   </Button>
                 </form>
-                {messageError && <p className="text-sm text-red-600 mt-2">{messageError}</p>}
+                {messageError && <p className="text-sm text-red-400 mt-2">{messageError}</p>}
               </div>
             </div>
 
             {/* Bottone per tornare alla home */}
-            <div className="mt-6 pt-6 border-t border-slate-200">
-              <Button asChild variant="outline" className="w-full">
+            <div className="mt-6 pt-6 border-t border-slate-600">
+              <Button asChild variant="outline" className="w-full border-slate-500 text-slate-200 hover:bg-slate-700">
                 <Link href={homeLink}>Torna alla Home</Link>
               </Button>
             </div>
@@ -275,8 +275,8 @@ export default function TrackClient({ clientParam }: TrackClientProps) {
         {/* Link per inviare nuova segnalazione */}
         {!result && (
           <div className="text-center mt-6">
-            <p className="text-sm text-slate-600 mb-2">Non hai ancora inviato una segnalazione?</p>
-            <Button asChild variant="outline">
+            <p className="text-sm text-slate-400 mb-2">Non hai ancora inviato una segnalazione?</p>
+            <Button asChild variant="outline" className="border-slate-500 text-slate-200 hover:bg-slate-700">
               <Link href={submitLink}>Invia una Segnalazione</Link>
             </Button>
           </div>

@@ -186,56 +186,56 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-900 text-slate-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-            <Shield className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-700 border border-slate-600 rounded-full mb-4">
+            <Shield className="w-8 h-8 text-slate-200" />
           </div>
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">
+          <h1 className="text-4xl font-bold text-slate-100 mb-2">
             Invia una Segnalazione
           </h1>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg text-slate-400">
             La tua segnalazione è importante. Tutti i dati sono protetti e trattati con la massima riservatezza.
           </p>
         </div>
 
         {/* Success Card - Mostrata quando la segnalazione è stata inviata */}
         {state.success && state.ticket_code ? (
-          <div className="bg-white rounded-lg shadow-xl p-8 sm:p-10">
+          <div className="bg-slate-800 border border-slate-600 rounded-xl shadow-xl p-8 sm:p-10">
             <div className="text-center">
               {/* Icona di successo */}
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-                <CheckCircle className="w-12 h-12 text-green-600" />
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-slate-700 border border-slate-600 rounded-full mb-6">
+                <CheckCircle className="w-12 h-12 text-emerald-400" />
               </div>
 
               {/* Titolo */}
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">
+              <h2 className="text-3xl font-bold text-slate-100 mb-4">
                 Segnalazione Inviata
               </h2>
 
               {/* Testo informativo */}
-              <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-slate-400 mb-8 max-w-2xl mx-auto">
                 È fondamentale salvare il tuo codice di tracciamento. Ti servirà per
                 controllare lo stato della pratica e leggere le risposte mantenendo
                 l'anonimato.
               </p>
 
               {/* Box con il codice */}
-              <div className="bg-gray-50 border-2 border-slate-200 rounded-lg p-6 mb-6">
-                <p className="text-sm font-medium text-gray-700 mb-2">
+              <div className="bg-slate-900/50 border border-slate-600 rounded-lg p-6 mb-6">
+                <p className="text-sm font-medium text-slate-300 mb-2">
                   Il tuo codice di tracciamento:
                 </p>
                 <div className="flex items-center justify-center gap-3">
-                  <code className="text-3xl font-bold text-slate-900 tracking-wider font-mono">
+                  <code className="text-3xl font-bold text-slate-100 tracking-wider font-mono">
                     {state.ticket_code}
                   </code>
                   <Button
                     onClick={handleCopyCode}
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-slate-500 text-slate-200 hover:bg-slate-700"
                   >
                     <Copy className="w-4 h-4" />
                     {copied ? 'Copiato!' : 'Copia Codice'}
@@ -245,7 +245,7 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
 
               {/* Bottoni */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="outline" size="lg" className="border-slate-500 text-slate-200 hover:bg-slate-700">
                   <Link href={homeLink}>
                     <Home className="w-4 h-4 mr-2" />
                     Torna alla Home
@@ -254,8 +254,8 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
               </div>
 
               {/* Nota importante */}
-              <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
+              <div className="mt-8 p-4 bg-slate-700/50 border border-slate-600 rounded-lg">
+                <p className="text-sm text-slate-300">
                   <strong>Importante:</strong> Salva questo codice in un posto sicuro. Non
                   potrai recuperarlo in seguito se lo perdi.
                 </p>
@@ -264,16 +264,16 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
           </div>
         ) : (
           /* Form Card - Mostrata quando non c'è successo */
-          <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
+          <div className="bg-slate-800 border border-slate-600 rounded-xl shadow-xl p-6 sm:p-8">
             {/* Messaggio di errore generale */}
             {!state.success && state.message && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="mb-6 p-4 bg-red-900/30 border border-red-800 rounded-lg">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                    <AlertTriangle className="w-5 h-5 text-red-400" />
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-red-800">
+                    <p className="text-sm font-medium text-red-200">
                       {state.message}
                     </p>
                   </div>
@@ -295,9 +295,9 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
               <div className="flex items-center justify-between gap-3 mb-2">
                 <label
                   htmlFor="description"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-slate-300"
                 >
-                  Descrivi la violazione <span className="text-red-500">*</span>
+                  Descrivi la violazione <span className="text-red-400">*</span>
                 </label>
                 <Button
                   type="button"
@@ -329,26 +329,26 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
                 maxLength={5000}
                 value={descriptionText}
                 onChange={(e) => setDescriptionText(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors resize-none"
                 placeholder="Descrivi in dettaglio la violazione o il comportamento inappropriato che hai osservato..."
               />
               {isRecording && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                <p className="mt-2 text-sm text-red-400 flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                   Registrazione in corso...
                 </p>
               )}
               {isTranscribing && (
-                <p className="mt-2 text-sm text-blue-600 flex items-center gap-2">
+                <p className="mt-2 text-sm text-slate-400 flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Trascrizione in corso...
                 </p>
               )}
               {transcriptionError && (
-                <p className="mt-2 text-sm text-red-600">{transcriptionError}</p>
+                <p className="mt-2 text-sm text-red-400">{transcriptionError}</p>
               )}
               {state.errors?.description && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-red-400">
                   {state.errors.description[0]}
                 </p>
               )}
@@ -365,13 +365,13 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
                   type="checkbox"
                   checked={isAnonymous}
                   onChange={(e) => setIsAnonymous(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-slate-600 border-slate-500 rounded bg-slate-900 focus:ring-slate-500"
                 />
               </div>
               <div className="ml-3 text-sm">
                 <label
                   htmlFor="is_anonymous"
-                  className="font-medium text-gray-700 flex items-center gap-2"
+                  className="font-medium text-slate-300 flex items-center gap-2"
                 >
                   <Lock className="w-4 h-4" />
                   Voglio restare anonimo
@@ -392,7 +392,7 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
               <div>
                 <label
                   htmlFor="contact_info"
-                  className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2"
+                  className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2"
                 >
                   <Mail className="w-4 h-4" />
                   Contatto (facoltativo)
@@ -401,11 +401,11 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
                   type="email"
                   id="contact_info"
                   name="contact_info"
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors"
                   placeholder="tua.email@esempio.com"
                 />
                 {state.errors?.contact_info && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-red-400">
                     {state.errors.contact_info[0]}
                   </p>
                 )}
@@ -419,7 +419,7 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
             <div>
               <label
                 htmlFor="attachments"
-                className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2"
+                className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2"
               >
                 <Paperclip className="w-4 h-4" />
                 Allegati (facoltativo)
@@ -430,7 +430,7 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
                 name="attachments"
                 multiple
                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt"
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="w-full px-4 py-3 border border-slate-600 rounded-lg bg-slate-900/50 text-slate-200 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-slate-700 file:text-slate-200 file:border-slate-600 hover:file:bg-slate-600 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors"
                 onChange={(e) => {
                   // Validazione lato client per dimensione file
                   const files = Array.from(e.target.files || [])
@@ -449,14 +449,14 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
             </div>
 
             {/* Note sulla privacy */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-4">
               <div className="flex items-start">
-                <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <Shield className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-900 mb-1">
+                  <h3 className="text-sm font-medium text-slate-200 mb-1">
                     Privacy e Sicurezza
                   </h3>
-                  <p className="text-xs text-blue-800">
+                  <p className="text-xs text-slate-400">
                     Le tue informazioni sono protette e crittografate. Tutte le segnalazioni sono
                     trattate con la massima riservatezza secondo le normative vigenti.
                   </p>
