@@ -49,7 +49,8 @@ const getParam = (value: string | string[] | undefined) =>
 
 export default function SubmitReportPage({ searchParams, clientName }: SubmitReportPageProps) {
   const clientParam = clientName || getParam(searchParams?.client) || getParam(searchParams?.ref)
-  const homeLink = clientParam ? `/?client=${encodeURIComponent(clientParam)}` : '/'
+  const homeLink = clientParam ? `/azienda/${encodeURIComponent(clientParam)}` : '/'
+  const backLabel = clientParam ? 'Torna alla Zona Segnalazioni' : 'Torna alla Home'
   const [state, formAction] = useFormState(submitReport, initialState)
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -188,6 +189,16 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
   return (
     <div className="min-h-screen bg-slate-900 text-slate-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
+        {/* Indietro: coerenza con Zona Segnalazioni dell'azienda */}
+        <div className="mb-6">
+          <Link
+            href={homeLink}
+            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+          >
+            <Home className="w-4 h-4" />
+            {backLabel}
+          </Link>
+        </div>
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-700 border border-slate-600 rounded-full mb-4">
@@ -248,7 +259,7 @@ export default function SubmitReportPage({ searchParams, clientName }: SubmitRep
                 <Button asChild variant="outline" size="lg" className="border-slate-500 text-slate-200 hover:bg-slate-700">
                   <Link href={homeLink}>
                     <Home className="w-4 h-4 mr-2" />
-                    Torna alla Home
+                    {backLabel}
                   </Link>
                 </Button>
               </div>

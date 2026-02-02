@@ -246,6 +246,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <p className="text-sm text-slate-400">
               Area riservata al Responsabile della gestione delle segnalazioni (Art. 12 D.Lgs 24/2023)
             </p>
+            <p className="mt-2 text-sm font-medium text-slate-200">
+              Pannello per: <span className="text-slate-100">{selectedCompanyLabel}</span>
+              <span className="text-slate-500 font-normal"> — Le segnalazioni atterrano su questa azienda.</span>
+            </p>
             <p className="mt-1 text-xs font-medium text-emerald-400/90">
               Conformità al 100% al D.Lgs. 24/2023 e alla Direttiva UE 2019/1937
             </p>

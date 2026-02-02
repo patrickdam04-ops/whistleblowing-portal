@@ -19,12 +19,17 @@ export default function HomePage({ searchParams }: PageProps) {
           <p className="mt-3 text-slate-400">
             Scegli cosa vuoi fare: inviare una nuova segnalazione o seguire una pratica già aperta.
           </p>
+          {clientParam && (
+            <p className="mt-2 text-sm text-slate-500">
+              Portale segnalazioni per questo destinatario.
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Link
             href={`/invia${clientParam ? `?client=${encodeURIComponent(clientParam)}` : ''}`}
-            className="group bg-slate-900/50 border border-slate-700 shadow-xl shadow-black/20 rounded-2xl p-6 md:p-8 transition-all hover:border-blue-600 hover:shadow-black/40"
+            className="group bg-slate-800 border border-slate-600 shadow-xl rounded-2xl p-6 md:p-8 transition-all hover:border-slate-500 hover:bg-slate-800/80"
           >
             <div className="text-2xl mb-3">📝</div>
             <h2 className="text-xl font-semibold text-slate-100 mb-2">
@@ -33,14 +38,14 @@ export default function HomePage({ searchParams }: PageProps) {
             <p className="text-sm text-slate-400">
               Invia una segnalazione anonima o riservata.
             </p>
-            <div className="mt-6 text-sm text-blue-600 group-hover:text-blue-500">
+            <div className="mt-6 text-sm text-slate-300 group-hover:text-slate-200">
               Avvia segnalazione →
             </div>
           </Link>
 
           <Link
             href={`/track${clientParam ? `?client=${encodeURIComponent(clientParam)}` : ''}`}
-            className="group bg-slate-900/50 border border-slate-700 shadow-xl shadow-black/20 rounded-2xl p-6 md:p-8 transition-all hover:border-blue-600 hover:shadow-black/40"
+            className="group bg-slate-800 border border-slate-600 shadow-xl rounded-2xl p-6 md:p-8 transition-all hover:border-slate-500 hover:bg-slate-800/80"
           >
             <div className="text-2xl mb-3">🔍</div>
             <h2 className="text-xl font-semibold text-slate-100 mb-2">
@@ -49,7 +54,7 @@ export default function HomePage({ searchParams }: PageProps) {
             <p className="text-sm text-slate-400">
               Hai già un codice? Controlla lo stato o rispondi all’azienda.
             </p>
-            <div className="mt-6 text-sm text-blue-600 group-hover:text-blue-500">
+            <div className="mt-6 text-sm text-slate-300 group-hover:text-slate-200">
               Inserisci codice →
             </div>
           </Link>
