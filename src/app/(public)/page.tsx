@@ -23,9 +23,11 @@ export default function HomePage({ searchParams }: PageProps) {
       <div className="w-full max-w-4xl">
         <div className="text-center mb-10">
           {clientDisplay && (
-            <p className="text-2xl md:text-3xl font-bold text-slate-100 mb-4">
-              {clientDisplay}
-            </p>
+            <div className="flex justify-center mb-6 -mt-2">
+              <span className="inline-block px-6 py-3 rounded-xl border border-slate-600 bg-slate-800/80 text-2xl md:text-3xl font-bold text-white tracking-tight">
+                {clientDisplay}
+              </span>
+            </div>
           )}
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-100">
             Zona Segnalazioni
