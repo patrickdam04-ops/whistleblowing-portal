@@ -153,6 +153,19 @@ Il sito userà da solo le nuove regole (RLS, storage, audit log, risposta al seg
 
 ---
 
+## Eliminare una segnalazione (es. di test)
+
+Per cancellare una segnalazione (ad es. una inviata per prova):
+
+1. In Supabase apri **Table Editor** (menu a sinistra).
+2. Seleziona la tabella **reports**.
+3. Trova la riga da eliminare (puoi ordinare per **created_at** per vedere l’ultima, o cercare per **ticket_code** se lo conosci).
+4. Clicca sulla riga per selezionarla, poi sul pulsante **Delete** (o icona cestino) e conferma.
+
+Se hai attivato lo Script 5 (report_messages), i messaggi collegati a quella segnalazione vengono eliminati in automatico (cascade).
+
+---
+
 ## Se compare un errore
 
 - **“relation tenant_members does not exist”** (o simile): nel tuo progetto le tabelle per aziende/tenant potrebbero avere nomi diversi. In quel caso scrivi come si chiamano le tabelle (e le colonne) che usi per “utenti” e “aziende” e si può adattare lo script.
