@@ -81,10 +81,18 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
   }
 }
 
+function geminiUserMessage(status: number, body: string): string {
+  if (status === 400) return 'Chiave API Gemini non valida o richiesta errata. Verifica GOOGLE_GENERATIVE_AI_API_KEY su Vercel.'
+  if (status === 401 || status === 403) return 'Chiave API Gemini non autorizzata. Controlla la chiave in Vercel (Environment Variables).'
+  if (status === 429) return 'Limite utilizzo Gemini raggiunto. Riprova più tardi.'
+  if (status >= 500) return 'Servizio Gemini temporaneamente non disponibile. Riprova più tardi.'
+  return 'Errore durante l\'analisi. Riprova o verifica la chiave API su Vercel.'
+}
+
 export async function analyzeConsistency(description: string): Promise<ConsistencyAnalysisResult> {
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error('CRITICAL: API KEY MISSING')
-    throw new Error('Configurazione Server Mancante')
+    throw new Error('Chiave API non configurata. Aggiungi GOOGLE_GENERATIVE_AI_API_KEY in Vercel.')
   }
 
   if (!description) {
@@ -106,6 +114,7 @@ export async function analyzeConsistency(description: string): Promise<Consisten
     }
   }
 
+  try {
   const { redactedText, tokenMap } = redactSensitiveText(description.trim())
 
   const prompt = `Sei un detective esperto in analisi testuale e interrogatori. Analizza questa segnalazione cercando ERRORI LOGICI e DATI MANCANTI.
@@ -152,15 +161,16 @@ Testo da analizzare: "${redactedText}"`
 
   const rawText = await response.text()
   if (!response.ok) {
-    throw new Error(`Google Error ${response.status}: ${rawText}`)
+    console.error('Gemini API error', response.status, rawText?.slice(0, 500))
+    throw new Error(geminiUserMessage(response.status, rawText))
   }
 
   let outer: any
   try {
     outer = JSON.parse(rawText)
   } catch (error) {
-    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
-    throw new Error(`Risposta Gemini non JSON: ${rawText}`)
+    console.error('Gemini parse error:', (error as any)?.message)
+    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
   }
 
   const aiText = outer?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
@@ -177,10 +187,15 @@ Testo da analizzare: "${redactedText}"`
   try {
     parsed = JSON.parse(extracted)
   } catch (error) {
-    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
-    throw new Error(`JSON Gemini non valido: ${cleaned}`)
+    console.error('Gemini JSON parse error:', (error as any)?.message)
+    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
   }
 
   const normalized = normalizeResult(parsed)
   return restoreTokensInObject(normalized, tokenMap) as ConsistencyAnalysisResult
+  } catch (err: any) {
+    const msg = err?.message && typeof err.message === 'string' && err.message.length < 300 ? err.message : 'Errore durante l\'analisi. Verifica la chiave API Gemini su Vercel e riprova.'
+    console.error('analyzeConsistency error:', err?.message ?? err)
+    throw new Error(msg)
+  }
 }

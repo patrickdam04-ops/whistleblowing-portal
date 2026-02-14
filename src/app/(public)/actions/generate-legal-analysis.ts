@@ -76,15 +76,19 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
   const rawText = await response.text()
 
   if (!response.ok) {
-    throw new Error(`Google Error ${response.status}: ${rawText}`)
+    console.error('Gemini API error', response.status, rawText?.slice(0, 500))
+    if (response.status === 400) throw new Error('Chiave API Gemini non valida. Verifica GOOGLE_GENERATIVE_AI_API_KEY su Vercel.')
+    if (response.status === 401 || response.status === 403) throw new Error('Chiave API Gemini non autorizzata. Controlla la chiave in Vercel.')
+    if (response.status === 429) throw new Error('Limite utilizzo Gemini raggiunto. Riprova più tardi.')
+    throw new Error('Errore servizio Gemini. Riprova o verifica la chiave API su Vercel.')
   }
 
   let outer: any
   try {
     outer = JSON.parse(rawText)
   } catch (error) {
-    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
-    throw new Error(`Risposta Gemini non JSON: ${rawText}`)
+    console.error('Gemini parse error:', (error as any)?.message)
+    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
   }
 
   const aiText = outer?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
@@ -101,8 +105,8 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
   try {
     parsed = JSON.parse(extracted)
   } catch (error) {
-    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
-    throw new Error(`JSON Gemini non valido: ${cleaned}`)
+    console.error('Gemini JSON parse error:', (error as any)?.message)
+    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
   }
 
   const normalized = normalizeResult(parsed)
@@ -112,7 +116,7 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
 export async function generateLegalAnalysis(description: string): Promise<LegalAnalysisResult> {
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error('CRITICAL: API KEY MISSING')
-    throw new Error('Configurazione Server Mancante')
+    throw new Error('Chiave API non configurata. Aggiungi GOOGLE_GENERATIVE_AI_API_KEY in Vercel.')
   }
 
   if (!description) {
@@ -126,8 +130,11 @@ export async function generateLegalAnalysis(description: string): Promise<LegalA
 
   try {
     return await callGeminiModel(PRIMARY_MODEL, description)
-  } catch (error) {
-    console.error('Gemini Error:', (error as any)?.message, (error as any)?.response?.data)
-    return await callGeminiModel(FALLBACK_MODEL, description)
+  } catch (error: any) {
+    console.error('Gemini legal analysis error:', error?.message ?? error)
+    const msg = error?.message && typeof error.message === 'string' && error.message.length < 300
+      ? error.message
+      : 'Errore durante l\'analisi legale. Verifica la chiave API Gemini su Vercel e riprova.'
+    throw new Error(msg)
   }
 }
