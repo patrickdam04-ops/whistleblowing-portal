@@ -2,27 +2,18 @@
 
 import { useState, useTransition } from 'react'
 import { analyzeConsistency, type ConsistencyAnalysisResult } from '@/app/(public)/actions/analyze-consistency'
-import { saveSherlockAnalysis } from '@/app/dashboard/[id]/actions'
 import { Button } from '@/components/ui/button'
 import { Search, Loader2, AlertTriangle } from 'lucide-react'
 
 interface SherlockConsistencyCardProps {
   description: string
-  reportId?: string
-  initialAnalysis?: ConsistencyAnalysisResult | Record<string, unknown> | null
   compact?: boolean
   dark?: boolean
   onAnalysis?: (analysis: ConsistencyAnalysisResult) => void
 }
 
-function isConsistencyResult(v: unknown): v is ConsistencyAnalysisResult {
-  return !!v && typeof v === 'object' && 'score_solidita' in v && typeof (v as ConsistencyAnalysisResult).score_solidita === 'number'
-}
-
-export function SherlockConsistencyCard({ description, reportId, initialAnalysis, compact, dark, onAnalysis }: SherlockConsistencyCardProps) {
-  const [analysis, setAnalysis] = useState<ConsistencyAnalysisResult | null>(() =>
-    isConsistencyResult(initialAnalysis) ? initialAnalysis : null
-  )
+export function SherlockConsistencyCard({ description, compact, dark, onAnalysis }: SherlockConsistencyCardProps) {
+  const [analysis, setAnalysis] = useState<ConsistencyAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -35,9 +26,6 @@ export function SherlockConsistencyCard({ description, reportId, initialAnalysis
         onAnalysis?.(result.data)
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('sherlock:analysis', { detail: result.data }))
-        }
-        if (reportId) {
-          await saveSherlockAnalysis(reportId, result.data as Record<string, unknown>)
         }
       } else {
         setError(result.error)
@@ -73,8 +61,6 @@ export function SherlockConsistencyCard({ description, reportId, initialAnalysis
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               Analisi in corso...
             </>
-          ) : analysis ? (
-            'Rianalizza'
           ) : (
             'Analizza Coerenza'
           )}

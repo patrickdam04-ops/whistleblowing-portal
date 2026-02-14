@@ -2,31 +2,17 @@
 
 import { useState, useTransition } from 'react'
 import { generateLegalAnalysis, type LegalAnalysisResult } from '@/app/(public)/actions/generate-legal-analysis'
-import { saveLegalAnalysis } from '@/app/dashboard/[id]/actions'
 import { Button } from '@/components/ui/button'
 import { Scale, Loader2, AlertTriangle } from 'lucide-react'
 
 interface LegalAnalysisCardProps {
   description: string
-  reportId?: string
-  initialAnalysis?: LegalAnalysisResult | Record<string, unknown> | null
   compact?: boolean
   dark?: boolean
 }
 
-function isLegalResult(v: unknown): v is LegalAnalysisResult {
-  return (
-    !!v &&
-    typeof v === 'object' &&
-    'livello_rischio' in v &&
-    Array.isArray((v as LegalAnalysisResult).reati_ipotizzati)
-  )
-}
-
-export function LegalAnalysisCard({ description, reportId, initialAnalysis, compact, dark }: LegalAnalysisCardProps) {
-  const [analysis, setAnalysis] = useState<LegalAnalysisResult | null>(() =>
-    isLegalResult(initialAnalysis) ? initialAnalysis : null
-  )
+export function LegalAnalysisCard({ description, compact, dark }: LegalAnalysisCardProps) {
+  const [analysis, setAnalysis] = useState<LegalAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -36,9 +22,6 @@ export function LegalAnalysisCard({ description, reportId, initialAnalysis, comp
       const result = await generateLegalAnalysis(description)
       if (result.ok) {
         setAnalysis(result.data)
-        if (reportId) {
-          await saveLegalAnalysis(reportId, result.data as Record<string, unknown>)
-        }
       } else {
         setError(result.error)
       }
@@ -90,8 +73,6 @@ export function LegalAnalysisCard({ description, reportId, initialAnalysis, comp
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               Analisi in corso...
             </>
-          ) : analysis ? (
-            'Rianalizza'
           ) : (
             'Avvia Analisi Legale'
           )}

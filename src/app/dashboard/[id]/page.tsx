@@ -41,8 +41,6 @@ interface Report {
   ticket_code: string | null
   attachments: string | string[] | null
   acknowledged_at: string | null
-  sherlock_analysis?: Record<string, unknown> | null
-  legal_analysis?: Record<string, unknown> | null
 }
 
 interface PageProps {
@@ -297,22 +295,10 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
               {/* Allegati */}
               <ReportAttachments attachments={reportData.attachments} reportId={reportData.id} />
 
-              {/* AI Cards (analisi persistenti: mostrano ultima e bottone Rianalizza) */}
+              {/* AI Cards (leggono descrizione + risposte successive per maggiore accuratezza) */}
               <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <SherlockConsistencyCard
-                  reportId={reportData.id}
-                  description={fullConversation}
-                  initialAnalysis={reportData.sherlock_analysis ?? null}
-                  compact
-                  dark
-                />
-                <LegalAnalysisCard
-                  reportId={reportData.id}
-                  description={fullConversation}
-                  initialAnalysis={reportData.legal_analysis ?? null}
-                  compact
-                  dark
-                />
+                <SherlockConsistencyCard description={fullConversation} compact dark />
+                <LegalAnalysisCard description={fullConversation} compact dark />
               </div>
             </div>
           </div>

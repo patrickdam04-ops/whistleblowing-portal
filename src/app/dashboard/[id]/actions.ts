@@ -174,39 +174,3 @@ export async function revokeAcknowledgeReport(reportId: string): Promise<{ succe
     return { success: false, error: e instanceof Error ? e.message : String(e) }
   }
 }
-
-/** Salva l'analisi Sherlock per la segnalazione (persistente). */
-export async function saveSherlockAnalysis(
-  reportId: string,
-  result: Record<string, unknown>
-): Promise<{ success: true } | { success: false; error: string }> {
-  const supabase = createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-  if (authError || !user) return { success: false, error: 'Non autorizzato' }
-  const { error } = await supabase
-    .from('reports')
-    .update({ sherlock_analysis: result })
-    .eq('id', reportId)
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/dashboard')
-  revalidatePath(`/dashboard/${reportId}`)
-  return { success: true }
-}
-
-/** Salva l'analisi legale per la segnalazione (persistente). */
-export async function saveLegalAnalysis(
-  reportId: string,
-  result: Record<string, unknown>
-): Promise<{ success: true } | { success: false; error: string }> {
-  const supabase = createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-  if (authError || !user) return { success: false, error: 'Non autorizzato' }
-  const { error } = await supabase
-    .from('reports')
-    .update({ legal_analysis: result })
-    .eq('id', reportId)
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/dashboard')
-  revalidatePath(`/dashboard/${reportId}`)
-  return { success: true }
-}
