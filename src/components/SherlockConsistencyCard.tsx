@@ -20,16 +20,15 @@ export function SherlockConsistencyCard({ description, compact, dark, onAnalysis
   const handleAnalyze = () => {
     setError(null)
     startTransition(async () => {
-      try {
-        const result = await analyzeConsistency(description)
-        setAnalysis(result)
-        onAnalysis?.(result)
+      const result = await analyzeConsistency(description)
+      if (result.ok) {
+        setAnalysis(result.data)
+        onAnalysis?.(result.data)
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('sherlock:analysis', { detail: result }))
+          window.dispatchEvent(new CustomEvent('sherlock:analysis', { detail: result.data }))
         }
-      } catch (err: any) {
-        console.error('Errore analisi coerenza:', err)
-        setError(err?.message || 'Errore durante l\'analisi di coerenza.')
+      } else {
+        setError(result.error)
       }
     })
   }

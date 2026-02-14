@@ -52,10 +52,10 @@ function normalizeResult(raw: any): LegalAnalysisResult {
   }
 }
 
-async function callGeminiModel(model: string, description: string): Promise<LegalAnalysisResult> {
+async function callGeminiModel(model: string, description: string): Promise<LegalAnalysisResult | { error: string }> {
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error('CRITICAL: API KEY MISSING')
-    throw new Error('Configurazione Server Mancante')
+    return { error: 'Configurazione Server Mancante' }
   }
 
   const { redactedText, tokenMap } = redactSensitiveText(description.trim())
@@ -77,10 +77,10 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
 
   if (!response.ok) {
     console.error('Gemini API error', response.status, rawText?.slice(0, 500))
-    if (response.status === 400) throw new Error('Chiave API Gemini non valida. Verifica GOOGLE_GENERATIVE_AI_API_KEY su Vercel.')
-    if (response.status === 401 || response.status === 403) throw new Error('Chiave API Gemini non autorizzata. Controlla la chiave in Vercel.')
-    if (response.status === 429) throw new Error('Limite utilizzo Gemini raggiunto. Riprova più tardi.')
-    throw new Error('Errore servizio Gemini. Riprova o verifica la chiave API su Vercel.')
+    if (response.status === 400) return { error: 'Chiave API Gemini non valida. Verifica GOOGLE_GENERATIVE_AI_API_KEY su Vercel.' }
+    if (response.status === 401 || response.status === 403) return { error: 'Chiave API Gemini non autorizzata. Controlla la chiave in Vercel.' }
+    if (response.status === 429) return { error: 'Limite utilizzo Gemini raggiunto. Riprova più tardi.' }
+    return { error: 'Errore servizio Gemini. Riprova o verifica la chiave API su Vercel.' }
   }
 
   let outer: any
@@ -88,7 +88,7 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
     outer = JSON.parse(rawText)
   } catch (error) {
     console.error('Gemini parse error:', (error as any)?.message)
-    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
+    return { error: 'Risposta Gemini non valida. Riprova più tardi.' }
   }
 
   const aiText = outer?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
@@ -106,35 +106,44 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
     parsed = JSON.parse(extracted)
   } catch (error) {
     console.error('Gemini JSON parse error:', (error as any)?.message)
-    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
+    return { error: 'Risposta Gemini non valida. Riprova più tardi.' }
   }
 
   const normalized = normalizeResult(parsed)
   return restoreTokensInObject(normalized, tokenMap) as LegalAnalysisResult
 }
 
-export async function generateLegalAnalysis(description: string): Promise<LegalAnalysisResult> {
+export type GenerateLegalAnalysisResult =
+  | { ok: true; data: LegalAnalysisResult }
+  | { ok: false; error: string }
+
+export async function generateLegalAnalysis(description: string): Promise<GenerateLegalAnalysisResult> {
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error('CRITICAL: API KEY MISSING')
-    throw new Error('Chiave API non configurata. Aggiungi GOOGLE_GENERATIVE_AI_API_KEY in Vercel.')
+    return { ok: false, error: 'Chiave API non configurata. Aggiungi GOOGLE_GENERATIVE_AI_API_KEY in Vercel.' }
   }
 
   if (!description) {
     return {
-      reati_ipotizzati: [],
-      livello_rischio: 'BASSO',
-      riferimenti_normativi: [],
-      suggerimenti_azione: [],
+      ok: true,
+      data: {
+        reati_ipotizzati: [],
+        livello_rischio: 'BASSO',
+        riferimenti_normativi: [],
+        suggerimenti_azione: [],
+      },
     }
   }
 
   try {
-    return await callGeminiModel(PRIMARY_MODEL, description)
+    const result = await callGeminiModel(PRIMARY_MODEL, description)
+    if ('error' in result) return { ok: false, error: result.error }
+    return { ok: true, data: result }
   } catch (error: any) {
     console.error('Gemini legal analysis error:', error?.message ?? error)
     const msg = error?.message && typeof error.message === 'string' && error.message.length < 300
       ? error.message
       : 'Errore durante l\'analisi legale. Verifica la chiave API Gemini su Vercel e riprova.'
-    throw new Error(msg)
+    return { ok: false, error: msg }
   }
 }

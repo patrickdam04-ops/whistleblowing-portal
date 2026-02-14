@@ -19,12 +19,11 @@ export function LegalAnalysisCard({ description, compact, dark }: LegalAnalysisC
   const handleAnalyze = () => {
     setError(null)
     startTransition(async () => {
-      try {
-        const result = await generateLegalAnalysis(description)
-        setAnalysis(result)
-      } catch (err: any) {
-        console.error('Errore analisi legale:', err)
-        setError(err?.message || 'Errore durante l\'analisi legale')
+      const result = await generateLegalAnalysis(description)
+      if (result.ok) {
+        setAnalysis(result.data)
+      } else {
+        setError(result.error)
       }
     })
   }

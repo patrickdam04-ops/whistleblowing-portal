@@ -89,27 +89,34 @@ function geminiUserMessage(status: number, body: string): string {
   return 'Errore durante l\'analisi. Riprova o verifica la chiave API su Vercel.'
 }
 
-export async function analyzeConsistency(description: string): Promise<ConsistencyAnalysisResult> {
+export type AnalyzeConsistencyResult =
+  | { ok: true; data: ConsistencyAnalysisResult }
+  | { ok: false; error: string }
+
+export async function analyzeConsistency(description: string): Promise<AnalyzeConsistencyResult> {
   if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     console.error('CRITICAL: API KEY MISSING')
-    throw new Error('Chiave API non configurata. Aggiungi GOOGLE_GENERATIVE_AI_API_KEY in Vercel.')
+    return { ok: false, error: 'Chiave API non configurata. Aggiungi GOOGLE_GENERATIVE_AI_API_KEY in Vercel.' }
   }
 
   if (!description) {
     return {
-      score_solidita: 50,
-      incoerenze_rilevate: [],
-      buchi_narrativi: [],
-      consiglio_investigativo: 'Descrizione mancante: raccogliere dettagli aggiuntivi.',
-      emotional_profile: {
-        dominant_emotion: 'CALMA/OGGETTIVA',
-        intensity: 'BASSA',
-        stress_indicators: [],
-      },
-      frivolity_check: {
-        is_likely_futile: false,
-        nature: 'FATTUALE',
-        reasoning: 'Dati insufficienti per valutare la futilità.',
+      ok: true,
+      data: {
+        score_solidita: 50,
+        incoerenze_rilevate: [],
+        buchi_narrativi: [],
+        consiglio_investigativo: 'Descrizione mancante: raccogliere dettagli aggiuntivi.',
+        emotional_profile: {
+          dominant_emotion: 'CALMA/OGGETTIVA',
+          intensity: 'BASSA',
+          stress_indicators: [],
+        },
+        frivolity_check: {
+          is_likely_futile: false,
+          nature: 'FATTUALE',
+          reasoning: 'Dati insufficienti per valutare la futilità.',
+        },
       },
     }
   }
@@ -162,7 +169,7 @@ Testo da analizzare: "${redactedText}"`
   const rawText = await response.text()
   if (!response.ok) {
     console.error('Gemini API error', response.status, rawText?.slice(0, 500))
-    throw new Error(geminiUserMessage(response.status, rawText))
+    return { ok: false, error: geminiUserMessage(response.status, rawText) }
   }
 
   let outer: any
@@ -170,7 +177,7 @@ Testo da analizzare: "${redactedText}"`
     outer = JSON.parse(rawText)
   } catch (error) {
     console.error('Gemini parse error:', (error as any)?.message)
-    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
+    return { ok: false, error: 'Risposta Gemini non valida. Riprova più tardi.' }
   }
 
   const aiText = outer?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
@@ -188,14 +195,15 @@ Testo da analizzare: "${redactedText}"`
     parsed = JSON.parse(extracted)
   } catch (error) {
     console.error('Gemini JSON parse error:', (error as any)?.message)
-    throw new Error('Risposta Gemini non valida. Riprova più tardi.')
+    return { ok: false, error: 'Risposta Gemini non valida. Riprova più tardi.' }
   }
 
   const normalized = normalizeResult(parsed)
-  return restoreTokensInObject(normalized, tokenMap) as ConsistencyAnalysisResult
+  const data = restoreTokensInObject(normalized, tokenMap) as ConsistencyAnalysisResult
+  return { ok: true, data }
   } catch (err: any) {
     const msg = err?.message && typeof err.message === 'string' && err.message.length < 300 ? err.message : 'Errore durante l\'analisi. Verifica la chiave API Gemini su Vercel e riprova.'
     console.error('analyzeConsistency error:', err?.message ?? err)
-    throw new Error(msg)
+    return { ok: false, error: msg }
   }
 }
