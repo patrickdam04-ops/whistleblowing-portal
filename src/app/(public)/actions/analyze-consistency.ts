@@ -21,6 +21,7 @@ export interface ConsistencyAnalysisResult {
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
 const MODEL = 'gemini-2.5-pro'
+const FALLBACK_MODEL = 'gemini-1.5-flash'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
 const safetySettings = [
@@ -81,10 +82,10 @@ function normalizeResult(raw: any): ConsistencyAnalysisResult {
   }
 }
 
-function geminiUserMessage(status: number, body: string): string {
+function geminiUserMessage(status: number, _body: string): string {
   if (status === 400) return 'Chiave API Gemini non valida o richiesta errata. Verifica GOOGLE_GENERATIVE_AI_API_KEY su Vercel.'
   if (status === 401 || status === 403) return 'Chiave API Gemini non autorizzata. Controlla la chiave in Vercel (Environment Variables).'
-  if (status === 429) return 'Limite utilizzo Gemini raggiunto. Riprova più tardi.'
+  if (status === 429) return 'Chiave nuova? Abilita l\'API Gemini su Google AI Studio (aistudio.google.com) e, se richiesto, la fatturazione gratuita. Poi riprova.'
   if (status >= 500) return 'Servizio Gemini temporaneamente non disponibile. Riprova più tardi.'
   return 'Errore durante l\'analisi. Riprova o verifica la chiave API su Vercel.'
 }
@@ -153,7 +154,7 @@ Restituisci un JSON rigoroso:
 
 Testo da analizzare: "${redactedText}"`
 
-  const response = await fetch(`${API_BASE}${MODEL}:generateContent?key=${API_KEY}`, {
+  let response = await fetch(`${API_BASE}${MODEL}:generateContent?key=${API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -166,7 +167,20 @@ Testo da analizzare: "${redactedText}"`
     }),
   })
 
-  const rawText = await response.text()
+  let rawText = await response.text()
+  if (!response.ok && response.status === 429) {
+    console.error('Gemini 429, retry with', FALLBACK_MODEL)
+    response = await fetch(`${API_BASE}${FALLBACK_MODEL}:generateContent?key=${API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        safetySettings,
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    })
+    rawText = await response.text()
+  }
+
   if (!response.ok) {
     console.error('Gemini API error', response.status, rawText?.slice(0, 500))
     return { ok: false, error: geminiUserMessage(response.status, rawText) }

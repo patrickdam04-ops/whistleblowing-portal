@@ -13,7 +13,7 @@ export interface LegalAnalysisResult {
 
 const API_KEY = process.env.GOOGLE_GENERATIVE_AI_API_KEY
 const PRIMARY_MODEL = 'gemini-2.5-pro'
-const FALLBACK_MODEL = 'gemini-2.5-pro'
+const FALLBACK_MODEL = 'gemini-1.5-flash'
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/'
 
 const safetySettings = [
@@ -76,10 +76,14 @@ async function callGeminiModel(model: string, description: string): Promise<Lega
   const rawText = await response.text()
 
   if (!response.ok) {
+    if (response.status === 429 && model !== FALLBACK_MODEL) {
+      console.error('Gemini 429, retry with', FALLBACK_MODEL)
+      return callGeminiModel(FALLBACK_MODEL, description)
+    }
     console.error('Gemini API error', response.status, rawText?.slice(0, 500))
     if (response.status === 400) return { error: 'Chiave API Gemini non valida. Verifica GOOGLE_GENERATIVE_AI_API_KEY su Vercel.' }
     if (response.status === 401 || response.status === 403) return { error: 'Chiave API Gemini non autorizzata. Controlla la chiave in Vercel.' }
-    if (response.status === 429) return { error: 'Limite utilizzo Gemini raggiunto. Riprova più tardi.' }
+    if (response.status === 429) return { error: 'Chiave nuova? Abilita l\'API Gemini su Google AI Studio (aistudio.google.com) e, se richiesto, la fatturazione gratuita. Poi riprova.' }
     return { error: 'Errore servizio Gemini. Riprova o verifica la chiave API su Vercel.' }
   }
 
