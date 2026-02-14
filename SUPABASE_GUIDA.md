@@ -146,6 +146,14 @@ Copia e incolla **tutto** il contenuto del file `supabase/migrations/20250201000
 
 ---
 
+### Script 6 – Analisi AI Sherlock e Legale persistenti
+
+Aggiunge le colonne per salvare l'ultima analisi Sherlock e l'ultima analisi legale per ogni segnalazione, così restano visibili quando torni sulla segnalazione (con bottone «Rianalizza» per rifarle).
+
+Copia e incolla **tutto** il contenuto del file `supabase/migrations/20250214000001_report_ai_analyses.sql` nel SQL Editor e clicca Run.
+
+---
+
 ## 3. Fine
 
 Dopo aver eseguito gli script con successo **non devi fare altro su Supabase**.  
