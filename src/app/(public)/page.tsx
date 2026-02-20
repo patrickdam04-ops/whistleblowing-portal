@@ -29,7 +29,7 @@ export default function HomePage({ searchParams }: PageProps) {
               </span>
             </div>
           )}
-          <h1 className="text-3xl md:text-4xl font-semibold text-slate-100">
+          <h1 className="text-3xl md:text-4xl font-semibold text-sky-200">
             Zona Segnalazioni
           </h1>
           <p className="mt-3 text-slate-400">
